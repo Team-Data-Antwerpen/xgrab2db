@@ -9,7 +9,7 @@
 # Copyright:   (c) Stad ANtwerpen 2014
 # Licence:     GPL
 #-------------------------------------------------------------------------------
-import os, sys, sqlite3, codecs, datetime
+import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
 
 class xgrab2db:

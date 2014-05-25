@@ -13,12 +13,12 @@ def main():
   try:
     if args.update == False:
        if os.path.exists( xgrabDB ): os.remove(xgrabDB)
-       con = sqlite3.Connection(xgrabDB)
+       con = db.Connection(xgrabDB)
        xgrab = xgrab2db( xgrabPath, con)
        xgrab.createAll()
        makeSpatialite(con)
     elif os.path.exists( xgrabDB ) and ( args.update == True ) :
-       con = sqlite3.Connection(xgrabDB)    
+       con = db.Connection(xgrabDB)    
        xgrab = xgrab2db( xgrabPath, con)
        xgrab.updateAll()
     else:
