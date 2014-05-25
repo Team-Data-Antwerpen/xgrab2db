@@ -32,13 +32,13 @@ def makeSpatialite(Connection):
     with Connection as con:
       print "started making spatial"
       shapes ="""BEGIN TRANSACTION;
-              SELECT InitSpatialMetaData();
-              SELECT AddGeometryColumn('WEGVERBINDINGGEOMETRIEN','SHAPE',31370, 'LINESTRING' );
-              UPDATE WEGVERBINDINGGEOMETRIEN SET "SHAPE"= SetSRID( GeomFromGML( "WEGVERBINDINGGEOMETRIE" ), 31370 );
-              SELECT AddGeometryColumn( 'GEBOUWGEOMETRIEN',  'SHAPE', 31370, 'POLYGON' );
-              UPDATE GEBOUWGEOMETRIEN SET "SHAPE"= SetSRID( GeomFromGML( "GEBOUWGEOMETRIE" ), 31370 );
-              SELECT AddGeometryColumn( 'ADRESPOSITIES', 'SHAPE',31370, 'POINT');
-              UPDATE ADRESPOSITIES SET "SHAPE"= MakePoint( "X", "Y", 31370);
+                  SELECT InitSpatialMetaData();
+                  SELECT AddGeometryColumn('WEGVERBINDINGGEOMETRIEN','SHAPE',31370, 'LINESTRING' );
+                  UPDATE WEGVERBINDINGGEOMETRIEN SET "SHAPE"= SetSRID( GeomFromGML( "WEGVERBINDINGGEOMETRIE" ), 31370 );
+                  SELECT AddGeometryColumn( 'GEBOUWGEOMETRIEN',  'SHAPE', 31370, 'POLYGON' );
+                  UPDATE GEBOUWGEOMETRIEN SET "SHAPE"= SetSRID( GeomFromGML( "GEBOUWGEOMETRIE" ), 31370 );
+                  SELECT AddGeometryColumn( 'ADRESPOSITIES', 'SHAPE',31370, 'POINT');
+                  UPDATE ADRESPOSITIES SET "SHAPE"= MakePoint( "X", "Y", 31370);
               COMMIT; """
       trigger = """BEGIN TRANSACTION;
                   CREATE TRIGGER ADRESPOSITIES_UPDATE_XY AFTER UPDATE OF "SHAPE" ON ADRESPOSITIES
