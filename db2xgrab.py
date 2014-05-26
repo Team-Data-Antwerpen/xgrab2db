@@ -11,9 +11,9 @@ def main():
 
   try:
       con = db.Connection(xgrabDB) 
-      xgrab = xgrabFromdb(con)
+      xgrab = xgrabFromdb(con, xgrabPath)
       xgrab.createAll()
-      xgrab.saveToFile(xgrabPath)
+      xgrab.close()
       
   finally:
       if con: con.close()

@@ -1,6 +1,5 @@
 #!/usr/bin/env python 
 # -*- coding: UTF-8 -*-
-
 import os, sys, sqlite3, argparse
 from xgrablib import *
 
