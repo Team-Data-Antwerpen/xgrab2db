@@ -5,7 +5,7 @@ xgrab is the exchange standard for adressen in Flanders. They contain a extract 
 This XML-file contains all the relevant entities of crab. 
 They allow the adres manager to modify CRAB directly without using lara.
 
-these tools convert a xgrab-xmlfile to a sqlite/spatialite db and back to xml.
+These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml.
 
 Spatialite files are filebased spatial databases. (like shapefiles but a lot better)
 They can be viewed and edited in qgis or arcgis 10.2. 
