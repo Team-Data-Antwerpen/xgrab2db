@@ -836,14 +836,11 @@ class xgrabFromdb:
         self.ADRESPOSITIES()
         
     def saveToFile(self, xgrabPath ):
-        head = u'<?xml version="1.0" encoding="utf-8"?>\n<CRAB HUIDIG_TIJDSTIP="%s" xmlns="http://crab.agiv.be">' % datetime.datetime.now().isoformat()
-        foot = u"</CRAB>"
-        xgrabFile = codecs.open( xgrabPath , encoding='utf-8', mode='w+')
-        xgrabFile.write(head)
-        xgrabFile.write( etree.tostring(self.COMPONENTEN, 'utf-8') )
-        xgrabFile.write(foot)
-        xgrabFile.close()
-    
+        crab = etree.XML(u'<CRAB HUIDIG_TIJDSTIP="%s" xmlns="http://crab.agiv.be"></CRAB>' % datetime.datetime.now().isoformat())
+        crab.append( self.COMPONENTEN )
+        tree = etree.ElementTree( crab )
+        tree.write( xgrabPath , encoding='utf-8' , xml_declaration=True)
+      
     def STRAATNAMEN(self):
         with self.con as con:
             cur = con.cursor()
