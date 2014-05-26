@@ -7,7 +7,7 @@
 #
 # Created:     28/04/2014
 # Copyright:   (c) K-GIS 2014
-# Licence:     GPL
+# Licence:     MIT
 #-------------------------------------------------------------------------------
 import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
