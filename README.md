@@ -28,8 +28,8 @@ If can't install the pyspatialite python module, you create a regular sqlite dat
 
     xgrab2db.py xgrab.xml database.sqlite
     
-You can use the <a href="https://www.gaia-gis.it/fossil/spatialite-tools/index" target="_blank">spatialite commandline executable</a> convert this database to spatial database.
-    
+You can use the <a href="https://www.gaia-gis.it/fossil/spatialite-tools/index" target="_blank">spatialite commandline executable</a> convert this database to a spatial database.
+     
     spatialite.exe database.sqlite < makeSpatial.sql
  
 ##Convert back to xgrab xml
