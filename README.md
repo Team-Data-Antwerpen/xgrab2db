@@ -2,10 +2,12 @@ xgrab2db
 ========
 
 xgrab is the exchange standard for adressen in Flanders. They contain a extract of the CRAB-database.
-The contain all the relevant entities. They allow the adres manager to modify CRAB directly without using lara.
+This XML-file contains all the relevant entities of crab. 
+They allow the adres manager to modify CRAB directly without using lara.
 
-Some tools to convert a xgrab-file to a sqlite/spatialite db and back to xml.
-Spatialite files are file based spatial databases. 
+These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml.
+
+Spatialite files are filebased spatial databases. (like shapefiles but a lot better)
 They can be viewed and edited in qgis or arcgis 10.2. 
 
 xgrab-files can only be downloaded by official adres-managers fromthe site: <a href="https://download.agiv.be/Producten/Detail?id=418&title=xGRAB" target="_blank">https://download.agiv.be/Producten/Detail?id=418</a>.
@@ -26,8 +28,8 @@ If can't install the pyspatialite python module, you create a regular sqlite dat
 
     xgrab2db.py xgrab.xml database.sqlite
     
-You can use the <a href="https://www.gaia-gis.it/fossil/spatialite-tools/index" target="_blank">spatialite commandline executable</a> convert this database to spatial database.
-    
+You can use the <a href="https://www.gaia-gis.it/fossil/spatialite-tools/index" target="_blank">spatialite commandline executable</a> convert this database to a spatial database.
+     
     spatialite.exe database.sqlite < makeSpatial.sql
  
 ##Convert back to xgrab xml
