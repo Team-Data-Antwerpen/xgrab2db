@@ -1,13 +1,13 @@
 # -*- coding: UTF-8 -*-
 #-------------------------------------------------------------------------------
 # Name:        xgrablib.py
-# Purpose:     Create a sqlite database from a xGRAB-file and the other around
-#
+# Purpose:     Create a sqlite database from a xGRAB-file and the other way 
+#              around.
 # Author:      Kay Warrie
 #
 # Created:     28/04/2014
 # Copyright:   (c) K-GIS 2014
-# Licence:     GPL
+# Licence:     MIT
 #-------------------------------------------------------------------------------
 import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
@@ -813,15 +813,22 @@ class xgrabFromdb:
         self.xgrabPath = xgrabPath
         self.xgrabFile = codecs.open( xgrabPath, mode="wb", encoding="utf-8",
                                 buffering=True )
+        self.time =  datetime.datetime.now().isoformat()
 
-        self.xgrabFile.write( u"""<?xml version="1.0" encoding="utf-8"?>
-        <CRAB HUIDIG_TIJDSTIP="%s" xmlns="http://crab.agiv.be"><COMPONENTEN>
-        """ % datetime.datetime.now().isoformat())
+        self.xgrabFile.write( u'<?xml version="1.0" encoding="utf-8"?>\r\n' +
+        '<CRAB HUIDIG_TIJDSTIP="%s" xmlns="http://crab.agiv.be"><COMPONENTEN>\r\n' % self.time )
 
     def close(self):
         if self.xgrabFile.closed == False:
             self.xgrabFile.write( u"</COMPONENTEN></CRAB>" )
             self.xgrabFile.close()
+
+    def _begin_metaTag(self,  organisatie=1 , bewerking=3 ):
+        BEGINMETADATA = etree.Element('BEGINMETADATA')
+        etree.SubElement(BEGINMETADATA , "TIJD").text = self.time
+        etree.SubElement(BEGINMETADATA , "ORGANISATIE").text = str( organisatie )
+        etree.SubElement(BEGINMETADATA , "BEWERKING").text = str( bewerking )
+        return BEGINMETADATA
 
     def createAll(self):
         self.STRAATNAMEN()
@@ -848,9 +855,9 @@ class xgrabFromdb:
 
     def STRAATNAMEN(self):
         with self.con as con:
-            cur = con.cursor()
             self.xgrabFile.write( '<STRAATNAMEN objecttype="straatnaam">' )
-
+            
+            cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM FROM STRAATNAMEN;"):
                 ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM = row
                 STRAATNAAM_OBJECT = etree.Element('STRAATNAAM_OBJECT')
@@ -860,16 +867,16 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAM_OBJECT , "STRAATNAAM").text = STRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "TAALCODESTRAATNAAM").text = TAALCODESTRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                STRAATNAAM_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( STRAATNAAM_OBJECT ))
 
             self.xgrabFile.write( '</STRAATNAMEN>' )
 
     def STRAATNAAMSTATUSSEN(self):
         with self.con as con:
-            cur = con.cursor()
             self.xgrabFile.write(  '<STRAATNAAMSTATUSSEN objecttype="straatnaamstatus">' )
-            #ID INT PRIMARY KEY, STRAATNAAMID INT, STRAATNAAMSTATUS INT, BEGINDATUM TEXT
+            
+            cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM FROM  STRAATNAAMSTATUSSEN;"):
                 ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM = row
                 STRAATNAAMSTATUS_OBJECT = etree.Element('STRAATNAAMSTATUS_OBJECT')
@@ -877,16 +884,16 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = unicode( STRAATNAAMSTATUS )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( STRAATNAAMSTATUS_OBJECT ))
 
             self.xgrabFile.write( "</STRAATNAAMSTATUSSEN>")
 
     def HUISNUMMERS(self):
-        with self.con as con:
-            cur = con.cursor()
+        with self.con as con: 
             self.xgrabFile.write( '<HUISNUMMERS objecttype="huisnummer">')
-
+            
+            cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM FROM  HUISNUMMERS;"):
                 ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM = row
                 HUISNUMMER_OBJECT = etree.Element('HUISNUMMER_OBJECT')
@@ -894,7 +901,7 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMER_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = unicode( HUISNUMMER )
                 etree.SubElement(HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                HUISNUMMER_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(HUISNUMMER_OBJECT ))
 
             self.xgrabFile.write( "</HUISNUMMERS>")
@@ -911,7 +918,7 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = unicode( HUISNUMMERSTATUS )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( HUISNUMMERSTATUS_OBJECT ))
 
             self.xgrabFile.write( "</HUISNUMMERSTATUSSEN>")
@@ -919,6 +926,7 @@ class xgrabFromdb:
     def SUBADRESSEN(self):
         with self.con as con:
             self.xgrabFile.write( '<SUBADRESSEN objecttype="subadres">' )
+            
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM  FROM  SUBADRESSEN;"):
                 ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM = row
@@ -928,7 +936,7 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRES_OBJECT , "SUBADRES").text = unicode( SUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = unicode( AARDSUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                SUBADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( SUBADRES_OBJECT ) )
 
             self.xgrabFile.write( '</SUBADRESSEN>')
@@ -945,7 +953,7 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESID").text = unicode( SUBADRESID )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = unicode( SUBADRESSTATUS )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                SUBADRESSTATUS_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( SUBADRESSTATUS_OBJECT ) )
 
             self.xgrabFile.write( '</SUBADRESSTATUSSEN>')
@@ -962,7 +970,7 @@ class xgrabFromdb:
                 etree.SubElement(POSTKANTONCODE_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = unicode( POSTKANTONCODE )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                POSTKANTONCODE_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( POSTKANTONCODE_OBJECT ) )
 
             self.xgrabFile.write( '</POSTKANTONCODES>')
@@ -980,7 +988,7 @@ class xgrabFromdb:
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( RRSTRAATNAAM_STRAATNAAM_OBJECT ) )
 
             self.xgrabFile.write( '</RRSTRAATNAAM_STRAATNAAM_RELATIES>')
@@ -1001,7 +1009,7 @@ class xgrabFromdb:
                 etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = unicode( EERSTEHUISNUMMER )
                 etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text = unicode( LAATSTEHUISNUMMER )
                 etree.SubElement(STRAATKANT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                STRAATKANT_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT ))
 
             self.xgrabFile.write( '</STRAATKANTEN>')
@@ -1018,7 +1026,7 @@ class xgrabFromdb:
                 etree.SubElement(WEGOBJECT_OBJECT , "IDENTIFICATORWEGOBJECT").text = unicode( IDENTIFICATORWEGOBJECT )
                 etree.SubElement(WEGOBJECT_OBJECT , "AARDWEGOBJECT").text = unicode( AARDWEGOBJECT )
                 etree.SubElement(WEGOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                WEGOBJECT_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( WEGOBJECT_OBJECT ))
 
             self.xgrabFile.write( '</WEGOBJECTEN>')
@@ -1035,7 +1043,7 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGVERBINDINGSTATUS").text = unicode( WEGVERBINDINGSTATUS )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-  
+                WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGSTATUS_OBJECT ))
 
             self.xgrabFile.write( '</WEGVERBINDINGSTATUSSEN>')
@@ -1058,7 +1066,7 @@ class xgrabFromdb:
 
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT ))
 
             self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>')
@@ -1075,7 +1083,7 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_HUISNUMMER_OBJECT ))
 
             self.xgrabFile.write( '</TERREINOBJECT_HUISNUMMER_RELATIES>')
@@ -1092,7 +1100,7 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_OBJECT , "IDENTIFICATORTERREINOBJECT").text = unicode( IDENTIFICATORTERREINOBJECT )
                 etree.SubElement(TERREINOBJECT_OBJECT , "AARDTERREINOBJECT").text = unicode( AARDTERREINOBJECT )
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                TERREINOBJECT_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT ))
 
             self.xgrabFile.write( '</TERREINOBJECTEN>')
@@ -1109,7 +1117,7 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "GEBOUWSTATUS").text = unicode( GEBOUWSTATUS )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                GEBOUWSTATUS_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( GEBOUWSTATUS_OBJECT ))
 
             self.xgrabFile.write( '</GEBOUWSTATUSSEN>')
@@ -1132,7 +1140,7 @@ class xgrabFromdb:
 
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT ))
 
             self.xgrabFile.write( '</GEBOUWGEOMETRIEN>')
@@ -1150,7 +1158,7 @@ class xgrabFromdb:
                 etree.SubElement(RRADRES_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
                 etree.SubElement(RRADRES_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                RRADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( RRADRES_OBJECT ))
 
             self.xgrabFile.write( '</RRADRESSEN>')
@@ -1168,14 +1176,14 @@ class xgrabFromdb:
                 etree.SubElement(ADRES_RRADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "RRADRESID").text = unicode( RRADRESID )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                ADRES_RRADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  ADRES_RRADRES_OBJECT ))
 
             self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>')
 
     def KADADRESSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<ADRES_RRADRES_RELATIES objecttype="adresRrAdres">')
+            self.xgrabFile.write( '<KADADRESSEN objecttype="adresRrAdres">')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM FROM KADADRESSEN;"):
@@ -1186,10 +1194,10 @@ class xgrabFromdb:
                 etree.SubElement(KADADRES_OBJECT , "KADSTRAATCODE").text = unicode( KADSTRAATCODE )
                 etree.SubElement(KADADRES_OBJECT , "NISGEMEENTECODE").text = unicode( NISGEMEENTECODE )
                 etree.SubElement(KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                KADADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( KADADRES_OBJECT ))
 
-            self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>')
+            self.xgrabFile.write( '</KADADRESSEN>')
 
     def ADRES_KADADRES_RELATIES(self):
         with self.con as con:
@@ -1204,7 +1212,7 @@ class xgrabFromdb:
                 etree.SubElement(ADRES_KADADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "KADADRESID").text = unicode( KADADRESID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                ADRES_KADADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( ADRES_KADADRES_OBJECT ))
 
             self.xgrabFile.write( '</ADRES_KADADRES_RELATIES>')
@@ -1216,7 +1224,7 @@ class xgrabFromdb:
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM FROM ADRESPOSITIES;"):
                 ID, ADRESID, AARDADRES,  X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM = row
-                ADRESPOSITIE_OBJECT = etree.Element('ADRES_KADADRES_OBJECT')
+                ADRESPOSITIE_OBJECT = etree.Element('ADRESPOSITIE_OBJECT')
                 etree.SubElement(ADRESPOSITIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "ADRESID").text = unicode( ADRESID )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "AARDADRES").text = unicode( AARDADRES )
@@ -1229,7 +1237,7 @@ class xgrabFromdb:
 
                 etree.SubElement(ADRESPOSITIE_OBJECT , "HERKOMSTADRESPOSITIE").text = unicode( HERKOMSTADRESPOSITIE )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-
+                ADRESPOSITIE_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( ADRESPOSITIE_OBJECT ))
 
             self.xgrabFile.write( '</ADRESPOSITIES>')
