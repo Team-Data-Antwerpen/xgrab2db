@@ -12,6 +12,9 @@
 import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
 
+etree.register_namespace("gml","http://www.opengis.net/gml")
+etree.register_namespace("","http://crab.agiv.be")
+
 class xgrab2db:
   def __init__(self, xgrabPath , DBconnection ):
       """create or update a xgrab Database using xgrab-xml
@@ -352,11 +355,11 @@ class xgrab2db:
 
         EERSTEHUISNUMMERnode = row.find("{http://crab.agiv.be}EERSTEHUISNUMMER")
         if EERSTEHUISNUMMERnode != None: EERSTEHUISNUMMER = EERSTEHUISNUMMERnode.text
-        else: EERSTEHUISNUMMER = "NULL"
+        else: EERSTEHUISNUMMER = ""
 
         LAATSTEHUISNUMMERnode = row.find("{http://crab.agiv.be}LAATSTEHUISNUMMER")
         if LAATSTEHUISNUMMERnode != None: LAATSTEHUISNUMMER = LAATSTEHUISNUMMERnode.text
-        else: LAATSTEHUISNUMMER = "NULL"
+        else: LAATSTEHUISNUMMER = ""
 
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
@@ -364,7 +367,8 @@ class xgrab2db:
         data = cur.fetchall()
 
         if len(data) == 0:
-            sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s');" % (id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,BEGINDATUM)
+            sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s');" % (id,STRAATNAAMID,WEGOBJECTID,
+            KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,BEGINDATUM)
             cur.execute(sql)
         else:
             sql = "UPDATE STRAATKANTEN"
@@ -375,7 +379,8 @@ class xgrab2db:
             PARITEIT =  %s ,
             EERSTEHUISNUMMER = '%s' ,
             LAATSTEHUISNUMMER = '%s' ,
-            BEGINDATUM = '%s' """ % (id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,BEGINDATUM)
+            BEGINDATUM = '%s' """ % (id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,
+            BEGINDATUM)
             sql +=" WHERE ID = %s ;" % id
             cur.execute(sql)
       con.commit()
@@ -1005,9 +1010,9 @@ class xgrabFromdb:
                 etree.SubElement(STRAATKANT_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(STRAATKANT_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
                 etree.SubElement(STRAATKANT_OBJECT , "KANT").text = unicode( KANT )
-                etree.SubElement(STRAATKANT_OBJECT , "PARITEIT").text = unicode( PARITEIT )
-                etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = unicode( EERSTEHUISNUMMER )
-                etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text = unicode( LAATSTEHUISNUMMER )
+                if PARITEIT: etree.SubElement(STRAATKANT_OBJECT , "PARITEIT").text = unicode( PARITEIT )
+                if EERSTEHUISNUMMER: etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = EERSTEHUISNUMMER 
+                if LAATSTEHUISNUMMER: etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text =  LAATSTEHUISNUMMER 
                 etree.SubElement(STRAATKANT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 STRAATKANT_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT ))
@@ -1059,15 +1064,18 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
 
-                geom = etree.XML(WEGVERBINDINGGEOMETRIE)
+                geom = etree.XML(WEGVERBINDINGGEOMETRIE) 
+                geomS = '<gml:LineString xmlns:gml="http://www.opengis.net/gml"><gml:posList>' + geom[0].text + '</gml:posList></gml:LineString>'
+                geomC = etree.XML(geomS)
+                
                 geomXML = etree.Element("WEGVERBINDINGGEOMETRIE")
-                geomXML.append(geom)
+                geomXML.append(geomC)
                 WEGVERBINDINGGEOMETRIE_OBJECT.append( geomXML )
 
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT ))
+                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT ) )
 
             self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>')
             
@@ -1134,14 +1142,17 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
 
                 geom = etree.XML(GEBOUWGEOMETRIE)
+                geomS = '<gml:Polygon xmlns:gml="http://www.opengis.net/gml" ><gml:exterior><gml:LinearRing><gml:posList> ' +  geom[0][0][0].text + '</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>'
+                geomC =  etree.XML( geomS )
+                
                 geomXML = etree.Element("GEBOUWGEOMETRIE")
-                geomXML.append(geom)
+                geomXML.append(geomC)
                 GEBOUWGEOMETRIE_OBJECT.append( geomXML )
 
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT ))
+                self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT ) )
 
             self.xgrabFile.write( '</GEBOUWGEOMETRIEN>')
 
@@ -1183,7 +1194,7 @@ class xgrabFromdb:
 
     def KADADRESSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<KADADRESSEN objecttype="adresRrAdres">')
+            self.xgrabFile.write( '<KADADRESSEN objecttype="kadAdres">')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM FROM KADADRESSEN;"):
@@ -1229,7 +1240,7 @@ class xgrabFromdb:
                 etree.SubElement(ADRESPOSITIE_OBJECT , "ADRESID").text = unicode( ADRESID )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "AARDADRES").text = unicode( AARDADRES )
 
-                ADRESPOSITIE = """<Point ><pos>%s %s </pos></Point>""" % (X, Y)
+                ADRESPOSITIE = '<gml:Point xmlns:gml="http://www.opengis.net/gml"><gml:pos>%s %s </gml:pos></gml:Point>' % (X, Y)
                 geom = etree.XML(ADRESPOSITIE)
                 geomXML = etree.Element("ADRESPOSITIE")
                 geomXML.append(geom)
