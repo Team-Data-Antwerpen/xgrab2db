@@ -398,6 +398,7 @@ class xgrab2db:
         id = row[0].text
         IDENTIFICATORWEGOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORWEGOBJECT").text
         AARDWEGOBJECT =  row.find("{http://crab.agiv.be}AARDWEGOBJECT").text
+        #TODO: WEGVERBINDING !
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
         cur.execute("SELECT * FROM WEGOBJECTEN WHERE ID = %s" % id)
@@ -529,7 +530,7 @@ class xgrab2db:
         IDENTIFICATORTERREINOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORTERREINOBJECT").text
         AARDTERREINOBJECT = row.find("{http://crab.agiv.be}AARDTERREINOBJECT").text
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
-
+        #TODO: aardgeobouw !
         cur.execute("SELECT * FROM TERREINOBJECTEN WHERE ID = %s" % id)
         data = cur.fetchall()
 
@@ -621,29 +622,34 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS RRADRESSEN(ID INT PRIMARY KEY, RRHUISNUMMER TEXT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS RRADRESSEN(ID INT PRIMARY KEY, RRHUISNUMMER TEXT, RRINDEX TEXT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXT, BEGINDATUM TEXT);")
 
       for row in rows.getchildren():
         id = row[0].text
         RRHUISNUMMER = row.find("{http://crab.agiv.be}RRHUISNUMMER").text
         SUBKANTONCODE = row.find("{http://crab.agiv.be}SUBKANTONCODE").text
         RRSTRAATCODE = row.find("{http://crab.agiv.be}RRSTRAATCODE").text
+        
+        INDEXnode =  row.find("{http://crab.agiv.be}INDEX")
+        if INDEXnode != None: RRINDEX = INDEXnode.text
+        else: RRINDEX = "" 
+        
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
-        #TODO: Metadata???
 
         cur.execute("SELECT * FROM RRADRESSEN WHERE ID = %s" % id)
         data = cur.fetchall()
 
         if len(data) == 0:
-          sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s');" % (id,RRHUISNUMMER,SUBKANTONCODE,RRSTRAATCODE,BEGINDATUM)
+          sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s','%s');" % (id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE,BEGINDATUM)
           cur.execute(sql)
         else:
             sql = "UPDATE RRADRESSEN "
             sql +=""" SET ID = %s ,
             RRHUISNUMMER =  '%s' ,
+            RRINDEX = '%s'
             SUBKANTONCODE = '%s' ,
             RRSTRAATCODE = '%s' ,
-            BEGINDATUM = '%s' """ % (id,RRHUISNUMMER,SUBKANTONCODE,RRSTRAATCODE,BEGINDATUM)
+            BEGINDATUM = '%s' """ % (id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE,BEGINDATUM)
             sql +=" WHERE ID = %s ;" % id
             cur.execute(sql)
       con.commit()
@@ -825,7 +831,7 @@ class xgrabFromdb:
 
     def close(self):
         if self.xgrabFile.closed == False:
-            self.xgrabFile.write( u"</COMPONENTEN></CRAB>" )
+            self.xgrabFile.write( u"</COMPONENTEN></CRAB>\r\n" )
             self.xgrabFile.close()
 
     def _begin_metaTag(self,  organisatie=1 , bewerking=3 ):
@@ -860,7 +866,7 @@ class xgrabFromdb:
 
     def STRAATNAMEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<STRAATNAMEN objecttype="straatnaam">' )
+            self.xgrabFile.write( '<STRAATNAMEN objecttype="straatnaam">\r\n' )
             
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM FROM STRAATNAMEN;"):
@@ -873,13 +879,13 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAM_OBJECT , "TAALCODESTRAATNAAM").text = TAALCODESTRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 STRAATNAAM_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( STRAATNAAM_OBJECT ))
+                self.xgrabFile.write( etree.tostring( STRAATNAAM_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</STRAATNAMEN>' )
+            self.xgrabFile.write( '</STRAATNAMEN>\r\n' )
 
     def STRAATNAAMSTATUSSEN(self):
         with self.con as con:
-            self.xgrabFile.write(  '<STRAATNAAMSTATUSSEN objecttype="straatnaamstatus">' )
+            self.xgrabFile.write(  '<STRAATNAAMSTATUSSEN objecttype="straatnaamstatus">\r\n' )
             
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM FROM  STRAATNAAMSTATUSSEN;"):
@@ -890,13 +896,13 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = unicode( STRAATNAAMSTATUS )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( STRAATNAAMSTATUS_OBJECT ))
+                self.xgrabFile.write( etree.tostring( STRAATNAAMSTATUS_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( "</STRAATNAAMSTATUSSEN>")
+            self.xgrabFile.write( "</STRAATNAAMSTATUSSEN>\r\n")
 
     def HUISNUMMERS(self):
         with self.con as con: 
-            self.xgrabFile.write( '<HUISNUMMERS objecttype="huisnummer">')
+            self.xgrabFile.write( '<HUISNUMMERS objecttype="huisnummer">\r\n')
             
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM FROM  HUISNUMMERS;"):
@@ -907,13 +913,13 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = unicode( HUISNUMMER )
                 etree.SubElement(HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 HUISNUMMER_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(HUISNUMMER_OBJECT ))
+                self.xgrabFile.write( etree.tostring(HUISNUMMER_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( "</HUISNUMMERS>")
+            self.xgrabFile.write( "</HUISNUMMERS>\r\n")
 
     def HUISNUMMERSTATUSSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<HUISNUMMERSTATUSSEN objecttype="huisnummerstatus">')
+            self.xgrabFile.write( '<HUISNUMMERSTATUSSEN objecttype="huisnummerstatus">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, HUISNUMMERSTATUS, BEGINDATUM FROM  HUISNUMMERSTATUSSEN;"):
@@ -924,13 +930,13 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = unicode( HUISNUMMERSTATUS )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( HUISNUMMERSTATUS_OBJECT ))
+                self.xgrabFile.write( etree.tostring( HUISNUMMERSTATUS_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( "</HUISNUMMERSTATUSSEN>")
+            self.xgrabFile.write( "</HUISNUMMERSTATUSSEN>\r\n")
 
     def SUBADRESSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<SUBADRESSEN objecttype="subadres">' )
+            self.xgrabFile.write( '<SUBADRESSEN objecttype="subadres">\r\n' )
             
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM  FROM  SUBADRESSEN;"):
@@ -942,13 +948,13 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = unicode( AARDSUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 SUBADRES_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( SUBADRES_OBJECT ) )
+                self.xgrabFile.write( etree.tostring( SUBADRES_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</SUBADRESSEN>')
+            self.xgrabFile.write( '</SUBADRESSEN>\r\n')
 
     def SUBADRESSTATUSSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<SUBADRESSTATUSSEN objecttype="subadresstatus">')
+            self.xgrabFile.write( '<SUBADRESSTATUSSEN objecttype="subadresstatus">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, SUBADRESID, SUBADRESSTATUS, BEGINDATUM FROM  SUBADRESSTATUSSEN;"):
@@ -959,13 +965,13 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = unicode( SUBADRESSTATUS )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 SUBADRESSTATUS_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( SUBADRESSTATUS_OBJECT ) )
+                self.xgrabFile.write( etree.tostring( SUBADRESSTATUS_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</SUBADRESSTATUSSEN>')
+            self.xgrabFile.write( '</SUBADRESSTATUSSEN>\r\n')
 
     def POSTKANTONCODES(self):
         with self.con as con:
-            self.xgrabFile.write( '<POSTKANTONCODES objecttype="postkantoncode">')
+            self.xgrabFile.write( '<POSTKANTONCODES objecttype="postkantoncode">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, POSTKANTONCODE, BEGINDATUM FROM  POSTKANTONCODES;"):
@@ -976,13 +982,13 @@ class xgrabFromdb:
                 etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = unicode( POSTKANTONCODE )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 POSTKANTONCODE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( POSTKANTONCODE_OBJECT ) )
+                self.xgrabFile.write( etree.tostring( POSTKANTONCODE_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</POSTKANTONCODES>')
+            self.xgrabFile.write( '</POSTKANTONCODES>\r\n')
 
     def RRSTRAATNAAM_STRAATNAAM_RELATIES(self):
         with self.con as con:
-            self.xgrabFile.write( '<RRSTRAATNAAM_STRAATNAAM_RELATIES objecttype="rrStraatnaamStraatnaam">')
+            self.xgrabFile.write( '<RRSTRAATNAAM_STRAATNAAM_RELATIES objecttype="rrStraatnaamStraatnaam">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM FROM  RRSTRAATNAAM_STRAATNAAM_RELATIES;"):
@@ -994,13 +1000,13 @@ class xgrabFromdb:
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( RRSTRAATNAAM_STRAATNAAM_OBJECT ) )
+                self.xgrabFile.write( etree.tostring( RRSTRAATNAAM_STRAATNAAM_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</RRSTRAATNAAM_STRAATNAAM_RELATIES>')
+            self.xgrabFile.write( '</RRSTRAATNAAM_STRAATNAAM_RELATIES>\r\n')
 
     def STRAATKANTEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<STRAATKANTEN objecttype="straatkant">')
+            self.xgrabFile.write( '<STRAATKANTEN objecttype="straatkant">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER, BEGINDATUM FROM  STRAATKANTEN;"):
@@ -1011,17 +1017,17 @@ class xgrabFromdb:
                 etree.SubElement(STRAATKANT_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
                 etree.SubElement(STRAATKANT_OBJECT , "KANT").text = unicode( KANT )
                 if PARITEIT: etree.SubElement(STRAATKANT_OBJECT , "PARITEIT").text = unicode( PARITEIT )
-                if EERSTEHUISNUMMER: etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = EERSTEHUISNUMMER 
-                if LAATSTEHUISNUMMER: etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text =  LAATSTEHUISNUMMER 
+                if EERSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = EERSTEHUISNUMMER 
+                if LAATSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text =  LAATSTEHUISNUMMER 
                 etree.SubElement(STRAATKANT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 STRAATKANT_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT ))
+                self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</STRAATKANTEN>')
+            self.xgrabFile.write( '</STRAATKANTEN>\r\n')
 
     def WEGOBJECTEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<WEGOBJECTEN objecttype="wegobject">')
+            self.xgrabFile.write( '<WEGOBJECTEN objecttype="wegobject">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, IDENTIFICATORWEGOBJECT, AARDWEGOBJECT, BEGINDATUM FROM  WEGOBJECTEN;"):
@@ -1032,13 +1038,13 @@ class xgrabFromdb:
                 etree.SubElement(WEGOBJECT_OBJECT , "AARDWEGOBJECT").text = unicode( AARDWEGOBJECT )
                 etree.SubElement(WEGOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 WEGOBJECT_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( WEGOBJECT_OBJECT ))
+                self.xgrabFile.write( etree.tostring( WEGOBJECT_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</WEGOBJECTEN>')
+            self.xgrabFile.write( '</WEGOBJECTEN>\r\n')
 
     def WEGVERBINDINGSTATUSSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<WEGVERBINDINGSTATUSSEN objecttype="wegverbindingstatus">')
+            self.xgrabFile.write( '<WEGVERBINDINGSTATUSSEN objecttype="wegverbindingstatus">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, WEGOBJECTID, WEGVERBINDINGSTATUS, BEGINDATUM FROM  WEGVERBINDINGSTATUSSEN;"):
@@ -1049,13 +1055,13 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGVERBINDINGSTATUS").text = unicode( WEGVERBINDINGSTATUS )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGSTATUS_OBJECT ))
+                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGSTATUS_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</WEGVERBINDINGSTATUSSEN>')
+            self.xgrabFile.write( '</WEGVERBINDINGSTATUSSEN>\r\n' )
 
     def WEGVERBINDINGGEOMETRIEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<WEGVERBINDINGGEOMETRIEN objecttype="wegverbindinggeometrie">')
+            self.xgrabFile.write( '<WEGVERBINDINGGEOMETRIEN objecttype="wegverbindinggeometrie">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, WEGOBJECTID, WEGVERBINDINGGEOMETRIE, METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM FROM WEGVERBINDINGGEOMETRIEN;"):
@@ -1075,13 +1081,13 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT ) )
+                self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>')
+            self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>\r\n')
             
     def TERREINOBJECT_HUISNUMMER_RELATIES(self):
         with self.con as con:
-            self.xgrabFile.write( '<TERREINOBJECT_HUISNUMMER_RELATIES objecttype="terreinobjectHuisnummer">')
+            self.xgrabFile.write( '<TERREINOBJECT_HUISNUMMER_RELATIES objecttype="terreinobjectHuisnummer">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, HUISNUMMERID, BEGINDATUM FROM TERREINOBJECT_HUISNUMMER_RELATIES;"):
@@ -1092,13 +1098,13 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(  TERREINOBJECT_HUISNUMMER_OBJECT ))
+                self.xgrabFile.write( etree.tostring(  TERREINOBJECT_HUISNUMMER_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</TERREINOBJECT_HUISNUMMER_RELATIES>')
+            self.xgrabFile.write( '</TERREINOBJECT_HUISNUMMER_RELATIES>\r\n')
 
     def TERREINOBJECTEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<TERREINOBJECTEN objecttype="terreinobject">')
+            self.xgrabFile.write( '<TERREINOBJECTEN objecttype="terreinobject">\r\n')
             
             cur = con.cursor()
             for row in cur.execute("SELECT ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, BEGINDATUM FROM TERREINOBJECTEN;"):
@@ -1109,13 +1115,13 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_OBJECT , "AARDTERREINOBJECT").text = unicode( AARDTERREINOBJECT )
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 TERREINOBJECT_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT ))
+                self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</TERREINOBJECTEN>')
+            self.xgrabFile.write( '</TERREINOBJECTEN>\r\n')
 
     def GEBOUWSTATUSSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<GEBOUWSTATUSSEN objecttype="gebouwstatus">')
+            self.xgrabFile.write( '<GEBOUWSTATUSSEN objecttype="gebouwstatus">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, GEBOUWSTATUS, BEGINDATUM FROM GEBOUWSTATUSSEN;"):
@@ -1126,13 +1132,13 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "GEBOUWSTATUS").text = unicode( GEBOUWSTATUS )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 GEBOUWSTATUS_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( GEBOUWSTATUS_OBJECT ))
+                self.xgrabFile.write( etree.tostring( GEBOUWSTATUS_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</GEBOUWSTATUSSEN>')
+            self.xgrabFile.write( '</GEBOUWSTATUSSEN>\r\n')
             
     def GEBOUWGEOMETRIEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<GEBOUWGEOMETRIEN objecttype="gebouwgeometrie">')
+            self.xgrabFile.write( '<GEBOUWGEOMETRIEN objecttype="gebouwgeometrie">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, GEBOUWGEOMETRIE, METHODEGEBOUWGEOMETRIE, BEGINDATUM FROM GEBOUWGEOMETRIEN;"):
@@ -1152,31 +1158,38 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT ) )
+                self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</GEBOUWGEOMETRIEN>')
+            self.xgrabFile.write( '</GEBOUWGEOMETRIEN>\r\n')
 
     def RRADRESSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<RRADRESSEN objecttype="rrAdres">')
+            self.xgrabFile.write( '<RRADRESSEN objecttype="rrAdres">\r\n')
 
             cur = con.cursor()
-            for row in cur.execute("SELECT ID, RRHUISNUMMER, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM FROM RRADRESSEN;"):
-                ID, RRHUISNUMMER, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM = row
+            for row in cur.execute("SELECT ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM FROM RRADRESSEN;"):
+                ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM = row
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
                 etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text = unicode( RRHUISNUMMER )
+                
+                if len(RRHUISNUMMER.strip()) & len(RRHUISNUMMER.strip()) < 11: 
+                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER.strip()
+                else: 
+                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text = 'ZN'
+                    
+                if RRINDEX.strip(): etree.SubElement(RRADRES_OBJECT , "INDEX").text = RRINDEX       
+                
                 etree.SubElement(RRADRES_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
                 etree.SubElement(RRADRES_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 RRADRES_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( RRADRES_OBJECT ))
+                self.xgrabFile.write( etree.tostring( RRADRES_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</RRADRESSEN>')
+            self.xgrabFile.write( '</RRADRESSEN>\r\n')
 
     def ADRES_RRADRES_RELATIES(self):
         with self.con as con:
-            self.xgrabFile.write( '<ADRES_RRADRES_RELATIES objecttype="adresRrAdres">')
+            self.xgrabFile.write( '<ADRES_RRADRES_RELATIES objecttype="adresRrAdres">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM FROM ADRES_RRADRES_RELATIES;"):
@@ -1190,11 +1203,11 @@ class xgrabFromdb:
                 ADRES_RRADRES_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  ADRES_RRADRES_OBJECT ))
 
-            self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>')
+            self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>\r\n')
 
     def KADADRESSEN(self):
         with self.con as con:
-            self.xgrabFile.write( '<KADADRESSEN objecttype="kadAdres">')
+            self.xgrabFile.write( '<KADADRESSEN objecttype="kadAdres">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM FROM KADADRESSEN;"):
@@ -1206,13 +1219,13 @@ class xgrabFromdb:
                 etree.SubElement(KADADRES_OBJECT , "NISGEMEENTECODE").text = unicode( NISGEMEENTECODE )
                 etree.SubElement(KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 KADADRES_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( KADADRES_OBJECT ))
+                self.xgrabFile.write( etree.tostring( KADADRES_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</KADADRESSEN>')
+            self.xgrabFile.write( '</KADADRESSEN>\r\n')
 
     def ADRES_KADADRES_RELATIES(self):
         with self.con as con:
-            self.xgrabFile.write( '<ADRES_KADADRES_RELATIES objecttype="adresKadAdres">')
+            self.xgrabFile.write( '<ADRES_KADADRES_RELATIES objecttype="adresKadAdres">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, KADADRESID, BEGINDATUM FROM ADRES_KADADRES_RELATIES;"):
@@ -1224,13 +1237,13 @@ class xgrabFromdb:
                 etree.SubElement(ADRES_KADADRES_OBJECT , "KADADRESID").text = unicode( KADADRESID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 ADRES_KADADRES_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( ADRES_KADADRES_OBJECT ))
+                self.xgrabFile.write( etree.tostring( ADRES_KADADRES_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</ADRES_KADADRES_RELATIES>')
+            self.xgrabFile.write( '</ADRES_KADADRES_RELATIES>\r\n')
 
     def ADRESPOSITIES(self):
         with self.con as con:
-            self.xgrabFile.write( '<ADRESPOSITIES objecttype="adrespositie">')
+            self.xgrabFile.write( '<ADRESPOSITIES objecttype="adrespositie">\r\n')
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM FROM ADRESPOSITIES;"):
@@ -1249,6 +1262,6 @@ class xgrabFromdb:
                 etree.SubElement(ADRESPOSITIE_OBJECT , "HERKOMSTADRESPOSITIE").text = unicode( HERKOMSTADRESPOSITIE )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 ADRESPOSITIE_OBJECT.append( self._begin_metaTag() )
-                self.xgrabFile.write( etree.tostring( ADRESPOSITIE_OBJECT ))
+                self.xgrabFile.write( etree.tostring( ADRESPOSITIE_OBJECT) + "\r\n")
 
-            self.xgrabFile.write( '</ADRESPOSITIES>')
+            self.xgrabFile.write( '</ADRESPOSITIES>\r\n')
