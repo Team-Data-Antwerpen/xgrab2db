@@ -702,7 +702,6 @@ class xgrab2db:
         KADSTRAATCODE = row.find("{http://crab.agiv.be}KADSTRAATCODE").text
         NISGEMEENTECODE = row.find("{http://crab.agiv.be}NISGEMEENTECODE").text
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
-        #TODO: Metadata???
 
         cur.execute("SELECT * FROM KADADRESSEN WHERE ID = %s" % id)
         data = cur.fetchall()
@@ -1172,8 +1171,9 @@ class xgrabFromdb:
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
                 etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
                 
-                if len(RRHUISNUMMER.strip()) & len(RRHUISNUMMER.strip()) < 11: 
-                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER.strip()
+                #TODO: still something wrong with this
+                if 0 < len(RRHUISNUMMER.strip()) < 11: 
+                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER 
                 else: 
                     etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text = 'ZN'
                     
