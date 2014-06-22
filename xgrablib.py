@@ -84,7 +84,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAMEN(ID INT PRIMARY KEY, STRAATCODE INT, NISGEMEENTECODE INT, STRAATNAAM TEXT, TAALCODESTRAATNAAM TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAMEN(ID INT PRIMARY KEY, STRAATCODE INT, NISGEMEENTECODE INT, STRAATNAAM TEXT, TAALCODESTRAATNAAM TEXT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -120,7 +120,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAAMSTATUSSEN(ID INT PRIMARY KEY, STRAATNAAMID INT, STRAATNAAMSTATUS INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAAMSTATUSSEN(ID INT PRIMARY KEY, STRAATNAAMID INT, STRAATNAAMSTATUS INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -151,7 +151,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERS(ID INT PRIMARY KEY, STRAATNAAMID INT, HUISNUMMER TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERS(ID INT PRIMARY KEY, STRAATNAAMID INT, HUISNUMMER TEXT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -182,7 +182,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERSTATUSSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, HUISNUMMERSTATUS INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERSTATUSSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, HUISNUMMERSTATUS INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -213,7 +213,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, SUBADRES TEXT, AARDSUBADRES INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, SUBADRES TEXT, AARDSUBADRES INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -246,7 +246,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSTATUSSEN(ID INT PRIMARY KEY, SUBADRESID INT, SUBADRESSTATUS INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSTATUSSEN(ID INT PRIMARY KEY, SUBADRESID INT, SUBADRESSTATUS INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -277,7 +277,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS POSTKANTONCODES(ID INT PRIMARY KEY, HUISNUMMERID INT, POSTKANTONCODE INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS POSTKANTONCODES(ID INT PRIMARY KEY, HUISNUMMERID INT, POSTKANTONCODE INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -308,7 +308,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS RRSTRAATNAAM_STRAATNAAM_RELATIES(ID INT PRIMARY KEY, STRAATNAAMID INT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXt, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS RRSTRAATNAAM_STRAATNAAM_RELATIES(ID INT PRIMARY KEY, STRAATNAAMID INT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXt, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -341,7 +341,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS STRAATKANTEN(ID INT PRIMARY KEY, STRAATNAAMID INT, WEGOBJECTID INT, KANT INT, PARITEIT INT, EERSTEHUISNUMMER TEXT, LAATSTEHUISNUMMER TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS STRAATKANTEN(ID INT PRIMARY KEY, STRAATNAAMID INT, WEGOBJECTID INT, KANT INT, PARITEIT INT, EERSTEHUISNUMMER TEXT, LAATSTEHUISNUMMER TEXT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -392,13 +392,13 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS WEGOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORWEGOBJECT TEXT, AARDWEGOBJECT INT,  BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS WEGOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORWEGOBJECT TEXT, AARDWEGOBJECT INT,  BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
         IDENTIFICATORWEGOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORWEGOBJECT").text
         AARDWEGOBJECT =  row.find("{http://crab.agiv.be}AARDWEGOBJECT").text
-        #TODO: WEGVERBINDING !
+
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
         cur.execute("SELECT * FROM WEGOBJECTEN WHERE ID = %s" % id)
@@ -424,7 +424,7 @@ class xgrab2db:
 
           cur = con.cursor()
 
-          cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGSTATUSSEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGSTATUS INT, BEGINDATUM TEXT);")
+          cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGSTATUSSEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGSTATUS INT, BEGINDATUM DATE);")
 
           for row in rows.getchildren():
             id = row[0].text
@@ -456,7 +456,7 @@ class xgrab2db:
 
           cur = con.cursor()
 
-          cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGGEOMETRIEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGGEOMETRIE TEXT, METHODEWEGVERBINDINGGEOMETRIE INT, BEGINDATUM TEXT);")
+          cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGGEOMETRIEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGGEOMETRIE TEXT, METHODEWEGVERBINDINGGEOMETRIE INT, BEGINDATUM DATE);")
 
           for row in rows.getchildren():
             id = row[0].text
@@ -492,7 +492,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECT_HUISNUMMER_RELATIES(ID INT PRIMARY KEY, TERREINOBJECTID INT, HUISNUMMERID INT,  BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECT_HUISNUMMER_RELATIES(ID INT PRIMARY KEY, TERREINOBJECTID INT, HUISNUMMERID INT,  BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -523,26 +523,34 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORTERREINOBJECT TEXT, AARDTERREINOBJECT INT,  BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORTERREINOBJECT TEXT, AARDTERREINOBJECT INT, AARDGEBOUW INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
         IDENTIFICATORTERREINOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORTERREINOBJECT").text
         AARDTERREINOBJECT = row.find("{http://crab.agiv.be}AARDTERREINOBJECT").text
         BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
-        #TODO: aardgeobouw !
+        
+        #aardgeobouw = double node, sometimes NULL!
+        AARDGEBOUWnode = row.find( "{http://crab.agiv.be}GEBOUW/{http://crab.agiv.be}AARDGEBOUW" )
+        if AARDGEBOUWnode != None: AARDGEBOUW = AARDGEBOUWnode.text
+        else: AARDGEBOUW = "NULL"
+        
+        BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+        
         cur.execute("SELECT * FROM TERREINOBJECTEN WHERE ID = %s" % id)
         data = cur.fetchall()
 
         if len(data) == 0:
-          sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,'%s');" % (id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,BEGINDATUM)
+          sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,%s,'%s');" % (id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,BEGINDATUM)
           cur.execute(sql)
         else:
             sql = "UPDATE TERREINOBJECTEN "
             sql +=""" SET ID = %s ,
             IDENTIFICATORTERREINOBJECT =  '%s' ,
             AARDTERREINOBJECT = %s ,
-            BEGINDATUM = '%s' """ % (id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,BEGINDATUM)
+            AARDGEBOUW = %s , 
+            BEGINDATUM = '%s' """ % (id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,BEGINDATUM)
             sql +=" WHERE ID = %s ;" % id
             cur.execute(sql)
       con.commit()
@@ -554,7 +562,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWSTATUSSEN(ID INT PRIMARY KEY, TERREINOBJECTID TEXT, GEBOUWSTATUS INT,  BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWSTATUSSEN(ID INT PRIMARY KEY, TERREINOBJECTID TEXT, GEBOUWSTATUS INT,  BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -586,7 +594,7 @@ class xgrab2db:
 
           cur = con.cursor()
 
-          cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWGEOMETRIEN(ID INT PRIMARY KEY, TERREINOBJECTID INT, GEBOUWGEOMETRIE TEXT, METHODEGEBOUWGEOMETRIE, BEGINDATUM TEXT);")
+          cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWGEOMETRIEN(ID INT PRIMARY KEY, TERREINOBJECTID INT, GEBOUWGEOMETRIE TEXT, METHODEGEBOUWGEOMETRIE, BEGINDATUM DATE);")
 
           for row in rows.getchildren():
             id = row[0].text
@@ -622,7 +630,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS RRADRESSEN(ID INT PRIMARY KEY, RRHUISNUMMER TEXT, RRINDEX TEXT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS RRADRESSEN(ID INT PRIMARY KEY, RRHUISNUMMER TEXT, RRINDEX TEXT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -661,7 +669,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS ADRES_RRADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, RRADRESID INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS ADRES_RRADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, RRADRESID INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -694,7 +702,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS KADADRESSEN(ID INT PRIMARY KEY, KADHUISNUMMER TEXT, KADSTRAATCODE TEXT, NISGEMEENTECODE TEXT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS KADADRESSEN(ID INT PRIMARY KEY, KADHUISNUMMER TEXT, KADSTRAATCODE TEXT, NISGEMEENTECODE TEXT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -727,7 +735,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS ADRES_KADADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, KADADRESID INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS ADRES_KADADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, KADADRESID INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -760,7 +768,7 @@ class xgrab2db:
 
       cur = con.cursor()
 
-      cur.execute("CREATE TABLE IF NOT EXISTS ADRESPOSITIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, X REAL, Y REAL, HERKOMSTADRESPOSITIE INT, BEGINDATUM TEXT);")
+      cur.execute("CREATE TABLE IF NOT EXISTS ADRESPOSITIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, X REAL, Y REAL, HERKOMSTADRESPOSITIE INT, BEGINDATUM DATE);")
 
       for row in rows.getchildren():
         id = row[0].text
@@ -1106,12 +1114,18 @@ class xgrabFromdb:
             self.xgrabFile.write( '<TERREINOBJECTEN objecttype="terreinobject">\r\n')
             
             cur = con.cursor()
-            for row in cur.execute("SELECT ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, BEGINDATUM FROM TERREINOBJECTEN;"):
-                ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, BEGINDATUM = row
+            for row in cur.execute("SELECT ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, BEGINDATUM FROM TERREINOBJECTEN;"):
+                ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, BEGINDATUM = row
                 TERREINOBJECT_OBJECT = etree.Element('TERREINOBJECT_OBJECT')
                 etree.SubElement(TERREINOBJECT_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(TERREINOBJECT_OBJECT , "IDENTIFICATORTERREINOBJECT").text = unicode( IDENTIFICATORTERREINOBJECT )
                 etree.SubElement(TERREINOBJECT_OBJECT , "AARDTERREINOBJECT").text = unicode( AARDTERREINOBJECT )
+
+                if AARDGEBOUW:                 
+                    GEBOUWnode = etree.Element("GEBOUW")
+                    etree.SubElement(GEBOUWnode , "AARDGEBOUW").text = unicode( AARDGEBOUW )
+                    TERREINOBJECT_OBJECT.append(GEBOUWnode)               
+                
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 TERREINOBJECT_OBJECT.append( self._begin_metaTag() )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT) + "\r\n")
@@ -1170,8 +1184,7 @@ class xgrabFromdb:
                 ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM = row
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
                 etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
-                
-                #TODO: still something wrong with this
+
                 if 0 < len(RRHUISNUMMER.strip()) < 11: 
                     etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER 
                 else: 
