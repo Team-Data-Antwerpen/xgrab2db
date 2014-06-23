@@ -832,6 +832,8 @@ class xgrabFromdb:
         self.xgrabFile = codecs.open( xgrabPath, mode="wb", encoding="utf-8",
                                 buffering=True )
         self.time =  datetime.datetime.now().isoformat()
+        
+        self.ZNcounter = 0
 
         self.xgrabFile.write( u'<?xml version="1.0" encoding="utf-8"?>\r\n' +
         '<CRAB HUIDIG_TIJDSTIP="%s" xmlns="http://crab.agiv.be"><COMPONENTEN>\r\n' % self.time )
@@ -1188,7 +1190,8 @@ class xgrabFromdb:
                 if 0 < len(RRHUISNUMMER.strip()) < 11: 
                     etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER 
                 else: 
-                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text = 'ZN'
+                    self.ZNcounter += 1             #ISSUE: double ZN not allowed
+                    etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text = 'ZN %s' % str( self.ZNcounter ) 
                     
                 if RRINDEX.strip(): etree.SubElement(RRADRES_OBJECT , "INDEX").text = RRINDEX       
                 
