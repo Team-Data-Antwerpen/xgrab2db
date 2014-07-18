@@ -87,7 +87,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAMEN(ID INT PRIMARY KEY, STRAATCODE INT, NISGEMEENTECODE INT, STRAATNAAM TEXT, TAALCODESTRAATNAAM TEXT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+        "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+        " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -97,9 +98,9 @@ class xgrab2db:
           TAALCODESTRAATNAAM = row.find("{http://crab.agiv.be}TAALCODESTRAATNAAM").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -109,8 +110,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= u"INSERT INTO STRAATNAMEN VALUES(%s,%s,%s,'%s','%s','%s','%s',%s,%s);" % (id,STRAATCODE,NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM,
-                                             BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= u"INSERT INTO STRAATNAMEN VALUES(%s,%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (id,STRAATCODE,
+              NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
 
               cur.execute(sql)
           else:
@@ -121,10 +122,10 @@ class xgrab2db:
               STRAATNAAM =   '%s' ,
               TAALCODESTRAATNAAM =   '%s' ,
               BEGINDATUM =  '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s""" % (id,STRAATCODE,NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM,
-                                                BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s""" % (id,STRAATCODE,NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM,
+                                                BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql += u" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -137,7 +138,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS STRAATNAAMSTATUSSEN(ID INT PRIMARY KEY, STRAATNAAMID INT, STRAATNAAMSTATUS INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -145,9 +147,9 @@ class xgrab2db:
           STRAATNAAMSTATUS = row.find("{http://crab.agiv.be}STRAATNAAMSTATUS").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -157,8 +159,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO STRAATNAAMSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,STRAATNAAMID,STRAATNAAMSTATUS,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO STRAATNAAMSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+              id,STRAATNAAMID,STRAATNAAMSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE STRAATNAAMSTATUSSEN"
@@ -166,10 +168,10 @@ class xgrab2db:
               STRAATNAAMID =  %s ,
               STRAATNAAMSTATUS =  %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,STRAATNAAMID,STRAATNAAMSTATUS,
-                                                                  BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,STRAATNAAMSTATUS,
+                                                        BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -182,7 +184,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERS(ID INT PRIMARY KEY, STRAATNAAMID INT, HUISNUMMER TEXT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -190,9 +193,9 @@ class xgrab2db:
           HUISNUMMER =  row.find("{http://crab.agiv.be}HUISNUMMER").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -202,8 +205,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO HUISNUMMERS VALUES(%s,%s,'%s','%s','%s',%s,%s);" % (id,STRAATNAAMID,HUISNUMMER,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO HUISNUMMERS VALUES(%s,%s,'%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
+              id,STRAATNAAMID,HUISNUMMER,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE HUISNUMMERS"
@@ -211,10 +214,10 @@ class xgrab2db:
               STRAATNAAMID =  %s ,
               HUISNUMMER = '%s',
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,STRAATNAAMID,HUISNUMMER,
-                                                            BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,HUISNUMMER,
+                                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -227,7 +230,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS HUISNUMMERSTATUSSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, HUISNUMMERSTATUS INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -235,9 +239,9 @@ class xgrab2db:
           HUISNUMMERSTATUS = row.find("{http://crab.agiv.be}HUISNUMMERSTATUS").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -247,8 +251,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO HUISNUMMERSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,HUISNUMMERID,HUISNUMMERSTATUS,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO HUISNUMMERSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,HUISNUMMERID,HUISNUMMERSTATUS,
+                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE HUISNUMMERSTATUSSEN"
@@ -256,10 +260,10 @@ class xgrab2db:
               HUISNUMMERID =  %s ,
               HUISNUMMERSTATUS = %s,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,HUISNUMMERID,HUISNUMMERSTATUS,
-                                                            BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,HUISNUMMERSTATUS,
+                                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -272,7 +276,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSEN(ID INT PRIMARY KEY, HUISNUMMERID INT, SUBADRES TEXT, AARDSUBADRES INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -281,9 +286,9 @@ class xgrab2db:
           AARDSUBADRES  = row.find("{http://crab.agiv.be}AARDSUBADRES").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -293,8 +298,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO SUBADRESSEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s);" % (id,HUISNUMMERID,SUBADRES,AARDSUBADRES,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO SUBADRESSEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+              id,HUISNUMMERID,SUBADRES,AARDSUBADRES, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE SUBADRESSEN"
@@ -303,10 +308,10 @@ class xgrab2db:
               SUBADRES = '%s',
               AARDSUBADRES =  %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,HUISNUMMERID,SUBADRES,AARDSUBADRES,
-                                                                BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,SUBADRES,AARDSUBADRES,
+                                                         BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -319,7 +324,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS SUBADRESSTATUSSEN(ID INT PRIMARY KEY, SUBADRESID INT, SUBADRESSTATUS INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -327,9 +333,9 @@ class xgrab2db:
           SUBADRESSTATUS = row.find("{http://crab.agiv.be}SUBADRESSTATUS").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -339,8 +345,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO SUBADRESSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,SUBADRESID,SUBADRESSTATUS,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO SUBADRESSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,SUBADRESID,SUBADRESSTATUS,
+                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE SUBADRESSTATUSSEN"
@@ -348,9 +354,9 @@ class xgrab2db:
               SUBADRESID =  %s ,
               SUBADRESSTATUS = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""% (id,SUBADRESID,SUBADRESSTATUS, BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""% (id,SUBADRESID,SUBADRESSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -363,7 +369,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS POSTKANTONCODES(ID INT PRIMARY KEY, HUISNUMMERID INT, POSTKANTONCODE INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -371,9 +378,9 @@ class xgrab2db:
           POSTKANTONCODE = row.find("{http://crab.agiv.be}POSTKANTONCODE").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -383,8 +390,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO POSTKANTONCODES VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,HUISNUMMERID,POSTKANTONCODE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO POSTKANTONCODES VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,HUISNUMMERID,POSTKANTONCODE,
+                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE POSTKANTONCODES"
@@ -392,9 +399,9 @@ class xgrab2db:
               HUISNUMMERID =  %s ,
               POSTKANTONCODE = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,HUISNUMMERID,POSTKANTONCODE, BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,POSTKANTONCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -407,7 +414,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS RRSTRAATNAAM_STRAATNAAM_RELATIES(ID INT PRIMARY KEY, STRAATNAAMID INT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXt, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -416,9 +424,9 @@ class xgrab2db:
           RRSTRAATCODE = row.find("{http://crab.agiv.be}RRSTRAATCODE").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -428,8 +436,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO RRSTRAATNAAM_STRAATNAAM_RELATIES VALUES(%s,%s,'%s','%s','%s','%s',%s,%s);" % (id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO RRSTRAATNAAM_STRAATNAAM_RELATIES VALUES(%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
+              id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE RRSTRAATNAAM_STRAATNAAM_RELATIES"
@@ -438,10 +446,10 @@ class xgrab2db:
               SUBKANTONCODE = '%s' ,
               RRSTRAATCODE = '%s' ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE,
-                                                                    BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE,
+                                                                    BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -454,7 +462,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS STRAATKANTEN(ID INT PRIMARY KEY, STRAATNAAMID INT, WEGOBJECTID INT, KANT INT, PARITEIT INT, EERSTEHUISNUMMER TEXT, LAATSTEHUISNUMMER TEXT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -476,9 +485,9 @@ class xgrab2db:
 
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -488,8 +497,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s','%s',%s,%s);" % (id,STRAATNAAMID,WEGOBJECTID,
-              KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER, BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (id,STRAATNAAMID,WEGOBJECTID,
+              KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               cur.execute(sql)
           else:
               sql = "UPDATE STRAATKANTEN"
@@ -501,10 +510,11 @@ class xgrab2db:
               EERSTEHUISNUMMER = '%s' ,
               LAATSTEHUISNUMMER = '%s' ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,
-                                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(
+              id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,
+                                   BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -517,7 +527,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS WEGOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORWEGOBJECT TEXT, AARDWEGOBJECT INT,"+
-                                                            "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -526,9 +537,9 @@ class xgrab2db:
 
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -538,8 +549,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,'%s','%s',%s,%s);" % (id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE WEGOBJECTEN"
@@ -547,10 +558,10 @@ class xgrab2db:
               IDENTIFICATORWEGOBJECT =  '%s' ,
               AARDWEGOBJECT = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,
-                                                                    BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,
+                                                                    BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -563,7 +574,8 @@ class xgrab2db:
             cur = con.cursor()
 
             cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGSTATUSSEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGSTATUS INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
             for row in rows.getchildren():
               id = row[0].text
@@ -571,9 +583,9 @@ class xgrab2db:
               WEGVERBINDINGSTATUS = row.find("{http://crab.agiv.be}WEGVERBINDINGSTATUS").text
               BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-              METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-              METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-              METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+              BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+              BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+              BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
               if EINDnode: EINDDATUM = EINDnode
@@ -583,8 +595,8 @@ class xgrab2db:
               data = cur.fetchall()
 
               if len(data) == 0:
-                sql= "INSERT INTO WEGVERBINDINGSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
-                                                                           BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                sql= "INSERT INTO WEGVERBINDINGSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
+                                                                           BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                 cur.execute(sql)
               else:
                   sql = "UPDATE WEGVERBINDINGSTATUSSEN"
@@ -592,10 +604,10 @@ class xgrab2db:
                   WEGOBJECTID =  %s ,
                   WEGVERBINDINGSTATUS = %s ,
                   BEGINDATUM = '%s',
-                  METATIJD = '%s',
-                  METAORGANISATIE = %s,
-                  METABEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
-                                                         BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                  BEGINTIJD = '%s',
+                  BEGINORGANISATIE = %s,
+                  BEGINBEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
+                                                         BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -609,7 +621,8 @@ class xgrab2db:
             cur = con.cursor()
 
             cur.execute("CREATE TABLE IF NOT EXISTS WEGVERBINDINGGEOMETRIEN(ID INT PRIMARY KEY, WEGOBJECTID INT, WEGVERBINDINGGEOMETRIE TEXT, METHODEWEGVERBINDINGGEOMETRIE INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
             for row in rows.getchildren():
               id = row[0].text
@@ -621,9 +634,9 @@ class xgrab2db:
               METHODEWEGVERBINDINGGEOMETRIE = row.find("{http://crab.agiv.be}METHODEWEGVERBINDINGGEOMETRIE").text
               BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-              METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-              METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-              METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+              BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+              BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+              BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
               if EINDnode: EINDDATUM = EINDnode
@@ -633,8 +646,8 @@ class xgrab2db:
               data = cur.fetchall()
 
               if len(data) == 0:
-                  sql= "INSERT INTO WEGVERBINDINGGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s);" % (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                  sql= "INSERT INTO WEGVERBINDINGGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
+                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                   cur.execute(sql)
               else:
                   sql = "UPDATE WEGVERBINDINGGEOMETRIEN "
@@ -643,10 +656,10 @@ class xgrab2db:
                   WEGVERBINDINGGEOMETRIE = '%s' ,
                   METHODEWEGVERBINDINGGEOMETRIE = %s ,
                   BEGINDATUM = '%s' ,
-                  METATIJD = '%s',
-                  METAORGANISATIE = %s ,
-                  METABEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
-                                                                                  BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                  BEGINTIJD = '%s',
+                  BEGINORGANISATIE = %s ,
+                  BEGINBEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
+                                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -659,7 +672,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECT_HUISNUMMER_RELATIES(ID INT PRIMARY KEY, TERREINOBJECTID INT, HUISNUMMERID INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -667,9 +681,9 @@ class xgrab2db:
           HUISNUMMERID =  row.find("{http://crab.agiv.be}HUISNUMMERID").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -679,8 +693,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO TERREINOBJECT_HUISNUMMER_RELATIES VALUES(%s,%s,%s,'%s','%s',%s,%s);" % (id,TERREINOBJECTID,HUISNUMMERID,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO TERREINOBJECT_HUISNUMMER_RELATIES VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,TERREINOBJECTID,HUISNUMMERID,
+                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE TERREINOBJECT_HUISNUMMER_RELATIES "
@@ -688,10 +702,10 @@ class xgrab2db:
               TERREINOBJECTID =  %s ,
               HUISNUMMERID = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""% (id,TERREINOBJECTID,HUISNUMMERID,
-                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""% (id,TERREINOBJECTID,HUISNUMMERID,
+                                                              BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -704,7 +718,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORTERREINOBJECT TEXT, AARDTERREINOBJECT INT, AARDGEBOUW INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -719,9 +734,9 @@ class xgrab2db:
 
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -731,8 +746,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,%s,'%s','%s',%s,%s);" % (id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE TERREINOBJECTEN "
@@ -741,10 +756,10 @@ class xgrab2db:
               AARDTERREINOBJECT = %s ,
               AARDGEBOUW = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,
-                                                                                  BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,
+                                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -757,7 +772,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWSTATUSSEN(ID INT PRIMARY KEY, TERREINOBJECTID TEXT, GEBOUWSTATUS INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -765,9 +781,9 @@ class xgrab2db:
           GEBOUWSTATUS = row.find("{http://crab.agiv.be}GEBOUWSTATUS").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -777,8 +793,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO GEBOUWSTATUSSEN VALUES(%s,'%s',%s,'%s','%s',%s,%s);" % (id,TERREINOBJECTID,GEBOUWSTATUS,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO GEBOUWSTATUSSEN VALUES(%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,TERREINOBJECTID,GEBOUWSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE GEBOUWSTATUSSEN "
@@ -786,10 +802,10 @@ class xgrab2db:
               TERREINOBJECTID =  %s ,
               GEBOUWSTATUS = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,TERREINOBJECTID,GEBOUWSTATUS,
-                                                                  BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,TERREINOBJECTID,GEBOUWSTATUS,
+                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -803,7 +819,8 @@ class xgrab2db:
             cur = con.cursor()
 
             cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWGEOMETRIEN(ID INT PRIMARY KEY, TERREINOBJECTID INT, GEBOUWGEOMETRIE TEXT, METHODEGEBOUWGEOMETRIE, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
             for row in rows.getchildren():
               id = row[0].text
@@ -815,9 +832,9 @@ class xgrab2db:
               METHODEGEBOUWGEOMETRIE = row.find("{http://crab.agiv.be}METHODEGEBOUWGEOMETRIE").text
               BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-              METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-              METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-              METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+              BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+              BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+              BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
               if EINDnode: EINDDATUM = EINDnode
@@ -827,8 +844,8 @@ class xgrab2db:
               data = cur.fetchall()
 
               if len(data) == 0:
-                  sql= "INSERT INTO GEBOUWGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s);" % (id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                  sql= "INSERT INTO GEBOUWGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                   cur.execute(sql)
               else:
                   sql = "UPDATE GEBOUWGEOMETRIEN "
@@ -837,10 +854,10 @@ class xgrab2db:
                   GEBOUWGEOMETRIE = '%s' ,
                   METHODEGEBOUWGEOMETRIE = '%s' ,
                   BEGINDATUM = '%s' ,
-                  METATIJD = '%s' ,
-                  METAORGANISATIE = %s ,
-                  METABEWERKING = %s"""%(id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+                  BEGINTIJD = '%s' ,
+                  BEGINORGANISATIE = %s ,
+                  BEGINBEWERKING = %s"""%(
+                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -853,7 +870,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS RRADRESSEN(ID INT PRIMARY KEY, RRHUISNUMMER TEXT, RRINDEX TEXT, SUBKANTONCODE TEXT, RRSTRAATCODE TEXT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -867,9 +885,9 @@ class xgrab2db:
 
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -879,8 +897,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s','%s','%s',%s,%s);" % (id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE RRADRESSEN "
@@ -890,10 +908,10 @@ class xgrab2db:
               SUBKANTONCODE = '%s' ,
               RRSTRAATCODE = '%s' ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE,
-                                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(
+              id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -906,7 +924,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS ADRES_RRADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, RRADRESID INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -915,9 +934,9 @@ class xgrab2db:
           RRADRESID = row.find("{http://crab.agiv.be}RRADRESID").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -927,8 +946,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRES_RRADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s);" % (id,ADRESID,AARDADRES,RRADRESID,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO ADRES_RRADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,RRADRESID,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRES_RRADRES_RELATIES "
@@ -937,10 +956,10 @@ class xgrab2db:
               AARDADRES = %s ,
               RRADRESID = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,ADRESID,AARDADRES,RRADRESID,
-                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,ADRESID,AARDADRES,RRADRESID,
+                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -953,7 +972,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS KADADRESSEN(ID INT PRIMARY KEY, KADHUISNUMMER TEXT, KADSTRAATCODE TEXT, NISGEMEENTECODE TEXT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -962,9 +982,9 @@ class xgrab2db:
           NISGEMEENTECODE = row.find("{http://crab.agiv.be}NISGEMEENTECODE").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -974,8 +994,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO KADADRESSEN VALUES(%s,'%s','%s','%s','%s','%s',%s,%s);" % (id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO KADADRESSEN VALUES(%s,'%s','%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE KADADRESSEN "
@@ -984,10 +1004,10 @@ class xgrab2db:
               KADSTRAATCODE = '%s' ,
               NISGEMEENTECODE = '%s' ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE,
-                                                                                  BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(
+              id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -1000,7 +1020,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS ADRES_KADADRES_RELATIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, KADADRESID INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -1009,9 +1030,9 @@ class xgrab2db:
           KADADRESID = row.find("{http://crab.agiv.be}KADADRESID").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -1021,8 +1042,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRES_KADADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s);" % (id,ADRESID,AARDADRES,KADADRESID,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO ADRES_KADADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,KADADRESID, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRES_KADADRES_RELATIES "
@@ -1031,10 +1052,10 @@ class xgrab2db:
               AARDADRES = %s ,
               KADADRESID = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""%(id,ADRESID,AARDADRES,KADADRESID,
-                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""%(id,ADRESID,AARDADRES,KADADRESID,
+                                               BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -1047,7 +1068,8 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS ADRESPOSITIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, X REAL, Y REAL, HERKOMSTADRESPOSITIE INT, "+
-                          "BEGINDATUM DATE, METATIJD DATETIME, METAORGANISATIE INT, METABEWERKING INT );")
+                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -1059,9 +1081,9 @@ class xgrab2db:
           HERKOMSTADRESPOSITIE= row.find("{http://crab.agiv.be}HERKOMSTADRESPOSITIE").text
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
-          METATIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
-          METAORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
-          METABEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
           if EINDnode: EINDDATUM = EINDnode
@@ -1071,8 +1093,8 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRESPOSITIES VALUES(%s,%s,%s,%s,%s,%s,'%s','%s',%s,%s);" % (id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE,
-                                                                                          BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+            sql= "INSERT INTO ADRESPOSITIES VALUES(%s,%s,%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRESPOSITIES "
@@ -1083,10 +1105,10 @@ class xgrab2db:
               Y= %s,
               HERKOMSTADRESPOSITIE = %s ,
               BEGINDATUM = '%s' ,
-              METATIJD = '%s' ,
-              METAORGANISATIE = %s ,
-              METABEWERKING = %s"""% (id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE,
-                                                                              BEGINDATUM,METATIJD,METAORGANISATIE,METABEWERKING)
+              BEGINTIJD = '%s' ,
+              BEGINORGANISATIE = %s ,
+              BEGINBEWERKING = %s"""% (id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE,
+                                           BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -1215,8 +1237,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING FROM STRAATNAMEN;"):
-                ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING FROM STRAATNAMEN;"):
+                ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 STRAATNAAM_OBJECT = etree.Element('STRAATNAAM_OBJECT')
                 etree.SubElement(STRAATNAAM_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(STRAATNAAM_OBJECT , "STRAATCODE").text = unicode( STRAATCODE )
@@ -1224,7 +1246,7 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAM_OBJECT , "STRAATNAAM").text = STRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "TAALCODESTRAATNAAM").text = TAALCODESTRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                STRAATNAAM_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING) )
+                STRAATNAAM_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING) )
                 self.xgrabFile.write( etree.tostring( STRAATNAAM_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</STRAATNAMEN>\r\n' )
@@ -1235,14 +1257,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, STRAATNAAMSTATUS, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING FROM  STRAATNAAMSTATUSSEN;"):
-                ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING FROM  STRAATNAAMSTATUSSEN;"):
+                ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 STRAATNAAMSTATUS_OBJECT = etree.Element('STRAATNAAMSTATUS_OBJECT')
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = unicode( STRAATNAAMSTATUS )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( STRAATNAAMSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</STRAATNAAMSTATUSSEN>\r\n")
@@ -1253,14 +1275,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, HUISNUMMER, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  HUISNUMMERS;"):
-                ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  HUISNUMMERS;"):
+                ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 HUISNUMMER_OBJECT = etree.Element('HUISNUMMER_OBJECT')
                 etree.SubElement(HUISNUMMER_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(HUISNUMMER_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = unicode( HUISNUMMER )
                 etree.SubElement(HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                HUISNUMMER_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(HUISNUMMER_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</HUISNUMMERS>\r\n")
@@ -1271,14 +1293,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, HUISNUMMERSTATUS, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  HUISNUMMERSTATUSSEN;"):
-                ID, HUISNUMMERID, HUISNUMMERSTATUS, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  HUISNUMMERSTATUSSEN;"):
+                ID, HUISNUMMERID, HUISNUMMERSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 HUISNUMMERSTATUS_OBJECT = etree.Element('HUISNUMMERSTATUS_OBJECT')
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = unicode( HUISNUMMERSTATUS )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( HUISNUMMERSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</HUISNUMMERSTATUSSEN>\r\n")
@@ -1289,15 +1311,15 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING   FROM  SUBADRESSEN;"):
-                ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING   FROM  SUBADRESSEN;"):
+                ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 SUBADRES_OBJECT = etree.Element('SUBADRES_OBJECT')
                 etree.SubElement(SUBADRES_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(SUBADRES_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(SUBADRES_OBJECT , "SUBADRES").text = unicode( SUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = unicode( AARDSUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                SUBADRES_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                SUBADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( SUBADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</SUBADRESSEN>\r\n')
@@ -1308,14 +1330,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, SUBADRESID, SUBADRESSTATUS, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  SUBADRESSTATUSSEN;"):
-                ID, SUBADRESID, SUBADRESSTATUS, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  SUBADRESSTATUSSEN;"):
+                ID, SUBADRESID, SUBADRESSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 SUBADRESSTATUS_OBJECT = etree.Element('SUBADRESSTATUS_OBJECT')
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESID").text = unicode( SUBADRESID )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = unicode( SUBADRESSTATUS )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                SUBADRESSTATUS_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                SUBADRESSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( SUBADRESSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</SUBADRESSTATUSSEN>\r\n')
@@ -1326,14 +1348,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, HUISNUMMERID, POSTKANTONCODE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  POSTKANTONCODES;"):
-                ID, HUISNUMMERID, POSTKANTONCODE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  POSTKANTONCODES;"):
+                ID, HUISNUMMERID, POSTKANTONCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 POSTKANTONCODE_OBJECT = etree.Element('POSTKANTONCODE_OBJECT')
                 etree.SubElement(POSTKANTONCODE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = unicode( POSTKANTONCODE )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                POSTKANTONCODE_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                POSTKANTONCODE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( POSTKANTONCODE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</POSTKANTONCODES>\r\n')
@@ -1344,15 +1366,15 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  RRSTRAATNAAM_STRAATNAAM_RELATIES;"):
-                ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  RRSTRAATNAAM_STRAATNAAM_RELATIES;"):
+                ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 RRSTRAATNAAM_STRAATNAAM_OBJECT = etree.Element('RRSTRAATNAAM_STRAATNAAM_OBJECT')
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( RRSTRAATNAAM_STRAATNAAM_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</RRSTRAATNAAM_STRAATNAAM_RELATIES>\r\n')
@@ -1363,8 +1385,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  STRAATKANTEN;"):
-                ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  STRAATKANTEN;"):
+                ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 STRAATKANT_OBJECT = etree.Element('STRAATKANT_OBJECT')
                 etree.SubElement(STRAATKANT_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(STRAATKANT_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
@@ -1374,7 +1396,7 @@ class xgrabFromdb:
                 if EERSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = EERSTEHUISNUMMER
                 if LAATSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text =  LAATSTEHUISNUMMER
                 etree.SubElement(STRAATKANT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                STRAATKANT_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                STRAATKANT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</STRAATKANTEN>\r\n')
@@ -1385,14 +1407,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, IDENTIFICATORWEGOBJECT, AARDWEGOBJECT, BEGINDATUM,"+
-                                              " METATIJD, METAORGANISATIE, METABEWERKING FROM  WEGOBJECTEN;"):
-                ID, IDENTIFICATORWEGOBJECT, AARDWEGOBJECT, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                                              " BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING FROM  WEGOBJECTEN;"):
+                ID, IDENTIFICATORWEGOBJECT, AARDWEGOBJECT, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 WEGOBJECT_OBJECT = etree.Element('WEGOBJECT_OBJECT')
                 etree.SubElement(WEGOBJECT_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(WEGOBJECT_OBJECT , "IDENTIFICATORWEGOBJECT").text = unicode( IDENTIFICATORWEGOBJECT )
                 etree.SubElement(WEGOBJECT_OBJECT , "AARDWEGOBJECT").text = unicode( AARDWEGOBJECT )
                 etree.SubElement(WEGOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                WEGOBJECT_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                WEGOBJECT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( WEGOBJECT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGOBJECTEN>\r\n')
@@ -1403,14 +1425,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, WEGOBJECTID, WEGVERBINDINGSTATUS, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM  WEGVERBINDINGSTATUSSEN;"):
-                ID, WEGOBJECTID, WEGVERBINDINGSTATUS, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM  WEGVERBINDINGSTATUSSEN;"):
+                ID, WEGOBJECTID, WEGVERBINDINGSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 WEGVERBINDINGSTATUS_OBJECT = etree.Element('WEGVERBINDINGSTATUS_OBJECT')
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGVERBINDINGSTATUS").text = unicode( WEGVERBINDINGSTATUS )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGVERBINDINGSTATUSSEN>\r\n' )
@@ -1421,8 +1443,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, WEGOBJECTID, WEGVERBINDINGGEOMETRIE, METHODEWEGVERBINDINGGEOMETRIE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM WEGVERBINDINGGEOMETRIEN;"):
-                ID, WEGOBJECTID, WEGVERBINDINGGEOMETRIE, METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM WEGVERBINDINGGEOMETRIEN;"):
+                ID, WEGOBJECTID, WEGVERBINDINGGEOMETRIE, METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 WEGVERBINDINGGEOMETRIE_OBJECT = etree.Element('WEGVERBINDINGGEOMETRIE_OBJECT')
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
@@ -1438,7 +1460,7 @@ class xgrabFromdb:
 
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>\r\n')
@@ -1449,14 +1471,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, HUISNUMMERID, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM TERREINOBJECT_HUISNUMMER_RELATIES;"):
-                ID, TERREINOBJECTID, HUISNUMMERID, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM TERREINOBJECT_HUISNUMMER_RELATIES;"):
+                ID, TERREINOBJECTID, HUISNUMMERID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 TERREINOBJECT_HUISNUMMER_OBJECT = etree.Element('TERREINOBJECT_HUISNUMMER_OBJECT')
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_HUISNUMMER_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</TERREINOBJECT_HUISNUMMER_RELATIES>\r\n')
@@ -1467,8 +1489,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM TERREINOBJECTEN;"):
-                ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM TERREINOBJECTEN;"):
+                ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 TERREINOBJECT_OBJECT = etree.Element('TERREINOBJECT_OBJECT')
                 etree.SubElement(TERREINOBJECT_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(TERREINOBJECT_OBJECT , "IDENTIFICATORTERREINOBJECT").text = unicode( IDENTIFICATORTERREINOBJECT )
@@ -1480,7 +1502,7 @@ class xgrabFromdb:
                     TERREINOBJECT_OBJECT.append(GEBOUWnode)
 
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                TERREINOBJECT_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                TERREINOBJECT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</TERREINOBJECTEN>\r\n')
@@ -1491,14 +1513,14 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, GEBOUWSTATUS, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM GEBOUWSTATUSSEN;"):
-                ID, TERREINOBJECTID, GEBOUWSTATUS, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM GEBOUWSTATUSSEN;"):
+                ID, TERREINOBJECTID, GEBOUWSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 GEBOUWSTATUS_OBJECT = etree.Element('GEBOUWSTATUS_OBJECT')
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "GEBOUWSTATUS").text = unicode( GEBOUWSTATUS )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                GEBOUWSTATUS_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                GEBOUWSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( GEBOUWSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</GEBOUWSTATUSSEN>\r\n')
@@ -1509,8 +1531,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, TERREINOBJECTID, GEBOUWGEOMETRIE, METHODEGEBOUWGEOMETRIE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM GEBOUWGEOMETRIEN;"):
-                ID, TERREINOBJECTID, GEBOUWGEOMETRIE, METHODEGEBOUWGEOMETRIE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM GEBOUWGEOMETRIEN;"):
+                ID, TERREINOBJECTID, GEBOUWGEOMETRIE, METHODEGEBOUWGEOMETRIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 GEBOUWGEOMETRIE_OBJECT = etree.Element('GEBOUWGEOMETRIE_OBJECT')
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
@@ -1526,7 +1548,7 @@ class xgrabFromdb:
 
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</GEBOUWGEOMETRIEN>\r\n')
@@ -1537,8 +1559,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM RRADRESSEN;"):
-                ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM RRADRESSEN;"):
+                ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
                 etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
 
@@ -1553,7 +1575,7 @@ class xgrabFromdb:
                 etree.SubElement(RRADRES_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
                 etree.SubElement(RRADRES_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                RRADRES_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( RRADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</RRADRESSEN>\r\n')
@@ -1564,15 +1586,15 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, RRADRESID, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM ADRES_RRADRES_RELATIES;"):
-                ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM ADRES_RRADRES_RELATIES;"):
+                ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 ADRES_RRADRES_OBJECT = etree.Element('ADRES_RRADRES_OBJECT')
                 etree.SubElement(ADRES_RRADRES_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "ADRESID").text = unicode( ADRESID )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "RRADRESID").text = unicode( RRADRESID )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                ADRES_RRADRES_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                ADRES_RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  ADRES_RRADRES_OBJECT ))
 
             self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>\r\n')
@@ -1583,15 +1605,15 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM KADADRESSEN;"):
-                ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM KADADRESSEN;"):
+                ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 KADADRES_OBJECT = etree.Element('KADADRES_OBJECT')
                 etree.SubElement(KADADRES_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(KADADRES_OBJECT , "KADHUISNUMMER").text = unicode( KADHUISNUMMER )
                 etree.SubElement(KADADRES_OBJECT , "KADSTRAATCODE").text = unicode( KADSTRAATCODE )
                 etree.SubElement(KADADRES_OBJECT , "NISGEMEENTECODE").text = unicode( NISGEMEENTECODE )
                 etree.SubElement(KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                KADADRES_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( KADADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</KADADRESSEN>\r\n')
@@ -1602,15 +1624,15 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, KADADRESID, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM ADRES_KADADRES_RELATIES;"):
-                ID, ADRESID, AARDADRES, KADADRESID, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM ADRES_KADADRES_RELATIES;"):
+                ID, ADRESID, AARDADRES, KADADRESID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 ADRES_KADADRES_OBJECT = etree.Element('ADRES_KADADRES_OBJECT')
                 etree.SubElement(ADRES_KADADRES_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "ADRESID").text = unicode( ADRESID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "KADADRESID").text = unicode( KADADRESID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                ADRES_KADADRES_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                ADRES_KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( ADRES_KADADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</ADRES_KADADRES_RELATIES>\r\n')
@@ -1621,8 +1643,8 @@ class xgrabFromdb:
 
             cur = con.cursor()
             for row in cur.execute("SELECT ID, ADRESID, AARDADRES, X, Y, HERKOMSTADRESPOSITIE, " +
-                "BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING  FROM ADRESPOSITIES;"):
-                ID, ADRESID, AARDADRES,  X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM, METATIJD, METAORGANISATIE, METABEWERKING = row
+                "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING  FROM ADRESPOSITIES;"):
+                ID, ADRESID, AARDADRES,  X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING = row
                 ADRESPOSITIE_OBJECT = etree.Element('ADRESPOSITIE_OBJECT')
                 etree.SubElement(ADRESPOSITIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "ADRESID").text = unicode( ADRESID )
@@ -1638,7 +1660,7 @@ class xgrabFromdb:
 
                 etree.SubElement(ADRESPOSITIE_OBJECT , "HERKOMSTADRESPOSITIE").text = unicode( HERKOMSTADRESPOSITIE )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                ADRESPOSITIE_OBJECT.append( self._begin_metaTag(METATIJD, METAORGANISATIE, METABEWERKING ) )
+                ADRESPOSITIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( ADRESPOSITIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</ADRESPOSITIES>\r\n')
