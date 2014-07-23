@@ -527,14 +527,22 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS WEGOBJECTEN(ID INT PRIMARY KEY, IDENTIFICATORWEGOBJECT TEXT, AARDWEGOBJECT INT,"+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
-                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
+              "MORFOLOGISCHEWEGKLASSE INT, AARDVERHARDING INT, BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+              " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
           IDENTIFICATORWEGOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORWEGOBJECT").text
           AARDWEGOBJECT =  row.find("{http://crab.agiv.be}AARDWEGOBJECT").text
 
+          MORFOLOGISCHEWEGKLASSEnode = row.find("{http://crab.agiv.be}WEGVERBINDING/{http://crab.agiv.be}MORFOLOGISCHEWEGKLASSE")
+          if MORFOLOGISCHEWEGKLASSEnode != None: MORFOLOGISCHEWEGKLASSE = MORFOLOGISCHEWEGKLASSEnode.text
+          else: MORFOLOGISCHEWEGKLASSE = "NULL"
+
+          AARDVERHARDINGnode = row.find("{http://crab.agiv.be}WEGVERBINDING/{http://crab.agiv.be}AARDVERHARDING")
+          if AARDVERHARDINGnode != None: AARDVERHARDING = AARDVERHARDINGnode.text
+          else: AARDVERHARDING = "Null"
+          
           BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
           BEGINTIJD = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}TIJD").text
@@ -549,18 +557,20 @@ class xgrab2db:
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
+            id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
             cur.execute(sql)
           else:
               sql = "UPDATE WEGOBJECTEN"
               sql +=""" SET ID = %s ,
               IDENTIFICATORWEGOBJECT =  '%s' ,
               AARDWEGOBJECT = %s ,
+              MORFOLOGISCHEWEGKLASSE = %s ,
+              AARDVERHARDING = %s ,
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,
+              BEGINBEWERKING = %s """%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING,
                                                                     BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
