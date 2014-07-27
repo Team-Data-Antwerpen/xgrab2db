@@ -563,7 +563,9 @@ DELETE FROM "validatiefouten";
     SELECT 'rrStraatnaamStraatnaam', ID, BEGINTIJD, 'De combinatie van identificerende velden van de actuele rrstraatnaam-straatnaam relatie is niet uniek.'
     FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT RRSTRAATCODE, begindatum FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 WHERE eindtijd IS NULL AND t1.RRSTRAATCODE = t2.RRSTRAATCODE AND t1.begindatum = t2.begindatum GROUP BY RRSTRAATCODE, begindatum HAVING COUNT(*) > 1 );
+    AND EXISTS (SELECT RRSTRAATCODE, begindatum FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 
+                WHERE eindtijd IS NULL AND t1.RRSTRAATCODE = t2.RRSTRAATCODE AND t1.SUBKANTONCODE = t2.SUBKANTONCODE AND t1.begindatum = t2.begindatum 
+                GROUP BY RRSTRAATCODE, begindatum HAVING COUNT(*) > 1 );
 	--FK_rrstraatnaamstraatnaam_straatnaam
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'rrStraatnaamStraatnaam', ID, BEGINTIJD, 'Straatnaamid ' || straatnaamid ||  ' bestaat niet.'
@@ -1165,7 +1167,11 @@ DELETE FROM "validatiefouten";
     SELECT 'rradres', ID, BEGINTIJD, 'De combinatie van identificerende velden van het actuele rradres is niet uniek.'
     FROM RRADRESSEN t1
     WHERE eindtijd IS NULL 
-	AND EXISTS  (SELECT rrhuisnummer, rrindex, RRSTRAATCODE, begindatum FROM RRADRESSEN t2 WHERE eindtijd IS NULL AND t1.rrhuisnummer = t2.rrhuisnummer AND t1.rrindex = t2.rrindex AND t1.RRSTRAATCODE = t2.RRSTRAATCODE AND t1.begindatum = t2.begindatum GROUP BY rrhuisnummer, rrindex, RRSTRAATCODE, begindatum HAVING COUNT(*) > 1 );
+	AND EXISTS  (SELECT rrhuisnummer, rrindex, RRSTRAATCODE, begindatum 
+              FROM RRADRESSEN t2 
+              WHERE eindtijd IS NULL AND t1.rrhuisnummer = t2.rrhuisnummer AND t1.rrindex = t2.rrindex AND t1.SUBKANTONCODE = t2.SUBKANTONCODE
+              AND t1.RRSTRAATCODE = t2.RRSTRAATCODE AND t1.begindatum = t2.begindatum 
+              GROUP BY rrhuisnummer, rrindex, RRSTRAATCODE, begindatum HAVING COUNT(*) > 1 );
 	--interne temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'rradres', ID, BEGINTIJD, 'De geldigheidsperiode van het rradres overlapt met de geldigheidsperiode van een ander rradres met dezelfde identificerende kenmerken.'
