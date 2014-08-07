@@ -1,0 +1,18 @@
+adresKadAdres  Begindatum van de adres-kadadres relatie moet groter of gelijk zijn aan begindatum van het gerelateerde kadadres.
+
+
+rrStraatnaamStraatnaam	Begindatum van de rrstraatnaam-straatnaam relatie moet groter of gelijk zijn aan begindatum van de gerelateerde straatnaam.
+
+
+straatkant	Begindatum van de straatkant moet groter of gelijk zijn aan begindatum van de gerelateerde straatnaam.
+
+
+huisnummer	Begindatum van het huisnummer moet groter of gelijk zijn aan begindatum van de gerelateerde straatnaam.
+CONTROLE:
+    SELECT objecttype,  boodschap, huisnummers.BEGINTIJD, STRAATNAMEN.BEGINTIJD
+        FROM "validatiefouten"
+        LEFT JOIN huisnummers 
+        ON validatiefouten.id = huisnummers.id 
+        LEFT JOIN STRAATNAMEN
+        ON huisnummers.straatnaamid = STRAATNAMEN.id
+        WHERE objecttype = 'huisnummer' 
