@@ -54,5 +54,33 @@ UPDATE "ADRES_KADADRES_RELATIES"
 SET BEGINORGANISATIE = 5
 WHERE  NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
 
+-- TODO: geldigheid periode 
+/* CONTROLE:
+SELECT ID, begindatum, eindtijd FROM ADRES_RRADRES_RELATIES t1
+        WHERE EXISTS(
+            SELECT NULL FROM ADRES_RRADRES_RELATIES t2 WHERE 
+            t2.ID <> t1.ID 
+            AND t2.rradresid = t1.rradresid
+            AND t2.adresid = t1.adresid
+            AND t2.aardadres = t1.aardadres
+            AND t2.begindatum < t1.begindatum
+    )
+ORDER BY begindatum
+        
+        */
+UPDATE ADRES_RRADRES_RELATIES 
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
+WHERE EXISTS(
+    SELECT NULL FROM ADRES_RRADRES_RELATIES t2 WHERE 
+    t2.ID <> ADRES_RRADRES_RELATIES.ID 
+    AND t2.rradresid = ADRES_RRADRES_RELATIES.rradresid
+    AND t2.adresid = ADRES_RRADRES_RELATIES.adresid
+    AND t2.aardadres = ADRES_RRADRES_RELATIES.aardadres
+    AND t2.begindatum > ADRES_RRADRES_RELATIES.begindatum
+    );
+   
+   
+   
+   
 COMMIT;
 
