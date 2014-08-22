@@ -408,11 +408,11 @@ DELETE FROM "validatiefouten";
     FROM HUISNUMMERS t1
     WHERE eindtijd IS NULL AND EXISTS(
     SELECT ID FROM HUISNUMMERS WHERE eindtijd IS NULL 
-    AND id <> t1.id 
-    AND straatnaamid = t1.straatnaamid  
-    AND huisnummer = t1.huisnummer
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
-    AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum) ;
+        AND id <> t1.id 
+        AND straatnaamid = t1.straatnaamid  
+        AND huisnummer = t1.huisnummer
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum) ;
     
     --externe temporele integriteit
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
@@ -519,11 +519,14 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'subadres', ID, BEGINTIJD, 'De geldigheidsperiode van het subadres overlapt met de geldigheidsperiode van een ander subadres met dezelfde identificerende kenmerken.'
     FROM SUBADRESSEN t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM SUBADRESSEN WHERE eindtijd IS NULL AND ID <> t1.ID 
-    AND huisnummerid = t1.huisnummerid
-    AND subadres = t1.subadres
-    AND aardsubadres = t1.aardsubadres
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM SUBADRESSEN 
+        WHERE eindtijd IS NULL AND ID <> t1.ID 
+        AND huisnummerid = t1.huisnummerid
+        AND subadres = t1.subadres
+        AND aardsubadres = t1.aardsubadres
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'subadres', ID, BEGINTIJD, 'Begindatum van het subadres moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
@@ -621,9 +624,11 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'postkantoncode', ID, BEGINTIJD, 'De geldigheidsperiode van de postkantoncode overlapt met de geldigheidsperiode van een andere postkantoncode met dezelfde identificerende kenmerken.'
     FROM POSTKANTONCODES t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM POSTKANTONCODES WHERE eindtijd IS NULL AND ID <> t1.ID 
-    AND huisnummerid = t1.huisnummerid
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM POSTKANTONCODES WHERE eindtijd IS NULL AND ID <> t1.ID 
+        AND huisnummerid = t1.huisnummerid
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'postkantoncode', ID, BEGINTIJD, 'Begindatum van de postkantoncode moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
@@ -963,9 +968,12 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'wegverbindinggeometrie', ID, BEGINTIJD, 'De geldigheidsperiode van de wegverbindinggeometrie overlapt met de geldigheidsperiode van een andere wegverbindinggeometrie met dezelfde identificerende kenmerken.'
     FROM WEGVERBINDINGGEOMETRIEN t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM WEGVERBINDINGGEOMETRIEN WHERE eindtijd IS NULL AND ID <> t1.ID 
-    AND wegobjectid = t1.wegobjectid
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM WEGVERBINDINGGEOMETRIEN
+        WHERE eindtijd IS NULL AND ID <> t1.ID 
+        AND wegobjectid = t1.wegobjectid
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'wegverbindinggeometrie', ID, BEGINTIJD, 'Begindatum van de wegverbindinggeometrie moet groter of gelijk zijn aan begindatum van de gerelateerde wegverbinding.'
@@ -1013,10 +1021,13 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'De geldigheidsperiode van de terreinobject-huisnummer relatie overlapt met de geldigheidsperiode van een andere terreinobject-huisnummer relatie met dezelfde identificerende kenmerken.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES WHERE eindtijd IS NULL AND ID <> t1.ID 
-    AND terreinobjectid = t1.terreinobjectid
-    AND huisnummerid = t1.huisnummerid
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES 
+        WHERE eindtijd IS NULL AND ID <> t1.ID 
+        AND terreinobjectid = t1.terreinobjectid
+        AND huisnummerid = t1.huisnummerid
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Begindatum van de terreinobject-huisnummer relatie moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
@@ -1531,11 +1542,13 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', id, BEGINTIJD, 'De geldigheidsperiode van de adrespositie overlapt met de geldigheidsperiode van een andere adrespositie met dezelfde identificerende kenmerken.'
     FROM ADRESPOSITIES t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM ADRESPOSITIES WHERE eindtijd IS NULL AND id <> t1.id 
-    AND herkomstadrespositie = t1.herkomstadrespositie
-    AND adresid = t1.adresid
-    AND aardadres = t1.aardadres
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM ADRESPOSITIES WHERE eindtijd IS NULL AND id <> t1.id 
+        AND herkomstadrespositie = t1.herkomstadrespositie
+        AND adresid = t1.adresid
+        AND aardadres = t1.aardadres
+        AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', id, BEGINTIJD, 'Begindatum van de adrespositie moet groter of gelijk zijn aan begindatum van het gerelateerde subadres.'
@@ -1624,10 +1637,14 @@ DELETE FROM "validatiefouten";
     ON t1.adresid = t2.SUBADRESID  
     INNER JOIN SUBADRESSEN t5 
     ON t1.adresid = t5.ID
-    WHERE t1.aardadres = '1' AND t1.eindtijd IS NULL 
-    AND t1.herkomstadrespositie = '2' AND t2.subadresstatus = '3' AND NOT EXISTS(
-    SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
-    INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
-    WHERE t3.huisnummerid = t5.huisnummerid AND t4.aardterreinobject IN ('1','4'));
+    WHERE t1.aardadres = '1' 
+        AND t1.eindtijd IS NULL 
+        AND t1.herkomstadrespositie = '2' 
+        AND t2.subadresstatus = '3' 
+        AND NOT EXISTS(
+            SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
+            INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
+            WHERE t3.huisnummerid = t5.huisnummerid 
+            AND t4.aardterreinobject IN ('1','4'));
 
 COMMIT;
