@@ -315,7 +315,7 @@ DELETE FROM "validatiefouten";
         SELECT ID FROM STRAATNAAMSTATUSSEN t2 
         WHERE eindtijd IS NULL 
         AND t1.ID = t2.ID 
-        GROUP BY ID HAVING COUNT(*) > 1 )
+        GROUP BY ID HAVING COUNT(*) > 1 );
     --UK_straatnaamstatus_act
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus',  ID, BEGINTIJD, 'De combinatie van identificerende velden van de actuele straatnaamstatus is niet uniek.'
@@ -325,14 +325,14 @@ DELETE FROM "validatiefouten";
         WHERE eindtijd IS NULL 
         AND t1.ID = t2.ID 
         AND t1.begindatum = t2.begindatum 
-        GROUP BY ID, begindatum HAVING COUNT(*) > 1 )
+        GROUP BY ID, begindatum HAVING COUNT(*) > 1 );
     --FK_straatnaamstatus_straatnaam
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'Straatnaamid ' || ID || ' bestaat niet.'
     FROM STRAATNAAMSTATUSSEN t1
     WHERE NOT EXISTS(
         SELECT NULL FROM STRAATNAMEN 
-        WHERE ID = t1.straatnaamid)
+        WHERE ID = t1.straatnaamid);
     --interne temporele integriteit
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'De geldigheidsperiode van de straatnaamstatus overlapt met de geldigheidsperiode van een andere straatnaamstatus met dezelfde identificerende kenmerken.'
@@ -343,7 +343,7 @@ DELETE FROM "validatiefouten";
         AND ID <> t1.ID 
         AND straatnaamid = t1.straatnaamid 
         AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
-        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum)
+        AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
     --externe temporele integriteit
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'Begindatum van de straatnaamstatus moet groter of gelijk zijn aan begindatum van de gerelateerde straatnaam.'
@@ -352,7 +352,7 @@ DELETE FROM "validatiefouten";
         SELECT NULL FROM STRAATNAMEN
         WHERE eindtijd IS NULL 
         AND ID = t1.straatnaamid 
-        AND begindatum > t1.begindatum)
+        AND begindatum > t1.begindatum);
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'Einddatum van de straatnaamstatus moet kleiner of gelijk zijn aan einddatum van de gerelateerde straatnaam.'
@@ -361,17 +361,17 @@ DELETE FROM "validatiefouten";
     (   SELECT NULL FROM STRAATNAMEN
         WHERE eindtijd IS NULL 
         AND ID = t1.straatnaamid 
-        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'))
+        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
     --beperking organisatiecode
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'De beginorganisatie van de straatnaamstatus moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM STRAATNAAMSTATUSSEN t1
-    WHERE beginorganisatie NOT IN ('1', '5', '99')
+    WHERE beginorganisatie NOT IN ('1', '5', '99');
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'straatnaamstatus', ID, BEGINTIJD, 'De eindorganisatie van de straatnaamstatus moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM STRAATNAAMSTATUSSEN t1
-    WHERE eindorganisatie IS NOT NULL and eindorganisatie NOT IN ('1', '5', '99')
+    WHERE eindorganisatie IS NOT NULL and eindorganisatie NOT IN ('1', '5', '99');
     
 /*huisnummers*/
 	--PK_huisnummer_act
@@ -441,27 +441,36 @@ DELETE FROM "validatiefouten";
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'De betekenisloze sleutel van de actuele huisnummerstatus is niet uniek.'
     FROM HUISNUMMERSTATUSSEN t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT id FROM HUISNUMMERSTATUSSEN t2 WHERE eindtijd IS NULL AND t1.id = t2.id GROUP BY id HAVING COUNT(*) > 1 );
+    AND EXISTS (
+        SELECT id FROM HUISNUMMERSTATUSSEN t2 
+        WHERE eindtijd IS NULL AND t1.id = t2.id 
+        GROUP BY id HAVING COUNT(*) > 1 );
 	--UK_huisnummerstatus_act
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'De combinatie van identificerende velden van de actuele huisnummerstatus is niet uniek.'
     FROM HUISNUMMERSTATUSSEN t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT huisnummerid, begindatum FROM HUISNUMMERSTATUSSEN t2 WHERE eindtijd IS NULL AND t1.huisnummerid = t2.huisnummerid AND t1.begindatum = t2.begindatum GROUP BY huisnummerid, begindatum HAVING COUNT(*) > 1 );
+    AND EXISTS (
+        SELECT huisnummerid, begindatum FROM HUISNUMMERSTATUSSEN t2
+        WHERE eindtijd IS NULL 
+        AND t1.huisnummerid = t2.huisnummerid 
+        AND t1.begindatum = t2.begindatum 
+        GROUP BY huisnummerid, begindatum HAVING COUNT(*) > 1 );
 	--FK_huisnummerstatus_huisnummer
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'Huisnummerid ' || huisnummerid ||  ' bestaat niet.'
     FROM HUISNUMMERSTATUSSEN t1
-    WHERE NOT EXISTS (SELECT NULL FROM HUISNUMMERS WHERE ID = t1.huisnummerid);
+    WHERE NOT EXISTS (
+        SELECT NULL FROM HUISNUMMERS
+        WHERE ID = t1.huisnummerid);
 	--interne temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'De geldigheidsperiode van de huisnummerstatus overlapt met de geldigheidsperiode van een andere huisnummerstatus met dezelfde identificerende kenmerken.'
     FROM HUISNUMMERSTATUSSEN t1
     WHERE eindtijd IS NULL AND EXISTS(
-    SELECT NULL FROM HUISNUMMERSTATUSSEN 
-    WHERE eindtijd IS NULL AND id <> t1.id 
-    AND huisnummerid = t1.huisnummerid
-     ) ;
+        SELECT NULL FROM HUISNUMMERSTATUSSEN 
+        WHERE eindtijd IS NULL AND id <> t1.id 
+        AND huisnummerid = t1.huisnummerid ) ;
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'Begindatum van de huisnummerstatus moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
