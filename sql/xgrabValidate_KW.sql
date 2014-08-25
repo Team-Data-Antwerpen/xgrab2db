@@ -670,7 +670,9 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'rrStraatnaamStraatnaam', ID, BEGINTIJD, 'Straatnaamid ' || straatnaamid ||  ' bestaat niet.'
     FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t1
-    WHERE NOT EXISTS (SELECT NULL FROM STRAATNAMEN WHERE ID = t1.straatnaamid);
+    WHERE NOT EXISTS (
+        SELECT NULL FROM STRAATNAMEN 
+        WHERE ID = t1.straatnaamid);
 	--interne temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'rrStraatnaamStraatnaam', ID, BEGINTIJD, 'De geldigheidsperiode van de rrstraatnaam-straatnaam relatie overlapt met de geldigheidsperiode van een andere rrstraatnaam-straatnaam relatie met dezelfde identificerende kenmerken.'
@@ -1593,11 +1595,14 @@ DELETE FROM "validatiefouten";
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', id, BEGINTIJD, 'De beginorganisatie van de adrespositie met herkomst andere dan manuele aanduiding moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
-    WHERE herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') AND beginorganisatie NOT IN ('5', '99');
+    WHERE herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
+    AND beginorganisatie NOT IN ('5', '99');
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', id, BEGINTIJD, 'De eindorganisatie van de adrespositie met herkomst andere dan manuele aanduiding moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
-    WHERE herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') AND eindorganisatie IS NOT NULL and eindorganisatie NOT IN ('5', '99');
+    WHERE herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
+    AND eindorganisatie IS NOT NULL 
+    AND eindorganisatie NOT IN ('5', '99');
 	--beperking voorkomen ifv koppeling aan terreinobject
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'

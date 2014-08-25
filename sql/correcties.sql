@@ -40,8 +40,8 @@ WHERE  NOT( BEGINORGANISATIE= 1 OR  BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99)
 
 UPDATE "adresposities"
 SET BEGINORGANISATIE = 5
-WHERE  herkomstadrespositie >= 10 AND
- NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
+WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
+ AND NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
 
 UPDATE "ADRES_RRADRES_RELATIES"
 SET BEGINORGANISATIE = 1
@@ -67,17 +67,25 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     AND t2.begindatum > ADRES_RRADRES_RELATIES.begindatum
     );
     
-UPDATE ADRESPOSITIES 
+UPDATE RRSTRAATNAAM_STRAATNAAM_RELATIES 
 SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
 WHERE EINDDATUM IS NULL AND EXISTS(
-    SELECT NULL FROM ADRESPOSITIES t2
-        WHERE ADRESPOSITIES.id <> t2.id 
-        AND ADRESPOSITIES.herkomstadrespositie = t2.herkomstadrespositie
-        AND ADRESPOSITIES.adresid = t2.adresid
-        AND ADRESPOSITIES.aardadres = t2.aardadres
-    AND t2.begindatum > ADRESPOSITIES.begindatum
-    );
-
+    SELECT NULL FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 
+        WHERE t2.ID <> RRSTRAATNAAM_STRAATNAAM_RELATIES.ID 
+        AND t2.RRSTRAATCODE = RRSTRAATNAAM_STRAATNAAM_RELATIES.RRSTRAATCODE
+        AND t2.SUBKANTONCODE = RRSTRAATNAAM_STRAATNAAM_RELATIES.SUBKANTONCODE
+    AND t2.begindatum > RRSTRAATNAAM_STRAATNAAM_RELATIES.begindatum
+    ); 
+    
+UPDATE POSTKANTONCODES 
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
+WHERE EINDDATUM IS NULL AND EXISTS(
+    SELECT NULL FROM POSTKANTONCODES t2 
+        WHERE t2.ID <> POSTKANTONCODES.ID 
+        AND   t2.huisnummerid = POSTKANTONCODES.huisnummerid
+    AND t2.begindatum > POSTKANTONCODES.begindatum
+    );  
+    
 UPDATE HUISNUMMERS 
 SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
 WHERE EINDDATUM IS NULL AND EXISTS(
@@ -107,6 +115,24 @@ WHERE EINDDATUM IS NULL AND EXISTS(
         AND SUBADRESSEN.aardsubadres = t2.aardsubadres
     AND t2.begindatum > SUBADRESSEN.begindatum
     );
+
+UPDATE SUBADRESSTATUSSEN
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
+WHERE EINDDATUM IS NULL AND EXISTS(
+    SELECT NULL FROM SUBADRESSTATUSSEN t2 
+        WHERE SUBADRESSTATUSSEN.ID <> t2.ID 
+        AND SUBADRESSTATUSSEN.subadresid = t2.subadresid
+    AND t2.begindatum > SUBADRESSTATUSSEN.begindatum
+    );
+    
+UPDATE STRAATNAAMSTATUSSEN     
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
+WHERE EINDDATUM IS NULL AND EXISTS(
+    SELECT NULL FROM STRAATNAAMSTATUSSEN t2 
+        WHERE STRAATNAAMSTATUSSEN.ID <> t2.ID 
+        AND STRAATNAAMSTATUSSEN.straatnaamid = t2.straatnaamid
+    AND t2.begindatum > STRAATNAAMSTATUSSEN.begindatum
+    );
    
 UPDATE TERREINOBJECT_HUISNUMMER_RELATIES     
 SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
@@ -126,7 +152,18 @@ WHERE EINDDATUM IS NULL AND EXISTS(
         AND WEGVERBINDINGGEOMETRIEN.wegobjectid = t2.wegobjectid
     AND t2.begindatum > WEGVERBINDINGGEOMETRIEN.begindatum
     );   
-   
+    
+UPDATE ADRESPOSITIES 
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
+WHERE EINDDATUM IS NULL AND EXISTS(
+    SELECT NULL FROM ADRESPOSITIES t2
+        WHERE ADRESPOSITIES.id <> t2.id 
+        AND ADRESPOSITIES.herkomstadrespositie = t2.herkomstadrespositie
+        AND ADRESPOSITIES.adresid = t2.adresid
+        AND ADRESPOSITIES.aardadres = t2.aardadres
+    AND t2.begindatum > ADRESPOSITIES.begindatum
+    );
+
 UPDATE ADRESPOSITIES 
 SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD = date('now') , EINDORGANISATIE = 1
 WHERE EINDDATUM IS NULL 
@@ -161,6 +198,14 @@ AND ADRESPOSITIES.adresid IN (
 	)
  );
 
+--changes in eindorganisatie afther everything else.
+UPDATE ADRESPOSITIES
+SET eindorganisatie = 5
+WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
+    AND eindorganisatie IS NOT NULL 
+    AND eindorganisatie NOT IN ('5', '99');
+  
+   
    
 COMMIT;
 
