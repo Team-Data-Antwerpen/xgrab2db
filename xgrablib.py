@@ -1198,7 +1198,13 @@ class xgrabFromdb:
         if beginTime == None: beginTime= datetime.datetime.now()
 
         BEGINMETADATA = etree.Element('BEGINMETADATA')
-        if beginTime.__class__ == datetime.datetime:
+        if isinstance( beginTime , datetime.datetime):
+            etree.SubElement(BEGINMETADATA , "TIJD").text = beginTime.isoformat()
+        elif (isinstance(beginTime , str ) or isinstance(beginTime , unicode )) and beginTime.isdigit():
+            beginTime = datetime.datetime.fromtimestamp( int( beginTime ))
+            etree.SubElement(BEGINMETADATA , "TIJD").text = beginTime.isoformat()
+        elif isinstance( beginTime , int ):
+            beginTime = datetime.datetime.fromtimestamp( beginTime )
             etree.SubElement(BEGINMETADATA , "TIJD").text = beginTime.isoformat()
         else :
             etree.SubElement(BEGINMETADATA , "TIJD").text = str( beginTime )
@@ -1207,20 +1213,26 @@ class xgrabFromdb:
         etree.SubElement(BEGINMETADATA , "BEWERKING").text = str( bewerking )
         return BEGINMETADATA
 
-    def _end_metaTag(self, endTime=None,  organisatie=1 , bewerking=3 ):
-        if organisatie == None: organisatie=1
-        if bewerking == None: bewerking=3
-        if endTime == None: endTime= datetime.datetime.now()
-
-        EINDMETADATA = etree.Element('EINDMETADATA')
-        if endTime.__class__ == datetime.datetime:
-            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
-        else :
-            etree.SubElement(EINDMETADATA , "TIJD").text = str( endTime )
-
-        etree.SubElement(EINDMETADATA , "ORGANISATIE").text = str( organisatie )
-        etree.SubElement(EINDMETADATA , "BEWERKING").text = str( bewerking )
-        return EINDMETADATA
+##    def _end_metaTag(self, endTime=None,  organisatie=1 , bewerking=3 ):
+##        if organisatie == None: organisatie=1
+##        if bewerking == None: bewerking=3
+##        if endTime == None: endTime= datetime.datetime.now()
+##
+##        EINDMETADATA = etree.Element('EINDMETADATA')
+##        if isinstance( endTime , datetime.datetime):
+##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
+##        elif (isinstance(endTime , str ) or isinstance(endTime , unicode )) and endTime.isdigit():
+##            endTime = datetime.datetime.fromtimestamp( int( endTime ))
+##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
+##        elif isinstance( endTime , int ):
+##            endTime = datetime.datetime.fromtimestamp( endTime )
+##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
+##        else :
+##            etree.SubElement(EINDMETADATA , "TIJD").text = str( endTime )
+##
+##        etree.SubElement(EINDMETADATA , "ORGANISATIE").text = str( organisatie )
+##        etree.SubElement(EINDMETADATA , "BEWERKING").text = str( bewerking )
+##        return EINDMETADATA
 
     def createAll(self):
         self.STRAATNAMEN()
@@ -1261,9 +1273,9 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAM_OBJECT , "TAALCODESTRAATNAAM").text = TAALCODESTRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(STRAATNAAM_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 STRAATNAAM_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING) )
-                if EINDDATUM != None: STRAATNAAM_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: STRAATNAAM_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( STRAATNAAM_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</STRAATNAMEN>\r\n' )
@@ -1282,9 +1294,9 @@ class xgrabFromdb:
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = unicode( STRAATNAAMSTATUS )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(STRAATNAAMSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: STRAATNAAMSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: STRAATNAAMSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( STRAATNAAMSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</STRAATNAAMSTATUSSEN>\r\n")
@@ -1303,9 +1315,9 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = unicode( HUISNUMMER )
                 etree.SubElement(HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(HUISNUMMER_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: HUISNUMMER_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: HUISNUMMER_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(HUISNUMMER_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</HUISNUMMERS>\r\n")
@@ -1324,9 +1336,9 @@ class xgrabFromdb:
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = unicode( HUISNUMMERSTATUS )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(HUISNUMMERSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: HUISNUMMERSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: HUISNUMMERSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( HUISNUMMERSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( "</HUISNUMMERSTATUSSEN>\r\n")
@@ -1346,9 +1358,9 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = unicode( AARDSUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(SUBADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 SUBADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: SUBADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: SUBADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( SUBADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</SUBADRESSEN>\r\n')
@@ -1367,9 +1379,9 @@ class xgrabFromdb:
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = unicode( SUBADRESSTATUS )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(SUBADRESSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 SUBADRESSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: SUBADRESSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: SUBADRESSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( SUBADRESSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</SUBADRESSTATUSSEN>\r\n')
@@ -1388,9 +1400,9 @@ class xgrabFromdb:
                 etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = unicode( POSTKANTONCODE )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(POSTKANTONCODE_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 POSTKANTONCODE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: POSTKANTONCODE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: POSTKANTONCODE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( POSTKANTONCODE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</POSTKANTONCODES>\r\n')
@@ -1410,9 +1422,9 @@ class xgrabFromdb:
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( RRSTRAATNAAM_STRAATNAAM_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</RRSTRAATNAAM_STRAATNAAM_RELATIES>\r\n')
@@ -1437,9 +1449,9 @@ class xgrabFromdb:
 
                 etree.SubElement(STRAATKANT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(STRAATKANT_OBJECT , "EINDDATUM").text =  EINDDATUM
-
                 STRAATKANT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: STRAATKANT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: STRAATKANT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( STRAATKANT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</STRAATKANTEN>\r\n')
@@ -1466,7 +1478,8 @@ class xgrabFromdb:
                 etree.SubElement(WEGOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGOBJECT_OBJECT , "EINDDATUM").text =  EINDDATUM
                 WEGOBJECT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: WEGOBJECT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: WEGOBJECT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( WEGOBJECT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGOBJECTEN>\r\n')
@@ -1486,7 +1499,8 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: WEGVERBINDINGSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: WEGVERBINDINGSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGVERBINDINGSTATUSSEN>\r\n' )
@@ -1516,7 +1530,8 @@ class xgrabFromdb:
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "EINDDATUM").text =  EINDDATUM
                 WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: WEGVERBINDINGGEOMETRIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: WEGVERBINDINGGEOMETRIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  WEGVERBINDINGGEOMETRIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</WEGVERBINDINGGEOMETRIEN>\r\n')
@@ -1536,7 +1551,8 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "EINDDATUM").text =  EINDDATUM
                 TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: TERREINOBJECT_HUISNUMMER_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: TERREINOBJECT_HUISNUMMER_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_HUISNUMMER_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</TERREINOBJECT_HUISNUMMER_RELATIES>\r\n')
@@ -1562,7 +1578,8 @@ class xgrabFromdb:
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(TERREINOBJECT_OBJECT , "EINDDATUM").text =  EINDDATUM
                 TERREINOBJECT_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: TERREINOBJECT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: TERREINOBJECT_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  TERREINOBJECT_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</TERREINOBJECTEN>\r\n')
@@ -1582,7 +1599,8 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(GEBOUWSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 GEBOUWSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: GEBOUWSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: GEBOUWSTATUS_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( GEBOUWSTATUS_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</GEBOUWSTATUSSEN>\r\n')
@@ -1612,7 +1630,8 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "EINDDATUM").text =  EINDDATUM
                 GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: GEBOUWGEOMETRIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: GEBOUWGEOMETRIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( GEBOUWGEOMETRIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</GEBOUWGEOMETRIEN>\r\n')
@@ -1641,7 +1660,8 @@ class xgrabFromdb:
                 etree.SubElement(RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(RRADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: RRADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: RRADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( RRADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</RRADRESSEN>\r\n')
@@ -1662,7 +1682,8 @@ class xgrabFromdb:
                 etree.SubElement(ADRES_RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(ADRES_RRADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 ADRES_RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: ADRES_RRADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: ADRES_RRADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring(  ADRES_RRADRES_OBJECT ))
 
             self.xgrabFile.write( '</ADRES_RRADRES_RELATIES>\r\n')
@@ -1683,7 +1704,8 @@ class xgrabFromdb:
                 etree.SubElement(KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(KADADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: KADADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: KADADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( KADADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</KADADRESSEN>\r\n')
@@ -1704,7 +1726,8 @@ class xgrabFromdb:
                 etree.SubElement(ADRES_KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(ADRES_KADADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 ADRES_KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
-                if EINDDATUM != None: ADRES_KADADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+
+##                if EINDDATUM != None: ADRES_KADADRES_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( ADRES_KADADRES_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</ADRES_KADADRES_RELATIES>\r\n')
@@ -1736,7 +1759,7 @@ class xgrabFromdb:
                 ADRESPOSITIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
 
 
-                if EINDDATUM != None: ADRESPOSITIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
+##                if EINDDATUM != None: ADRESPOSITIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
                 self.xgrabFile.write( etree.tostring( ADRESPOSITIE_OBJECT) + "\r\n")
 
             self.xgrabFile.write( '</ADRESPOSITIES>\r\n')
