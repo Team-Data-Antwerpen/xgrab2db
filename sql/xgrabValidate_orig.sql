@@ -1506,6 +1506,7 @@ AS
     INNER JOIN wdb.tblhuisnummerstatus_opl t2 ON t1.adresid = t2.huisnummerid
     WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie IN ('3', '7') AND t2.huisnummerstatus = '3' AND NOT EXISTS(
     SELECT NULL FROM wdb.tblterreinobject_huisnummer_opl t3 INNER JOIN wdb.tblterreinobject_opl t4 ON t3.terreinobjectid = t4.terreinobjectid WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobjectcode IN ('2','5'))
+    --
     INSERT INTO @validatiefouten (objecttype,id,begintijd,boodschap)
     SELECT 'adrespositie', adrespositieid, t1.begintijd, 'Een subadres met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het gerelateerde huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
     FROM wdb.tbladrespositie_opl t1
@@ -1528,8 +1529,11 @@ AS
     FROM wdb.tbladrespositie_opl t1
     INNER JOIN wdb.tblsubadresstatus_opl t2 ON t1.adresid = t2.subadresid
     INNER JOIN wdb.tblsubadres_opl t5 ON t2.subadresid = t5.subadresid
-    WHERE t1.aardadres = '1' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie = '2' AND t2.subadresstatus = '3' AND NOT EXISTS(
-    SELECT NULL FROM wdb.tblterreinobject_huisnummer_opl t3 INNER JOIN wdb.tblterreinobject_opl t4 ON t3.terreinobjectid = t4.terreinobjectid WHERE t3.huisnummerid = t5.huisnummerid AND t4.aardterreinobjectcode IN ('1','4'))
+    WHERE t1.aardadres = '1' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie = '2' AND t2.subadresstatus = '3' 
+    AND NOT EXISTS(
+    SELECT NULL FROM wdb.tblterreinobject_huisnummer_opl t3 
+    INNER JOIN wdb.tblterreinobject_opl t4 ON t3.terreinobjectid = t4.terreinobjectid 
+    WHERE t3.huisnummerid = t5.huisnummerid AND t4.aardterreinobjectcode IN ('1','4'))
 
 GO
 

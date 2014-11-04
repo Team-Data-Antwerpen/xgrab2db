@@ -55,9 +55,9 @@ UPDATE "ADRES_KADADRES_RELATIES"
 SET BEGINORGANISATIE = 5
 WHERE  NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
 
--- geldigheid periode -> dubbels verwijder alle dubbels behalve oudste
+-- geldigheidsperiode -> dubbels verwijder alle dubbels behalve jongste record
 UPDATE ADRES_RRADRES_RELATIES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now') , EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day') , EINDORGANISATIE = 1 --  , EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM ADRES_RRADRES_RELATIES t2 
         WHERE t2.ID <> ADRES_RRADRES_RELATIES.ID 
@@ -68,7 +68,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
     
 UPDATE RRSTRAATNAAM_STRAATNAAM_RELATIES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now') , EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day') , EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now') 
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 
         WHERE t2.ID <> RRSTRAATNAAM_STRAATNAAM_RELATIES.ID 
@@ -78,7 +78,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     ); 
     
 UPDATE POSTKANTONCODES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now') , EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day') , EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM POSTKANTONCODES t2 
         WHERE t2.ID <> POSTKANTONCODES.ID 
@@ -87,7 +87,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );  
     
 UPDATE HUISNUMMERS 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now') , EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day') , EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM  HUISNUMMERS t2 
         WHERE HUISNUMMERS.id <> t2.id 
@@ -97,7 +97,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE HUISNUMMERSTATUSSEN  
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now') , EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now') 
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM  HUISNUMMERSTATUSSEN  t2 
         WHERE HUISNUMMERSTATUSSEN.id <> t2.id 
@@ -106,7 +106,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE SUBADRESSEN     
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM SUBADRESSEN t2 
         WHERE SUBADRESSEN.ID <> t2.ID 
@@ -117,7 +117,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
 
 UPDATE SUBADRESSTATUSSEN
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM SUBADRESSTATUSSEN t2 
         WHERE SUBADRESSTATUSSEN.ID <> t2.ID 
@@ -126,7 +126,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
     
 UPDATE STRAATNAAMSTATUSSEN     
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM STRAATNAAMSTATUSSEN t2 
         WHERE STRAATNAAMSTATUSSEN.ID <> t2.ID 
@@ -135,7 +135,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE TERREINOBJECT_HUISNUMMER_RELATIES     
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 
         WHERE TERREINOBJECT_HUISNUMMER_RELATIES.ID <> t2.ID 
@@ -145,7 +145,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE WEGVERBINDINGGEOMETRIEN      
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM WEGVERBINDINGGEOMETRIEN  t2 
         WHERE WEGVERBINDINGGEOMETRIEN.ID <> t2.ID 
@@ -154,7 +154,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );   
     
 UPDATE ADRESPOSITIES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET EINDDATUM =  date( begindatum,'+1 day'), EINDORGANISATIE = 1 --, EINDTIJD =  strftime('%s','now')
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM ADRESPOSITIES t2
         WHERE ADRESPOSITIES.id <> t2.id 
@@ -164,8 +164,26 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     AND t2.begindatum > ADRESPOSITIES.begindatum
     );
 
+--koppeling adresposities op terreinobjecten  komt niet overeen
 UPDATE ADRESPOSITIES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
+SET  herkomstadrespositie= '10' 
+WHERE EINDDATUM IS NULL
+AND ADRESPOSITIES.aardadres = '1' 
+AND ADRESPOSITIES.herkomstadrespositie IN ('3', '7') 
+AND ADRESPOSITIES.adresid IN (
+    SELECT t2.SUBADRESID FROM SUBADRESSTATUSSEN t2
+    INNER JOIN SUBADRESSEN t5 ON t2.SUBADRESID = t5.ID
+    WHERE t2.subadresstatus = '3' 
+    AND NOT EXISTS(
+      SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
+      INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
+      WHERE t3.huisnummerid = t5.huisnummerid 
+      AND t4.aardterreinobject IN ('2','5')
+	)
+ );
+
+UPDATE ADRESPOSITIES 
+SET herkomstadrespositie = '12' 
 WHERE EINDDATUM IS NULL 
 AND ADRESPOSITIES.aardadres = '1' 
 AND ADRESPOSITIES.herkomstadrespositie = '2' 
@@ -181,26 +199,23 @@ AND ADRESPOSITIES.adresid IN (
 	)
  );
  
-UPDATE ADRESPOSITIES 
-SET EINDDATUM =  date( begindatum,'+1 day'), EINDTIJD =  strftime('%s','now'), EINDORGANISATIE = 1
-WHERE EINDDATUM IS NULL 
-AND ADRESPOSITIES.aardadres = '1' 
-AND ADRESPOSITIES.herkomstadrespositie IN ('3', '7') 
-AND ADRESPOSITIES.adresid IN (
-    SELECT t2.SUBADRESID FROM SUBADRESSTATUSSEN t2
-    INNER JOIN SUBADRESSEN t5 ON t2.SUBADRESID = t5.ID
-    WHERE t2.subadresstatus = '3' 
-    AND NOT EXISTS(
-      SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
-      INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
-      WHERE t3.huisnummerid = t5.huisnummerid 
-      AND t4.aardterreinobject IN ('2','5')
-	)
- );
-
---changes in eindorganisatie afther everything else.
+--BEGIN TODO 
+--temporele integriteit -> stel einddatum voor records waarvan de gerelateerde records een einddatum hebben gekregen.
+UPDATE HUISNUMMERSTATUSSEN
+SET einddatum = (
+        SELECT HUISNUMMERS.einddatum 
+        FROM HUISNUMMERS WHERE HUISNUMMERS.ID = HUISNUMMERSTATUSSEN.adresid )
+WHERE eindtijd IS NULL AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE HUISNUMMERS.eindtijd IS NULL AND HUISNUMMERS.ID = HUISNUMMERSTATUSSEN.huisnummerid 
+        AND IFNULL(HUISNUMMERS.einddatum, '9999-01-01') < IFNULL(HUISNUMMERSTATUSSEN.einddatum, '9999-01-01')
+        );    
+  
+--END TODO
+  
+-- eindorganisatie ADRESPOSITIE komt niet overeen met de herkomstadrespositie
 UPDATE ADRESPOSITIES
-SET eindorganisatie = 5
+SET eindorganisatie = '5'
 WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
     AND eindorganisatie IS NOT NULL 
     AND eindorganisatie NOT IN ('5', '99');

@@ -477,10 +477,16 @@ DELETE FROM "validatiefouten";
     FROM HUISNUMMERSTATUSSEN t1
     WHERE eindtijd IS NULL 
     AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND begindatum > t1.begindatum);
+    --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'huisnummerstatus', id, BEGINTIJD, 'Einddatum van de huisnummerstatus moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
+    SELECT 'huisnummerstatus', id, BEGINTIJD, 
+    'Einddatum van de huisnummerstatus moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
     FROM HUISNUMMERSTATUSSEN t1
-    WHERE eindtijd IS NULL AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
+    WHERE eindtijd IS NULL AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE eindtijd IS NULL AND ID = t1.huisnummerid 
+        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01')
+        );
 	--beperking organisatiecode
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'De beginorganisatie van de huisnummerstatus moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
@@ -631,15 +637,24 @@ DELETE FROM "validatiefouten";
         AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'postkantoncode', ID, BEGINTIJD, 'Begindatum van de postkantoncode moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
+    SELECT 'postkantoncode', ID, BEGINTIJD, 
+    'Begindatum van de postkantoncode moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
     FROM POSTKANTONCODES t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND begindatum > t1.begindatum);
+    AND EXISTS (
+    SELECT NULL FROM HUISNUMMERS 
+    WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND begindatum > t1.begindatum
+    );
+    --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'postkantoncode', ID, BEGINTIJD, 'Einddatum van de postkantoncode moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
+    SELECT 'postkantoncode', ID, BEGINTIJD, 
+    'Einddatum van de postkantoncode moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
     FROM POSTKANTONCODES t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
+    AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL 
+        AND ID = t1.huisnummerid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01')
+        );
 	--beperking organisatiecode
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'postkantoncode', ID, BEGINTIJD, 'De beginorganisatie van de postkantoncode moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
@@ -1503,13 +1518,18 @@ DELETE FROM "validatiefouten";
     AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.adresid AND begindatum > t1.begindatum);
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adresKadAdres', id, BEGINTIJD, 'Einddatum van de adres-kadadres relatie moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
+    SELECT 'adresKadAdres', id, BEGINTIJD, 
+    'Einddatum van de adres-kadadres relatie moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
     FROM ADRES_KADADRES_RELATIES t1
     WHERE eindtijd IS NULL AND aardadres = '2' 
-    AND EXISTS  (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.adresid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
+    AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.adresid 
+        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01')
+        );
 	--beperking organisatiecode
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adresKadAdres', id, BEGINTIJD, 'De beginorganisatie van de adres-kadadres relatie moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
+    SELECT 'adresKadAdres', id, BEGINTIJD, 
+    'De beginorganisatie van de adres-kadadres relatie moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRES_KADADRES_RELATIES t1
     WHERE beginorganisatie NOT IN ('5', '99');
     --
@@ -1575,28 +1595,35 @@ DELETE FROM "validatiefouten";
     AND EXISTS  (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.adresid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
 	--beperking organisatiecode
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', id, BEGINTIJD, 'De beginorganisatie van de adrespositie moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
+    SELECT 'adrespositie', id, BEGINTIJD, 
+    'De beginorganisatie van de adrespositie moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
     WHERE beginorganisatie NOT IN ('1', '5', '99');
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', id, BEGINTIJD, 'De eindorganisatie van de adrespositie moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
+    SELECT 'adrespositie', id, BEGINTIJD, 
+    'De eindorganisatie van de adrespositie moet ofwel 1 (gemeente) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
     WHERE eindorganisatie IS NOT NULL and eindorganisatie NOT IN ('1', '5', '99');
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', id, BEGINTIJD, 'De beginorganisatie van de adrespositie met manuele aanduiding moet ofwel 1 (gemeente) ofwel 99 (andere) zijn.'
+    SELECT 'adrespositie', id, BEGINTIJD, 
+    'De beginorganisatie van de adrespositie met manuele aanduiding moet ofwel 1 (gemeente) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
     WHERE herkomstadrespositie IN ('1', '2', '3', '4', '5', '6', '7', '8', '9') AND beginorganisatie NOT IN ('1', '99');
+    --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', id, BEGINTIJD, 'De eindorganisatie van de adrespositie met manuele aanduiding moet ofwel 1 (gemeente) ofwel 99 (andere) zijn.'
+    SELECT 'adrespositie', id, BEGINTIJD, 
+    'De eindorganisatie van de adrespositie met manuele aanduiding moet ofwel 1 (gemeente) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
     WHERE herkomstadrespositie IN ('1', '2', '3', '4', '5', '6', '7', '8', '9') AND eindorganisatie IS NOT NULL and eindorganisatie NOT IN ('1', '99');
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', id, BEGINTIJD, 'De beginorganisatie van de adrespositie met herkomst andere dan manuele aanduiding moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
+    SELECT 'adrespositie', id, BEGINTIJD, 
+    'De beginorganisatie van de adrespositie met herkomst andere dan manuele aanduiding moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
     WHERE herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
     AND beginorganisatie NOT IN ('5', '99');
+    --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', id, BEGINTIJD, 'De eindorganisatie van de adrespositie met herkomst andere dan manuele aanduiding moet ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM ADRESPOSITIES t1
@@ -1605,14 +1632,20 @@ DELETE FROM "validatiefouten";
     AND eindorganisatie NOT IN ('5', '99');
 	--beperking voorkomen ifv koppeling aan terreinobject
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
+    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 
+    'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
     FROM ADRESPOSITIES t1
     INNER JOIN HUISNUMMERSTATUSSEN t2 ON t1.adresid = t2.huisnummerid
-    WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie IN ('3', '7') AND t2.huisnummerstatus = '3' AND NOT EXISTS(
-    SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('2','5'));
+    WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie IN ('3', '7') AND t2.huisnummerstatus = '3' 
+    AND NOT EXISTS(
+    SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
+    INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
+    WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('2','5')
+    );
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een subadres met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het gerelateerde huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
+    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 
+    'Een subadres met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het gerelateerde huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
     FROM ADRESPOSITIES t1
     INNER JOIN SUBADRESSTATUSSEN t2 
     ON t1.adresid = t2.SUBADRESID  
@@ -1623,7 +1656,8 @@ DELETE FROM "validatiefouten";
     AND NOT EXISTS(
     SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
     INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
-    WHERE t3.huisnummerid = t5.huisnummerid AND t4.aardterreinobject IN ('2','5'));
+    WHERE t3.huisnummerid = t5.huisnummerid AND t4.aardterreinobject IN ('2','5')
+    );
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 2 (manuele aanduiding van perceel) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 1 (kadastraal perceel) of aard 4 (GRB administratief perceel).'
@@ -1636,7 +1670,8 @@ DELETE FROM "validatiefouten";
     WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('1','4'));
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
-    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een subadres met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 2 (manuele aanduiding van perceel) indien het gerelateerde huisnummer eveneens een relatie heeft met een terreinobject met aard 1 (kadastraal perceel) of aard 4 (GRB administratief perceel).'
+    SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 
+    'Een subadres met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 2 (manuele aanduiding van perceel) indien het gerelateerde huisnummer eveneens een relatie heeft met een terreinobject met aard 1 (kadastraal perceel) of aard 4 (GRB administratief perceel).'
     FROM ADRESPOSITIES t1
     INNER JOIN SUBADRESSTATUSSEN t2 
     ON t1.adresid = t2.SUBADRESID  
@@ -1650,6 +1685,7 @@ DELETE FROM "validatiefouten";
             SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
             INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
             WHERE t3.huisnummerid = t5.huisnummerid 
-            AND t4.aardterreinobject IN ('1','4'));
+            AND t4.aardterreinobject IN ('1','4')
+        );
 
 COMMIT;
