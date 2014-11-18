@@ -527,16 +527,16 @@ DELETE FROM "validatiefouten";
     SELECT 'subadres', ID, BEGINTIJD, 'Huisnummerid ' || huisnummerid ||  ' bestaat niet.'
     FROM SUBADRESSEN t1
     WHERE NOT EXISTS (
-    SELECT NULL FROM HUISNUMMERS W
-    HERE ID = t1.huisnummerid);
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE ID = t1.huisnummerid);
 	--verplicht voorkomen subadresstatus
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'subadres', ID, BEGINTIJD, 
     'De subadresstatus voor het subadres met id ' || ID ||  ' ontbreekt.'
     FROM SUBADRESSEN t1
     WHERE NOT EXISTS(
-    SELECT NULL FROM SUBADRESSTATUSSEN 
-    WHERE SUBADRESID = t1.ID);
+        SELECT NULL FROM SUBADRESSTATUSSEN 
+        WHERE SUBADRESID = t1.ID);
 	--interne temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'subadres', ID, BEGINTIJD, 
@@ -556,7 +556,9 @@ DELETE FROM "validatiefouten";
     'Begindatum van het subadres moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
     FROM SUBADRESSEN t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND begindatum > t1.begindatum);
+    AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND begindatum > t1.begindatum);
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'subadres', ID, BEGINTIJD, 

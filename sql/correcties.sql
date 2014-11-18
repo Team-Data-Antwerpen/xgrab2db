@@ -38,11 +38,6 @@ UPDATE "huisnummerstatussen"
 SET BEGINORGANISATIE = 1
 WHERE  NOT( BEGINORGANISATIE= 1 OR  BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
 
-UPDATE "adresposities"
-SET BEGINORGANISATIE = 5
-WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
- AND NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
-
 UPDATE "ADRES_RRADRES_RELATIES"
 SET BEGINORGANISATIE = 1
 WHERE  NOT( BEGINORGANISATIE= 1 OR  BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
@@ -57,8 +52,8 @@ WHERE  NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
 
 -- geldigheidsperiode -> dubbels: verwijder alle dubbels behalve jongste record, einddatum is begindatum jongste record, eindtijd is huidige tijd
 UPDATE ADRES_RRADRES_RELATIES 
-SET EINDTIJD=  DATETIME(), EINDDATUM =  (
-    SELECT MAX(t2.begindatum) FROM ADRES_RRADRES_RELATIES t2 
+SET EINDDATUM =  (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM ADRES_RRADRES_RELATIES t2 
         WHERE t2.ID <> ADRES_RRADRES_RELATIES.ID 
         AND t2.rradresid = ADRES_RRADRES_RELATIES.rradresid
         AND t2.adresid = ADRES_RRADRES_RELATIES.adresid
@@ -74,8 +69,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
     
 UPDATE RRSTRAATNAAM_STRAATNAAM_RELATIES 
-SET EINDTIJD=  DATETIME(), EINDDATUM = ( 
-    SELECT MAX(t2.begindatum) FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 
+SET EINDDATUM = ( 
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM RRSTRAATNAAM_STRAATNAAM_RELATIES t2 
         WHERE t2.ID <> RRSTRAATNAAM_STRAATNAAM_RELATIES.ID 
         AND t2.RRSTRAATCODE = RRSTRAATNAAM_STRAATNAAM_RELATIES.RRSTRAATCODE
         AND t2.SUBKANTONCODE = RRSTRAATNAAM_STRAATNAAM_RELATIES.SUBKANTONCODE
@@ -89,8 +84,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     ); 
     
 UPDATE POSTKANTONCODES 
-SET EINDTIJD= DATETIME(), EINDDATUM = (
-    SELECT  MAX(t2.begindatum) FROM POSTKANTONCODES t2 
+SET EINDDATUM = (
+    SELECT  MIN(DATE(t2.begindatum, '-1 day' )) FROM POSTKANTONCODES t2 
         WHERE t2.ID <> POSTKANTONCODES.ID 
         AND   t2.huisnummerid = POSTKANTONCODES.huisnummerid  
     )
@@ -102,8 +97,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );  
     
 UPDATE HUISNUMMERS 
-SET EINDTIJD= DATETIME(), EINDDATUM = (  
-    SELECT MAX(t2.begindatum)  FROM  HUISNUMMERS t2 
+SET EINDDATUM = (  
+    SELECT MIN(DATE(t2.begindatum, '-1 day' ))  FROM  HUISNUMMERS t2 
         WHERE HUISNUMMERS.id <> t2.id 
         AND HUISNUMMERS.straatnaamid = t2.straatnaamid  
         AND HUISNUMMERS.huisnummer = t2.huisnummer
@@ -117,8 +112,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE HUISNUMMERSTATUSSEN  
-SET EINDTIJD= DATETIME(), EINDDATUM = (
-    SELECT MAX(t2.begindatum) FROM  HUISNUMMERSTATUSSEN  t2 
+SET EINDDATUM = (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM  HUISNUMMERSTATUSSEN  t2 
         WHERE HUISNUMMERSTATUSSEN.id <> t2.id 
         AND HUISNUMMERSTATUSSEN.huisnummerid = t2.huisnummerid
         )
@@ -130,8 +125,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE SUBADRESSEN     
-SET EINDTIJD=  DATETIME(), EINDDATUM =  (     
-    SELECT MAX(t2.begindatum) FROM SUBADRESSEN t2 
+SET EINDDATUM =  (     
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM SUBADRESSEN t2 
         WHERE SUBADRESSEN.ID <> t2.ID 
         AND SUBADRESSEN.huisnummerid = t2.huisnummerid
         AND SUBADRESSEN.subadres = t2.subadres
@@ -147,8 +142,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
 
 UPDATE SUBADRESSTATUSSEN
-SET EINDTIJD=  DATETIME(), EINDDATUM =  (
-    SELECT MAX(t2.begindatum) FROM SUBADRESSTATUSSEN t2 
+SET EINDDATUM =  (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM SUBADRESSTATUSSEN t2 
         WHERE SUBADRESSTATUSSEN.ID <> t2.ID 
         AND SUBADRESSTATUSSEN.subadresid = t2.subadresid 
         )
@@ -160,8 +155,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
     
 UPDATE STRAATNAAMSTATUSSEN     
-SET EINDTIJD= DATETIME(), EINDDATUM = (
-    SELECT MAX(t2.begindatum) FROM STRAATNAAMSTATUSSEN t2 
+SET EINDDATUM = (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM STRAATNAAMSTATUSSEN t2 
         WHERE STRAATNAAMSTATUSSEN.ID <> t2.ID 
         AND STRAATNAAMSTATUSSEN.straatnaamid = t2.straatnaamid
 ) 
@@ -173,8 +168,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE TERREINOBJECT_HUISNUMMER_RELATIES     
-SET EINDTIJD=  DATETIME(), EINDDATUM = (
-    SELECT MAX(t2.begindatum) FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 
+SET EINDDATUM = (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 
         WHERE TERREINOBJECT_HUISNUMMER_RELATIES.ID <> t2.ID 
         AND TERREINOBJECT_HUISNUMMER_RELATIES.terreinobjectid = t2.terreinobjectid
         AND TERREINOBJECT_HUISNUMMER_RELATIES.huisnummerid = t2.huisnummerid
@@ -188,8 +183,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );
    
 UPDATE WEGVERBINDINGGEOMETRIEN      
-SET EINDTIJD= DATETIME(), EINDDATUM =  (
-    SELECT MAX(t2.begindatum) FROM WEGVERBINDINGGEOMETRIEN  t2 
+SET EINDDATUM =  (
+    SELECT MIN(DATE(t2.begindatum, '-1 day' )) FROM WEGVERBINDINGGEOMETRIEN  t2 
         WHERE WEGVERBINDINGGEOMETRIEN.ID <> t2.ID 
         AND WEGVERBINDINGGEOMETRIEN.wegobjectid = t2.wegobjectid 
         )
@@ -201,8 +196,8 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     );   
     
 UPDATE ADRESPOSITIES 
-SET EINDTIJD=  DATETIME(), EINDDATUM =  (
-        SELECT MAX(t2.begindatum) FROM ADRESPOSITIES t2
+SET EINDDATUM =  (
+        SELECT MIN(DATE(t2.begindatum, '-1 day' ))FROM ADRESPOSITIES t2
         WHERE ADRESPOSITIES.id <> t2.id 
         AND ADRESPOSITIES.herkomstadrespositie = t2.herkomstadrespositie
         AND ADRESPOSITIES.adresid = t2.adresid
@@ -251,7 +246,6 @@ AND ADRESPOSITIES.adresid IN (
       AND t4.aardterreinobject IN ('1','4')
 	)
  );
-
  
 --temporele integriteit -> stel einddatum voor records waarvan de gerelateerde records een einddatum hebben gekregen.
 UPDATE HUISNUMMERSTATUSSEN
@@ -373,7 +367,12 @@ AND EXISTS (
         AND IFNULL(SUBADRESSEN.einddatum, '9999-01-01') < IFNULL(ADRESPOSITIES.einddatum, '9999-01-01')
         );  
 
--- eindorganisatie ADRESPOSITIE komt niet overeen met de herkomstadrespositie
+-- eind/begin organisatie ADRESPOSITIE komt niet overeen met de herkomstadrespositie
+UPDATE "adresposities"
+SET BEGINORGANISATIE = 5
+WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
+ AND NOT( BEGINORGANISATIE= 5 OR BEGINORGANISATIE= 99) ;
+
 UPDATE ADRESPOSITIES
 SET eindorganisatie = '5'
 WHERE  herkomstadrespositie IN ('10', '11', '12', '13', '14', '15', '16', '17', '18') 
