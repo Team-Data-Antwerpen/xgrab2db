@@ -438,15 +438,22 @@ AS
 	INSERT INTO @validatiefouten (objecttype,id,begintijd,boodschap)
     SELECT 'huisnummerstatus', huisnummerstatusid, begintijd, 'De geldigheidsperiode van de huisnummerstatus overlapt met de geldigheidsperiode van een andere huisnummerstatus met dezelfde identificerende kenmerken.'
     FROM wdb.tblhuisnummerstatus_opl t1
-    WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM wdb.tblhuisnummerstatus_opl WHERE eindtijd IS NULL AND huisnummerstatusid <> t1.huisnummerstatusid 
-    AND huisnummerid = t1.huisnummerid
-    AND begindatum <= ISNULL(t1.einddatum, '99990101') AND ISNULL(einddatum, '99990101') >= t1.begindatum)
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM wdb.tblhuisnummerstatus_opl 
+        WHERE eindtijd IS NULL AND huisnummerstatusid <> t1.huisnummerstatusid 
+        AND huisnummerid = t1.huisnummerid
+        AND begindatum <= ISNULL(t1.einddatum, '99990101') 
+        AND ISNULL(einddatum, '99990101') >= t1.begindatum)
 	--externe temporele integriteit
 	INSERT INTO @validatiefouten (objecttype,id,begintijd,boodschap)
     SELECT 'huisnummerstatus', huisnummerstatusid, begintijd, 'Begindatum van de huisnummerstatus moet groter of gelijk zijn aan begindatum van het gerelateerde huisnummer.'
     FROM wdb.tblhuisnummerstatus_opl t1
-    WHERE eindtijd IS NULL AND EXISTS
-    (SELECT NULL FROM wdb.tblhuisnummer_opl WHERE eindtijd IS NULL AND huisnummerid = t1.huisnummerid AND begindatum > t1.begindatum)
+    WHERE eindtijd IS NULL AND EXISTS(
+        SELECT NULL FROM wdb.tblhuisnummer_opl 
+        WHERE eindtijd IS NULL 
+        AND huisnummerid = t1.huisnummerid 
+        AND begindatum > t1.begindatum)
+    --
     INSERT INTO @validatiefouten (objecttype,id,begintijd,boodschap)
     SELECT 'huisnummerstatus', huisnummerstatusid, begintijd, 'Einddatum van de huisnummerstatus moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
     FROM wdb.tblhuisnummerstatus_opl t1

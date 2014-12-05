@@ -468,9 +468,12 @@ DELETE FROM "validatiefouten";
     SELECT 'huisnummerstatus', id, BEGINTIJD, 'De geldigheidsperiode van de huisnummerstatus overlapt met de geldigheidsperiode van een andere huisnummerstatus met dezelfde identificerende kenmerken.'
     FROM HUISNUMMERSTATUSSEN t1
     WHERE eindtijd IS NULL AND EXISTS(
-        SELECT NULL FROM HUISNUMMERSTATUSSEN 
-        WHERE eindtijd IS NULL AND id <> t1.id 
-        AND huisnummerid = t1.huisnummerid ) ;
+        SELECT NULL FROM HUISNUMMERSTATUSSEN t3
+        WHERE t3.eindtijd IS NULL AND t3.id <> t1.id 
+        AND t3.huisnummerid = t1.huisnummerid 
+        AND t3.begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+        AND IFNULL(t3.einddatum, '9999-01-01') >= t1.begindatum
+        );
 	--externe temporele integriteit
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'huisnummerstatus', id, BEGINTIJD, 

@@ -108,7 +108,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
         WHERE HUISNUMMERS.id <> t3.id 
         AND HUISNUMMERS.straatnaamid = t3.straatnaamid  
         AND HUISNUMMERS.huisnummer = t3.huisnummer
-    AND t3.begindatum > HUISNUMMERS.begindatum
+        AND t3.begindatum > HUISNUMMERS.begindatum
     );
    
 UPDATE HUISNUMMERSTATUSSEN  
@@ -121,7 +121,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM  HUISNUMMERSTATUSSEN  t3 
         WHERE HUISNUMMERSTATUSSEN.id <> t3.id 
         AND HUISNUMMERSTATUSSEN.huisnummerid = t3.huisnummerid
-    AND t3.begindatum > HUISNUMMERSTATUSSEN.begindatum
+        AND t3.begindatum > HUISNUMMERSTATUSSEN.begindatum
     );
    
 UPDATE SUBADRESSEN     
@@ -247,7 +247,7 @@ AND ADRESPOSITIES.adresid IN (
 	)
  );
  
---temporele integriteit -> stel einddatum voor records waarvan de gerelateerde records een einddatum hebben gekregen.
+--externe temporele integriteit -> stel einddatum voor records waarvan de gerelateerde records reeds een einddatum hebben gekregen.
 UPDATE HUISNUMMERSTATUSSEN
 SET einddatum = (
         SELECT HUISNUMMERS.einddatum 
