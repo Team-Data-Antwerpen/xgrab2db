@@ -12,7 +12,6 @@
 import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
 
-etree.register_namespace("gml","http://www.opengis.net/gml")
 etree.register_namespace("","http://crab.agiv.be")
 
 class xgrab2db:
@@ -21,6 +20,7 @@ class xgrab2db:
         xgrabPath = path to xgrab XML file,
         DBconnection = coonetion object to Database
         update = update or new db ?"""
+        etree.register_namespace("gml","http://www.opengis.net/gml")
         xmlGrab = etree.parse(xgrabPath)
         self.rootgrab = xmlGrab.getroot()
         self.con = DBconnection
@@ -837,8 +837,7 @@ class xgrab2db:
               id = row[0].text
               TERREINOBJECTID = row.find("{http://crab.agiv.be}TERREINOBJECTID").text
 
-              #python inserts wrong namespace for some reason
-              ##TODO#GEBOUWGEOMETRIE = "<Polygon ><exterior><LinearRing><posList> %s </posList></LinearRing></exterior></Polygon>" % row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")[0][0][0][0].text
+              #REMARK: python inserts wrong namespace if you set it manualy, see line 15
               GEBOUWGEOMETRIE = etree.tostring( row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")[0] )
 
               METHODEGEBOUWGEOMETRIE = row.find("{http://crab.agiv.be}METHODEGEBOUWGEOMETRIE").text
@@ -1518,21 +1517,22 @@ class xgrabFromdb:
                 WEGVERBINDINGGEOMETRIE_OBJECT = etree.Element('WEGVERBINDINGGEOMETRIE_OBJECT')
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
-                #TODO
-                
-                geom = etree.XML(WEGVERBINDINGGEOMETRIE)
-                # geomS = '<LineString >' + ''.join(
-                  # '<posList>' + node.text + '</posList>' for node in geom.findall('{http://www.opengis.net/gml}posList') ) +'</LineString>'
-                # geomC = etree.XML(geomS)
-                # geomC.set("xmlns", "http://www.opengis.net/gml")
+                geomGML = etree.XML(WEGVERBINDINGGEOMETRIE)
 
-                # geomXML = etree.Element("WEGVERBINDINGGEOMETRIE")
-                # geomXML.append(geomC)
-                # WEGVERBINDINGGEOMETRIE_OBJECT.append( geomXML )
+                geomS = '<LineString >' + ''.join(
+                  '<posList>' + node.text + '</posList>' for node in geomGML.findall('{http://www.opengis.net/gml}posList')
+                  ) +'</LineString>'
+
+                geomC = etree.XML(geomS)
+                geomC.set("xmlns", "http://www.opengis.net/gml")
+
                 WEGVERBINDINGGEOMETRIE = etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGVERBINDINGGEOMETRIE")
-                geom.set("xmlns", "http://www.opengis.net/gml")
-                WEGVERBINDINGGEOMETRIE.append( geom )
-                #end TODO
+                WEGVERBINDINGGEOMETRIE.append( geomC )
+
+                #dit mag niet AGIV
+##                geomGML.set("xmlns:gml", "http://www.opengis.net/gml")
+##                WEGVERBINDINGGEOMETRIE.append( geomGML )
+
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "EINDDATUM").text =  EINDDATUM
@@ -1624,31 +1624,34 @@ class xgrabFromdb:
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "ID").text = unicode( ID )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
                 #TODO
-                geom = etree.XML(GEBOUWGEOMETRIE)
-                
-                # geomS = '<Polygon>' #start GML 
-                
-                # geomS = geomS + '<exterior><LinearRing><posList>' +  geom.find('{http://www.opengis.net/gml}exterior')[0].text +'</posList></LinearRing></exterior>'
-                
-                # geomS = geomS + '<interior>' + "".join( '<LinearRing><posList>' + node[0].text  + '</posList></LinearRing>' for node in geom.findall('{http://www.opengis.net/gml}interior')
-                # ) + '</interior>'
-                
-                # geomS = geomS + '</Polygon>' #end GML
-                
-                
-                # geomC =  etree.XML( geomS )
-                # geomC.set("xmlns", "http://www.opengis.net/gml")
+                geomGML = etree.XML(GEBOUWGEOMETRIE)
 
-                # geomXML = etree.Element("GEBOUWGEOMETRIE")
-                # geomXML.append(geomC)
-                # GEBOUWGEOMETRIE_OBJECT.append( geomXML )
-                GEBOUWGEOMETRIE = etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "GEBOUWGEOMETRIE")
-                geom.set("xmlns", "http://www.opengis.net/gml")
-                GEBOUWGEOMETRIE.append( geom )
-                #end TODO
+                geomS = '<Polygon>' #start GML
+
+                exteriorCoords = geomGML.find('{http://www.opengis.net/gml}exterior')[0] #only one
+                geomS = geomS + '<exterior><LinearRing><posList>' + exteriorCoords[0].text +'</posList></LinearRing></exterior>'
+
+                interiors = geomGML.findall('{http://www.opengis.net/gml}interior')
+                if interiors:
+                    geomS = geomS + '<interior>' + "".join(
+                     '<LinearRing><posList>' + node[0][0].text  + '</posList></LinearRing>' for node in interiors ) + '</interior>'
+
+                geomS = geomS + '</Polygon>' #end GML
+
+                geomC =  etree.XML( geomS )
+                geomC.set("xmlns", "http://www.opengis.net/gml")
+
+                geomXML = etree.Element("GEBOUWGEOMETRIE")
+                geomXML.append(geomC)
+                GEBOUWGEOMETRIE_OBJECT.append( geomXML )
+                
+                #dit mag niet van AGIV
+##                geomGML.set("xmlns:gml", "http://www.opengis.net/gml")
+##                GEBOUWGEOMETRIE.append( geomGML )
+
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
-                if EINDDATUM != None: etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "EINDDATUM").text =  EINDDATUM
+                if EINDDATUM != None: etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "EINDDATUM").text = EINDDATUM
                 GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
 
 ##                if EINDDATUM != None: GEBOUWGEOMETRIE_OBJECT.append( self._end_metaTag(EINDTIJD, EINDORGANISATIE, EINDBEWERKING ) )
@@ -1667,7 +1670,7 @@ class xgrabFromdb:
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
                 etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
 
-                if 0 < len(RRHUISNUMMER.strip()) < 11:
+                if 0 < len(RRHUISNUMMER.strip()) < 11: #ISSUE: no huisnrString > 11 Allowed, means is incorrect, set as ZN
                     etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER
                 else:
                     self.ZNcounter += 1             #ISSUE: double ZN not allowed

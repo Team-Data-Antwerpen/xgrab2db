@@ -4,6 +4,9 @@ import os, sys, sqlite3, argparse
 from xgrablib import *
 
 def main():
+  if not args.xgrabPath or not args.xgrabDB:
+    return
+
   xgrabPath = args.xgrabPath
   xgrabDB =   args.xgrabDB
   con = None
@@ -33,5 +36,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main()
-
 
