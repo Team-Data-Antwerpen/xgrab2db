@@ -1628,13 +1628,13 @@ class xgrabFromdb:
 
                 geomS = '<Polygon>' #start GML
 
-                exteriorCoords = geomGML.find('{http://www.opengis.net/gml}exterior')[0] #only one
-                geomS = geomS + '<exterior><LinearRing><posList>' + exteriorCoords[0].text +'</posList></LinearRing></exterior>'
-
+                exteriorCoords = geomGML.find('{http://www.opengis.net/gml}exterior') #only one
+                geomS = geomS + '<exterior><LinearRing><posList>' + exteriorCoords[0][0].text +'</posList></LinearRing></exterior>'
+ 
                 interiors = geomGML.findall('{http://www.opengis.net/gml}interior')
-                if interiors:
-                    geomS = geomS + '<interior>' + "".join(
-                     '<LinearRing><posList>' + node[0][0].text  + '</posList></LinearRing>' for node in interiors ) + '</interior>'
+                if interiors:                                                            #one or more
+                    geomS = geomS ++ "".join(
+                      '<interior><LinearRing><posList>' + node[0][0].text + '</posList></LinearRing></interior>' for node in interiors )
 
                 geomS = geomS + '</Polygon>' #end GML
 
