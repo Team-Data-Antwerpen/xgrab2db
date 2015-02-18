@@ -1,11 +1,11 @@
 xgrab2db
 =========
-*xgrab is the exchange standard for adressen in Flanders. They contain a extract of the CRAB-database.
+<em>xgrab is the exchange standard for adressen in Flanders. They contain a extract of the CRAB-database.
 This XML-file contains all the relevant entities of crab. 
 They allow the adres manager to update CRAB directly without using lara.
 These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml 
 Many GIS-tools support reading/writing spatialite like arcgis10.2 and QGIS and you can automate it using SQL scripts.
-This allows you to combine with your local data or do large changes very quickly. *
+This allows you to combine with your local data or do large changes very quickly. </em>
 
 Dependencies
 ----
