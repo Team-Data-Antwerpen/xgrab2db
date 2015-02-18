@@ -38,6 +38,9 @@ def makeSpatialite(Connection):
                   UPDATE GEBOUWGEOMETRIEN SET "SHAPE"= SetSRID( GeomFromGML( "GEBOUWGEOMETRIE" ), 31370 );
                   SELECT AddGeometryColumn( 'ADRESPOSITIES', 'SHAPE',31370, 'POINT');
                   UPDATE ADRESPOSITIES SET "SHAPE"= MakePoint( "X", "Y", 31370);
+                  SELECT CreateSpatialIndex('ADRESPOSITIES', 'SHAPE');
+                  SELECT CreateSpatialIndex('WEGVERBINDINGGEOMETRIEN', 'SHAPE');
+                  SELECT CreateSpatialIndex('GEBOUWGEOMETRIEN', 'SHAPE');
               COMMIT; """
       trigger = """BEGIN TRANSACTION;
                   CREATE TRIGGER ADRESPOSITIES_UPDATE_XY AFTER UPDATE OF "SHAPE" ON ADRESPOSITIES

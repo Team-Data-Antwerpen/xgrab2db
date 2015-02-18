@@ -1633,7 +1633,7 @@ class xgrabFromdb:
  
                 interiors = geomGML.findall('{http://www.opengis.net/gml}interior')
                 if interiors:                                                            #one or more
-                    geomS = geomS ++ "".join(
+                    geomS = geomS + "".join(
                       '<interior><LinearRing><posList>' + node[0][0].text + '</posList></LinearRing></interior>' for node in interiors )
 
                 geomS = geomS + '</Polygon>' #end GML
@@ -1644,10 +1644,6 @@ class xgrabFromdb:
                 geomXML = etree.Element("GEBOUWGEOMETRIE")
                 geomXML.append(geomC)
                 GEBOUWGEOMETRIE_OBJECT.append( geomXML )
-                
-                #dit mag niet van AGIV
-##                geomGML.set("xmlns:gml", "http://www.opengis.net/gml")
-##                GEBOUWGEOMETRIE.append( geomGML )
 
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM

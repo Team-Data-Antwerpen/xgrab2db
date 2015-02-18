@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS validatiefouten
           id INTEGER,
           BEGINTIJD DATETIME,
           boodschap TEXT
-) ;
+);
 -- clear existing rows
 DELETE FROM "validatiefouten";
 	

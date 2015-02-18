@@ -10,14 +10,13 @@ def main():
   con = None
 
   try:
-      con = db.Connection(xgrabDB) 
+      con = db.Connection(xgrabDB)
       xgrab = xgrabFromdb(con, xgrabPath)
       xgrab.createAll()
       xgrab.close()
       
   finally:
       if con: con.close()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create a xGRAB-file from a sqlite database')
