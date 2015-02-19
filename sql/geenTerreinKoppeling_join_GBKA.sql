@@ -1,0 +1,38 @@
+BEGIN TRANSACTION;
+CREATE TABLE "GBKA_JOIN_GEEN_TERREIN" AS
+SELECT DISTINCT
+geenTerreinKoppeling.ADRESID AS ADRESID,
+geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
+geenTerreinKoppeling.HUISNUMMER as HUISNR, 
+geenTerreinKoppeling.STRAATNAAM as straat, 
+geenTerreinKoppeling.POSTCODE as postcode, 
+GBKA_ADRESSEN.ENTK as ENTK, 
+GBKA_ADRESSEN.OBJK as OBJK, 
+GBKA_ADRESSEN.CRABCODE as CRABCODE, 
+GBKA_ADRESSEN.SHAPE as SHAPE
+FROM geenTerreinKoppeling
+INNER JOIN  GBKA_ADRESSEN
+	ON ( CAST( geenTerreinKoppeling.STRAAT_CRABCODE AS INTEGER ) = 
+	     CAST( GBKA_ADRESSEN.CRABCODE AS INTEGER )
+         AND  HUISNR  = geenTerreinKoppeling.HUISNUMMER 
+        )
+UNION
+SELECT DISTINCT
+geenTerreinKoppeling.ADRESID AS ADRESID,
+geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
+geenTerreinKoppeling.HUISNUMMER as HUISNR, 
+geenTerreinKoppeling.STRAATNAAM as straat, 
+geenTerreinKoppeling.POSTCODE as postcode, 
+GBKA_ADRESSEN.ENTK as ENTK, 
+GBKA_ADRESSEN.OBJK as OBJK, 
+GBKA_ADRESSEN.CRABCODE as CRABCODE, 
+GBKA_ADRESSEN.SHAPE as SHAPE
+FROM geenTerreinKoppeling
+INNER JOIN  GBKA_ADRESSEN        
+    ON (  CAST( geenTerreinKoppeling.STRAAT_CRABCODE AS INTEGER ) = 
+	      CAST( GBKA_ADRESSEN.CRABCODE AS INTEGER )
+          AND NOT HUISNR  = geenTerreinKoppeling.HUISNUMMER 
+          AND CAST( HUISNR AS INTEGER ) = CAST( geenTerreinKoppeling.HUISNUMMER AS INTEGER )
+        ) ;
+SELECT CreateSpatialIndex('GBKA_JOIN_GEEN_TERREIN','SHAPE');  
+COMMIT;

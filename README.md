@@ -134,9 +134,18 @@ many buildings in GBKA get multiple housenumbers using this notation:
 With the tool: *sso_adres_toolbox.py input_fc GBKA_ADRESSEN_split*  (arcgis)
     --> export with the name 'GBKA_ADRESSEN_split'
 
+--> import shapefile into xgrab-db and if necessary delete the doubles     
+```sql
+DELETE FROM GBKA_ADRESSEN
+WHERE ROWID NOT IN
+(
+   SELECT MIN(ROWID) FROM GBKA_ADRESSEN
+   GROUP BY CAST( CRABCODE aS INTEGER), HUISNR
+)
+```
 --> Attach view "geenTerreinKoppeling" on GBKA_ADRESSEN using this query:
 ```sql
-SELECT 
+SELECT DISTINCT
 geenTerreinKoppeling.ADRESID AS ADRESID,
 geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
 geenTerreinKoppeling.HUISNUMMER as HUISNR, 
@@ -153,7 +162,7 @@ INNER JOIN  GBKA_ADRESSEN
          AND  HUISNR  = geenTerreinKoppeling.HUISNUMMER 
         )
 UNION
-SELECT 
+SELECT DISTINCT
 geenTerreinKoppeling.ADRESID AS ADRESID,
 geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
 geenTerreinKoppeling.HUISNUMMER as HUISNR, 
@@ -197,3 +206,17 @@ This script uses the gdal-python bindings and pyspatialite, so run it in the osg
 ```Batchfile
 python update_terrein_adrespositie.py xGRAB11002_20150218.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp
 ```
+
+Summary
+=======
+
+> xgrab2spatialite.py xgrab.xml xgrab.sqlite
+> spatialite xgrab.sqlite < correcties.sql
+> spatialite xgrab.sqlite <  geenTerreinKoppeling.sql
+> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split -d  xgrab.sqlite -t GBKA_ADRESSEN -g SHAPE -c CP1252 -s 31370
+> spatialite geenTerreinKoppeling_join_GBKA.sql
+> ... create a spatial joined table on CRAB-buildings ... in qgis, output= GBKA_join_geenTerrein_join_crabGebouw.shp
+> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp
+> spatialite xgrab.sqlite <  correcties.sql
+> spatialite xgrab.sqlite <  xgrabValidate_KW.sql
+> db2xgrab.py xgrab.sqlite xgrab_out.xml
