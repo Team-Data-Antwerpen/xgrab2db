@@ -179,7 +179,7 @@ WHERE EINDDATUM IS NULL AND EXISTS(
         WHERE TERREINOBJECT_HUISNUMMER_RELATIES.ID <> t3.ID 
         AND TERREINOBJECT_HUISNUMMER_RELATIES.terreinobjectid = t3.terreinobjectid
         AND TERREINOBJECT_HUISNUMMER_RELATIES.huisnummerid = t3.huisnummerid
-    AND t3.begindatum > TERREINOBJECT_HUISNUMMER_RELATIES.begindatum
+        AND t3.begindatum > TERREINOBJECT_HUISNUMMER_RELATIES.begindatum
     );
    
 UPDATE WEGVERBINDINGGEOMETRIEN      
@@ -192,8 +192,23 @@ WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM WEGVERBINDINGGEOMETRIEN  t3 
         WHERE WEGVERBINDINGGEOMETRIEN.ID <> t3.ID 
         AND WEGVERBINDINGGEOMETRIEN.wegobjectid = t3.wegobjectid
-    AND t3.begindatum > WEGVERBINDINGGEOMETRIEN.begindatum
+        AND t3.begindatum > WEGVERBINDINGGEOMETRIEN.begindatum
     );   
+    
+UPDATE TERREINOBJECTEN  
+SET EINDDATUM =  (
+        SELECT MIN(DATE(t2.begindatum, '-1 day' ))FROM TERREINOBJECTEN  t2
+        WHERE  TERREINOBJECTEN.id <> t2.id 
+        AND TERREINOBJECTEN.identificatorterreinobject = t2.identificatorterreinobject
+        AND TERREINOBJECTEN.aardterreinobject = t2.aardterreinobject 
+    )  
+WHERE EINDDATUM IS NULL AND EXISTS(
+    SELECT NULL FROM TERREINOBJECTEN  t3
+        WHERE TERREINOBJECTEN.id <> t3.id 
+        AND TERREINOBJECTEN.identificatorterreinobject = t3.identificatorterreinobject
+        AND TERREINOBJECTEN.aardterreinobject = t3.aardterreinobject 
+        AND t3.begindatum > TERREINOBJECTEN.begindatum
+    );
     
 UPDATE ADRESPOSITIES 
 SET EINDDATUM =  (
@@ -202,14 +217,14 @@ SET EINDDATUM =  (
         AND ADRESPOSITIES.herkomstadrespositie = t2.herkomstadrespositie
         AND ADRESPOSITIES.adresid = t2.adresid
         AND ADRESPOSITIES.aardadres = t2.aardadres
-)  --date( begindatum,'+1 day'), EINDORGANISATIE = 1 , EINDTIJD =  strftime('%s','now')
+    )
 WHERE EINDDATUM IS NULL AND EXISTS(
     SELECT NULL FROM ADRESPOSITIES t3
         WHERE ADRESPOSITIES.id <> t3.id 
         AND ADRESPOSITIES.herkomstadrespositie = t3.herkomstadrespositie
         AND ADRESPOSITIES.adresid = t3.adresid
         AND ADRESPOSITIES.aardadres = t3.aardadres
-    AND t3.begindatum > ADRESPOSITIES.begindatum
+       AND t3.begindatum > ADRESPOSITIES.begindatum
     );
 
 --koppeling adresposities op terreinobjecten  komt niet overeen

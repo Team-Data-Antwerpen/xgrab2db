@@ -1175,7 +1175,8 @@ DELETE FROM "validatiefouten";
     WHERE eindtijd IS NULL AND EXISTS(SELECT NULL FROM TERREINOBJECTEN WHERE eindtijd IS NULL AND ID <> t1.ID 
     AND identificatorterreinobject = t1.identificatorterreinobject
     AND aardterreinobject = t1.aardterreinobject
-    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
+    AND begindatum <= IFNULL(t1.einddatum, '9999-01-01') 
+    AND IFNULL(einddatum, '9999-01-01') >= t1.begindatum);
 	--beperking organisatiecode
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobject', ID, BEGINTIJD, 'De beginorganisatie van het terreinobject moet ofwel 1 (gemeente) ofwel 3 (AAPD) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
