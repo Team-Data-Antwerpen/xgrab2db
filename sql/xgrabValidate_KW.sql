@@ -1045,25 +1045,41 @@ DELETE FROM "validatiefouten";
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'De betekenisloze sleutel van de actuele terreinobject-huisnummer relatie is niet uniek.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
-    WHERE eindtijd IS NULL AND EXISTS (SELECT ID FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 WHERE eindtijd IS NULL AND t1.ID = t2.ID GROUP BY ID HAVING COUNT(*) > 1 );
+    WHERE eindtijd IS NULL AND EXISTS (
+        SELECT ID FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 
+        WHERE eindtijd IS NULL AND t1.ID = t2.ID 
+        GROUP BY ID 
+        HAVING COUNT(*) > 1 );
 	--UK_terreinobject_huisnummer_act
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'De combinatie van identificerende velden van de actuele terreinobject-huisnummer relatie is niet uniek.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT terreinobjectid, huisnummerid, begindatum FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 WHERE eindtijd IS NULL AND t1.terreinobjectid = t2.terreinobjectid AND t1.huisnummerid = t2.huisnummerid AND t1.begindatum = t2.begindatum GROUP BY terreinobjectid, huisnummerid, begindatum HAVING COUNT(*) > 1 );
+    AND EXISTS (
+        SELECT terreinobjectid, huisnummerid, begindatum 
+        FROM TERREINOBJECT_HUISNUMMER_RELATIES t2 
+        WHERE eindtijd IS NULL 
+        AND t1.terreinobjectid = t2.terreinobjectid 
+        AND t1.huisnummerid = t2.huisnummerid 
+        AND t1.begindatum = t2.begindatum 
+        GROUP BY terreinobjectid, huisnummerid, begindatum 
+        HAVING COUNT(*) > 1 );
 	--FK_terreinobjecthuisnummer_huisnummer
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Huisnummerid ' || huisnummerid ||  ' bestaat niet.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
-    WHERE NOT EXISTS(SELECT NULL FROM HUISNUMMERS WHERE ID = t1.huisnummerid);
+    WHERE NOT EXISTS(
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE ID = t1.huisnummerid);
 	--FK_terreinobjecthuisnummer_terreinobject
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Terreinobjectid ' || terreinobjectid ||  ' bestaat niet.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
-    WHERE NOT EXISTS(SELECT NULL FROM TERREINOBJECTEN WHERE ID = t1.terreinobjectid);
+    WHERE NOT EXISTS(
+        SELECT NULL FROM TERREINOBJECTEN 
+        WHERE ID = t1.terreinobjectid);
 	--interne temporele integriteit
-	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
+	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD, boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'De geldigheidsperiode van de terreinobject-huisnummer relatie overlapt met de geldigheidsperiode van een andere terreinobject-huisnummer relatie met dezelfde identificerende kenmerken.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
     WHERE eindtijd IS NULL AND EXISTS(
@@ -1087,7 +1103,11 @@ DELETE FROM "validatiefouten";
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Einddatum van de terreinobject-huisnummer relatie moet kleiner of gelijk zijn aan einddatum van het gerelateerde huisnummer.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
     WHERE eindtijd IS NULL 
-    AND EXISTS (SELECT NULL FROM HUISNUMMERS WHERE eindtijd IS NULL AND ID = t1.huisnummerid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
+    AND EXISTS (
+        SELECT NULL FROM HUISNUMMERS 
+        WHERE eindtijd IS NULL 
+        AND ID = t1.huisnummerid 
+        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01') );
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Begindatum van de terreinobject-huisnummer relatie moet groter of gelijk zijn aan begindatum van het gerelateerde terreinobject.'
@@ -1703,9 +1723,9 @@ DELETE FROM "validatiefouten";
     INNER JOIN HUISNUMMERSTATUSSEN t2 ON t1.adresid = t2.huisnummerid
     WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie IN ('3', '7') AND t2.huisnummerstatus = '3' 
     AND NOT EXISTS(
-    SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
-    INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
-    WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('2','5')
+        SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
+        INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
+        WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('2','5')
     );
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)

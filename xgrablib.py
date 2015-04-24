@@ -103,15 +103,16 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: 
+            EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute( "SELECT * FROM STRAATNAMEN WHERE ID = %s;" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= u"INSERT INTO STRAATNAMEN VALUES(%s,%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (id,STRAATCODE,
-              NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= u"INSERT INTO STRAATNAMEN VALUES(%s,%s,%s,'%s','%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,STRAATCODE, NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
 
               cur.execute(sql)
           else:
@@ -124,8 +125,9 @@ class xgrab2db:
               BEGINDATUM =  '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s""" % (id,STRAATCODE,NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM,
-                                                BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s ,
+             EINDDATUM= %s """ % (id,STRAATCODE,NISGEMEENTECODE,STRAATNAAM,TAALCODESTRAATNAAM,
+                                                BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql += u" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -152,15 +154,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM STRAATNAAMSTATUSSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO STRAATNAAMSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-              id,STRAATNAAMID,STRAATNAAMSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO STRAATNAAMSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,STRAATNAAMID,STRAATNAAMSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE STRAATNAAMSTATUSSEN"
@@ -170,8 +172,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,STRAATNAAMSTATUS,
-                                                        BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+             EINDDATUM= %s """%(id,STRAATNAAMID,STRAATNAAMSTATUS,
+                                         BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -198,15 +201,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM HUISNUMMERS WHERE ID = %s ;" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO HUISNUMMERS VALUES(%s,%s,'%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
-              id,STRAATNAAMID,HUISNUMMER,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO HUISNUMMERS VALUES(%s,%s,'%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,STRAATNAAMID,HUISNUMMER,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE HUISNUMMERS"
@@ -216,8 +219,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,HUISNUMMER,
-                                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+             EINDDATUM= %s"""%(id,STRAATNAAMID,HUISNUMMER,
+                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -244,15 +248,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM HUISNUMMERSTATUSSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO HUISNUMMERSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,HUISNUMMERID,HUISNUMMERSTATUS,
-                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO HUISNUMMERSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (id,
+              HUISNUMMERID,HUISNUMMERSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE HUISNUMMERSTATUSSEN"
@@ -262,8 +266,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,HUISNUMMERSTATUS,
-                                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+             EINDDATUM= %s """%(id,HUISNUMMERID,HUISNUMMERSTATUS,
+                                      BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -291,15 +296,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM SUBADRESSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO SUBADRESSEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-              id,HUISNUMMERID,SUBADRES,AARDSUBADRES, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO SUBADRESSEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,HUISNUMMERID,SUBADRES,AARDSUBADRES, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE SUBADRESSEN"
@@ -310,8 +315,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,SUBADRES,AARDSUBADRES,
-                                                         BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,HUISNUMMERID,SUBADRES,AARDSUBADRES,
+                                             BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -338,15 +344,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM SUBADRESSTATUSSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO SUBADRESSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,SUBADRESID,SUBADRESSTATUS,
-                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO SUBADRESSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,SUBADRESID,SUBADRESSTATUS,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE SUBADRESSTATUSSEN"
@@ -356,7 +362,8 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""% (id,SUBADRESID,SUBADRESSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s, 
+            EINDDATUM = %s"""% (id,SUBADRESID,SUBADRESSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -383,15 +390,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM POSTKANTONCODES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO POSTKANTONCODES VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,HUISNUMMERID,POSTKANTONCODE,
-                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO POSTKANTONCODES VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,HUISNUMMERID,POSTKANTONCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE POSTKANTONCODES"
@@ -401,7 +408,8 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,HUISNUMMERID,POSTKANTONCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,HUISNUMMERID,POSTKANTONCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -429,15 +437,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM RRSTRAATNAAM_STRAATNAAM_RELATIES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO RRSTRAATNAAM_STRAATNAAM_RELATIES VALUES(%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
-              id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO RRSTRAATNAAM_STRAATNAAM_RELATIES VALUES(%s,%s,'%s','%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE RRSTRAATNAAM_STRAATNAAM_RELATIES"
@@ -448,8 +456,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE,
-                                                                    BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,STRAATNAAMID,SUBKANTONCODE,RRSTRAATCODE,
+                                              BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -490,15 +499,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM STRAATKANTEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-              sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (id,STRAATNAAMID,WEGOBJECTID,
-              KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              sql= "INSERT INTO STRAATKANTEN VALUES(%s,%s,%s,%s,%s,'%s','%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+              id,STRAATNAAMID,WEGOBJECTID, KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               cur.execute(sql)
           else:
               sql = "UPDATE STRAATKANTEN"
@@ -512,9 +521,10 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(
               id,STRAATNAAMID,WEGOBJECTID,KANT,PARITEIT,EERSTEHUISNUMMER,LAATSTEHUISNUMMER,
-                                   BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                                   BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -550,15 +560,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM WEGOBJECTEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO WEGOBJECTEN VALUES(%s,'%s',%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE WEGOBJECTEN"
@@ -570,8 +580,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s """%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING,
-                                                                    BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s """%(id,IDENTIFICATORWEGOBJECT,AARDWEGOBJECT,MORFOLOGISCHEWEGKLASSE,AARDVERHARDING,
+                                                 BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -598,15 +609,15 @@ class xgrab2db:
               BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-              if EINDnode: EINDDATUM = EINDnode
+              if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
               else: EINDDATUM = "Null"
 
               cur.execute("SELECT * FROM WEGVERBINDINGSTATUSSEN WHERE ID = %s" % id)
               data = cur.fetchall()
 
               if len(data) == 0:
-                sql= "INSERT INTO WEGVERBINDINGSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
-                                                                           BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                sql= "INSERT INTO WEGVERBINDINGSTATUSSEN VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+                id,WEGOBJECTID,WEGVERBINDINGSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                 cur.execute(sql)
               else:
                   sql = "UPDATE WEGVERBINDINGSTATUSSEN"
@@ -616,8 +627,9 @@ class xgrab2db:
                   BEGINDATUM = '%s',
                   BEGINTIJD = '%s',
                   BEGINORGANISATIE = %s,
-                  BEGINBEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
-                                                         BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                  BEGINBEWERKING = %s,
+                EINDDATUM= %s """% (id,WEGOBJECTID,WEGVERBINDINGSTATUS,
+                                              BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -650,15 +662,15 @@ class xgrab2db:
               BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-              if EINDnode: EINDDATUM = EINDnode
+              if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
               else: EINDDATUM = "Null"
 
               cur.execute("SELECT * FROM WEGVERBINDINGGEOMETRIEN WHERE ID = %s" % id)
               data = cur.fetchall()
 
               if len(data) == 0:
-                  sql= "INSERT INTO WEGVERBINDINGGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
-                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                  sql= "INSERT INTO WEGVERBINDINGGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+                  id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                   cur.execute(sql)
               else:
                   sql = "UPDATE WEGVERBINDINGGEOMETRIEN "
@@ -669,8 +681,9 @@ class xgrab2db:
                   BEGINDATUM = '%s' ,
                   BEGINTIJD = '%s',
                   BEGINORGANISATIE = %s ,
-                  BEGINBEWERKING = %s"""% (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
-                                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                  BEGINBEWERKING = %s,
+                EINDDATUM= %s"""% (id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE,
+                                                             BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -682,9 +695,9 @@ class xgrab2db:
 
         cur = con.cursor()
 
-        cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECT_HUISNUMMER_RELATIES(ID INT PRIMARY KEY, TERREINOBJECTID INT, HUISNUMMERID INT, "+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
-                          " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
+        cur.execute("CREATE TABLE IF NOT EXISTS TERREINOBJECT_HUISNUMMER_RELATIES(ID INT PRIMARY KEY, TERREINOBJECTID INT, HUISNUMMERID INT, "+  
+        " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
+        " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
         for row in rows.getchildren():
           id = row[0].text
@@ -697,15 +710,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM TERREINOBJECT_HUISNUMMER_RELATIES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO TERREINOBJECT_HUISNUMMER_RELATIES VALUES(%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (id,TERREINOBJECTID,HUISNUMMERID,
-                                                                                          BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO TERREINOBJECT_HUISNUMMER_RELATIES VALUES(%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,TERREINOBJECTID,HUISNUMMERID, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE TERREINOBJECT_HUISNUMMER_RELATIES "
@@ -715,8 +728,8 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""% (id,TERREINOBJECTID,HUISNUMMERID,
-                                                              BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""% (id,TERREINOBJECTID,HUISNUMMERID, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -750,15 +763,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM TERREINOBJECTEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO TERREINOBJECTEN VALUES(%s,'%s',%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING,EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE TERREINOBJECTEN "
@@ -769,8 +782,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,
-                                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,IDENTIFICATORTERREINOBJECT,AARDTERREINOBJECT,AARDGEBOUW,
+                                                   BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING,EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -783,7 +797,7 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWSTATUSSEN(ID INT PRIMARY KEY, TERREINOBJECTID TEXT, GEBOUWSTATUS INT, "+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
         for row in rows.getchildren():
@@ -797,15 +811,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM GEBOUWSTATUSSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO GEBOUWSTATUSSEN VALUES(%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,TERREINOBJECTID,GEBOUWSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO GEBOUWSTATUSSEN VALUES(%s,'%s',%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,TERREINOBJECTID,GEBOUWSTATUS, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE GEBOUWSTATUSSEN "
@@ -815,8 +829,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,TERREINOBJECTID,GEBOUWSTATUS,
-                                                                  BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,TERREINOBJECTID,GEBOUWSTATUS,
+                                               BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -830,7 +845,7 @@ class xgrab2db:
             cur = con.cursor()
 
             cur.execute("CREATE TABLE IF NOT EXISTS GEBOUWGEOMETRIEN(ID INT PRIMARY KEY, TERREINOBJECTID INT, GEBOUWGEOMETRIE TEXT, METHODEGEBOUWGEOMETRIE, "+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
             for row in rows.getchildren():
@@ -848,15 +863,15 @@ class xgrab2db:
               BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
               EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-              if EINDnode: EINDDATUM = EINDnode
+              if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
               else: EINDDATUM = "Null"
 
               cur.execute("SELECT * FROM GEBOUWGEOMETRIEN WHERE ID = %s" % id)
               data = cur.fetchall()
 
               if len(data) == 0:
-                  sql= "INSERT INTO GEBOUWGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                  sql= "INSERT INTO GEBOUWGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                   cur.execute(sql)
               else:
                   sql = "UPDATE GEBOUWGEOMETRIEN "
@@ -867,8 +882,9 @@ class xgrab2db:
                   BEGINDATUM = '%s' ,
                   BEGINTIJD = '%s' ,
                   BEGINORGANISATIE = %s ,
-                  BEGINBEWERKING = %s"""%(
-                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+                  BEGINBEWERKING = %s,
+                EINDDATUM= %s"""%(
+                  id,TERREINOBJECTID,GEBOUWGEOMETRIE,METHODEGEBOUWGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
                   sql +=" WHERE ID = %s ;" % id
                   cur.execute(sql)
         con.commit()
@@ -901,15 +917,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM RRADRESSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO RRADRESSEN VALUES(%s,'%s','%s','%s','%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE RRADRESSEN "
@@ -921,8 +937,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(
-              id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(
+              id,RRHUISNUMMER,RRINDEX,SUBKANTONCODE,RRSTRAATCODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -950,15 +967,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM ADRES_RRADRES_RELATIES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRES_RRADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,ADRESID,AARDADRES,RRADRESID,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO ADRES_RRADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,RRADRESID,BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRES_RRADRES_RELATIES "
@@ -969,8 +986,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,ADRESID,AARDADRES,RRADRESID,
-                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,ADRESID,AARDADRES,RRADRESID,
+                                            BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -983,7 +1001,7 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS KADADRESSEN(ID INT PRIMARY KEY, KADHUISNUMMER TEXT, KADSTRAATCODE TEXT, NISGEMEENTECODE TEXT, "+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
         for row in rows.getchildren():
@@ -998,15 +1016,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM KADADRESSEN WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO KADADRESSEN VALUES(%s,'%s','%s','%s','%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO KADADRESSEN VALUES(%s,'%s','%s','%s','%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE KADADRESSEN "
@@ -1017,8 +1035,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(
-              id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(
+              id,KADHUISNUMMER,KADSTRAATCODE,NISGEMEENTECODE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -1046,15 +1065,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM ADRES_KADADRES_RELATIES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRES_KADADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,ADRESID,AARDADRES,KADADRESID, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO ADRES_KADADRES_RELATIES VALUES(%s,%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,KADADRESID, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRES_KADADRES_RELATIES "
@@ -1065,8 +1084,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""%(id,ADRESID,AARDADRES,KADADRESID,
-                                               BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""%(id,ADRESID,AARDADRES,KADADRESID,
+                                               BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()
@@ -1079,7 +1099,7 @@ class xgrab2db:
         cur = con.cursor()
 
         cur.execute("CREATE TABLE IF NOT EXISTS ADRESPOSITIES(ID INT PRIMARY KEY, ADRESID INT, AARDADRES INT, X REAL, Y REAL, HERKOMSTADRESPOSITIE INT, "+
-                          "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
+                          " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
         for row in rows.getchildren():
@@ -1097,15 +1117,15 @@ class xgrab2db:
           BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
 
           EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
-          if EINDnode: EINDDATUM = EINDnode
+          if EINDnode != None: EINDDATUM =  "'" + EINDnode.text + "'"
           else: EINDDATUM = "Null"
 
           cur.execute("SELECT * FROM ADRESPOSITIES WHERE ID = %s" % id)
           data = cur.fetchall()
 
           if len(data) == 0:
-            sql= "INSERT INTO ADRESPOSITIES VALUES(%s,%s,%s,%s,%s,%s,'%s','%s',%s,%s,Null,Null,Null,Null);" % (
-            id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+            sql= "INSERT INTO ADRESPOSITIES VALUES(%s,%s,%s,%s,%s,%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
+            id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
             cur.execute(sql)
           else:
               sql = "UPDATE ADRESPOSITIES "
@@ -1118,8 +1138,9 @@ class xgrab2db:
               BEGINDATUM = '%s' ,
               BEGINTIJD = '%s' ,
               BEGINORGANISATIE = %s ,
-              BEGINBEWERKING = %s"""% (id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE,
-                                           BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING)
+              BEGINBEWERKING = %s,
+            EINDDATUM= %s"""% (id,ADRESID,AARDADRES,X,Y,HERKOMSTADRESPOSITIE,
+                                           BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
               sql +=" WHERE ID = %s ;" % id
               cur.execute(sql)
         con.commit()

@@ -6,7 +6,7 @@ geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
 geenTerreinKoppeling.HUISNUMMER as HUISNR, 
 geenTerreinKoppeling.STRAATNAAM as straat, 
 geenTerreinKoppeling.POSTCODE as postcode, 
-GBKA_ADRESSEN.CRABCODE as CRABCODE, 
+CAST( GBKA_ADRESSEN.CRABCODE AS INTEGER) as CRABCODE, 
 GBKA_ADRESSEN.SHAPE as SHAPE
 FROM geenTerreinKoppeling
 INNER JOIN  GBKA_ADRESSEN
@@ -21,7 +21,7 @@ geenTerreinKoppeling.HUISNUMMERID AS HUISNR_ID,
 geenTerreinKoppeling.HUISNUMMER as HUISNR, 
 geenTerreinKoppeling.STRAATNAAM as straat, 
 geenTerreinKoppeling.POSTCODE as postcode, 
-GBKA_ADRESSEN.CRABCODE as CRABCODE, 
+CAST( GBKA_ADRESSEN.CRABCODE AS INTEGER) as CRABCODE, 
 GBKA_ADRESSEN.SHAPE as SHAPE
 FROM geenTerreinKoppeling
 INNER JOIN  GBKA_ADRESSEN        

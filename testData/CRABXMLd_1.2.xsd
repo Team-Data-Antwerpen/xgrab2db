@@ -1,0 +1,1270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:c="http://crab.agiv.be" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" targetNamespace="http://crab.agiv.be" elementFormDefault="qualified">
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+	<xs:element name="CRAB" substitutionGroup="gml:_Feature">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="COMPONENTEN" minOccurs="1" maxOccurs="1">
+							<xs:complexType>
+								<xs:all>
+									<xs:element name="STRAATNAMEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="STRAATNAAM_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+														<xs:annotation>
+															<xs:documentation>voorlopige straatcodes moeten groter of gelijk zijn aan 1E+9</xs:documentation>
+														</xs:annotation>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="STRAATCODE" type="c:crabstraatcodetype"/>
+															<xs:element name="NISGEMEENTECODE" type="c:nisgemeentecodetype"/>
+															<xs:element name="STRAATNAAM">
+																<xs:simpleType>
+																	<xs:restriction base="xs:string">
+																		<xs:minLength value="1"/>
+																		<xs:maxLength value="80"/>	
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:element>
+															<xs:element name="TAALCODESTRAATNAAM" type="c:taalcode"/>
+															<xs:element name="TWEEDETAAL" minOccurs="0">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="STRAATNAAMTWEEDETAAL">
+																			<xs:simpleType>
+																				<xs:restriction base="xs:string">
+																					<xs:minLength value="1"/>
+																					<xs:maxLength value="80"/>
+																				</xs:restriction>
+																			</xs:simpleType>
+																		</xs:element>
+																		<xs:element name="TAALCODESTRAATNAAMTWEEDETAAL" type="c:taalcode"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="straatnaam"/>
+										</xs:complexType>
+										<xs:key name="PK_straatnaam">
+											<xs:selector xpath="./c:STRAATNAAM_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>																
+										<xs:unique name="UK_straatnaam">
+											<xs:selector xpath="c:STRAATNAAM_OBJECT"/>
+											<xs:field xpath="c:NISGEMEENTECODE"/>
+											<xs:field xpath="c:STRAATNAAM"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+										<xs:unique name="UK2_straatnaam">
+											<xs:selector xpath="c:STRAATNAAM_OBJECT"/>
+											<xs:field xpath="c:STRAATCODE"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="STRAATNAAMSTATUSSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="STRAATNAAMSTATUS_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="STRAATNAAMID" type="xs:int"/>
+															<xs:element name="STRAATNAAMSTATUS" type="c:straatnaamstatuscode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="straatnaamstatus"/>
+										</xs:complexType>
+										<xs:key name="PK_straatnaamstatus">
+											<xs:selector xpath="./c:STRAATNAAMSTATUS_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_straatnaamstatus">
+											<xs:selector xpath="./c:STRAATNAAMSTATUS_OBJECT"/>
+											<xs:field xpath="c:STRAATNAAMID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>								
+									</xs:element>
+									<xs:element name="HUISNUMMERS">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="HUISNUMMER_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+														<xs:annotation>
+															<xs:documentation xml:lang="nl">
+																<p>huisnummerbereiken zijn niet toegelaten</p>
+																<p>het huisnummer is inclusief een eventueel bisnummer:
+																	<li>numeriek bisnummer: gebruik underscore als scheidingsteken (vb. 12_3)</li>
+																	<li>niet-numeriek bisnummer: hoofdletter (vb. 12A)</li>
+																</p>
+																<p>eventuele busnummers en/of appartementsnummers worden afzonderlijk vermeld (zie Subadressen)</p>
+																<p>gebruik 'ZN' voor een adres zonder nummer</p>
+															</xs:documentation>
+														</xs:annotation>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="STRAATNAAMID" type="xs:int"/>
+															<xs:element name="HUISNUMMER">
+																<xs:simpleType>
+																	<xs:restriction base="xs:string">
+																		<xs:maxLength value="11"/>
+																		<xs:pattern value="[1-9][0-9]*(BIS|TER|[A-Z]|_[0-9]+){0,1}|ZN"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:element>
+															<xs:element name="HUISNUMMERSORTEERVELD" type="xs:string" minOccurs="0"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="huisnummer"/>
+										</xs:complexType>
+										<xs:key name="PK_huisnummer">
+											<xs:selector xpath="./c:HUISNUMMER_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_huisnummer">
+											<xs:selector xpath="./c:HUISNUMMER_OBJECT"/>
+											<xs:field xpath="c:STRAATNAAMID"/>
+											<xs:field xpath="c:HUISNUMMER"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="HUISNUMMERSTATUSSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="HUISNUMMERSTATUS_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="HUISNUMMERID" type="xs:int"/>
+															<xs:element name="HUISNUMMERSTATUS" type="c:huisnummerstatuscode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="huisnummerstatus"/>
+										</xs:complexType>
+										<xs:key name="PK_huisnummerstatus">
+											<xs:selector xpath="./c:HUISNUMMERSTATUS_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_huisnummerstatus">
+											<xs:selector xpath="./c:HUISNUMMERSTATUS_OBJECT"/>
+											<xs:field xpath="c:HUISNUMMERID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="SUBADRESSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="SUBADRES_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="HUISNUMMERID" type="xs:int"/>
+															<xs:element name="SUBADRES">
+																<xs:simpleType>
+																	<xs:restriction base="xs:string">
+																		<xs:minLength value="1"/>
+																		<xs:maxLength value="10"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:element>
+															<xs:element name="AARDSUBADRES" type="c:aardsubadrescode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="subadres"/>
+										</xs:complexType>
+										<xs:key name="PK_subadres">
+											<xs:selector xpath="./c:SUBADRES_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_subadres">
+											<xs:selector xpath="./c:SUBADRES_OBJECT"/>
+											<xs:field xpath="c:HUISNUMMERID"/>
+											<xs:field xpath="c:SUBADRES"/>
+											<xs:field xpath="c:AARDSUBADRES"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="SUBADRESSTATUSSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="SUBADRESSTATUS_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="SUBADRESID" type="xs:int"/>
+															<xs:element name="SUBADRESSTATUS" type="c:subadresstatuscode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="subadresstatus"/>
+										</xs:complexType>
+										<xs:key name="PK_subadresstatus">
+											<xs:selector xpath="./c:SUBADRESSTATUS_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_subadresstatus">
+											<xs:selector xpath="./c:SUBADRESSTATUS_OBJECT"/>
+											<xs:field xpath="c:SUBADRESID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="POSTKANTONCODES">								
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="POSTKANTONCODE_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="HUISNUMMERID" type="xs:int"/>
+															<xs:element name="POSTKANTONCODE" type="c:postkantoncodetype"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="postkantoncode"/>
+										</xs:complexType>
+										<xs:key name="PK_huisnummer_postkanton">
+											<xs:selector xpath="./c:POSTKANTONCODE_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_huisnummer_postkanton">
+											<xs:selector xpath="./c:POSTKANTONCODE_OBJECT"/>
+											<xs:field xpath="c:HUISNUMMERID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="RRSTRAATNAAM_STRAATNAAM_RELATIES">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="RRSTRAATNAAM_STRAATNAAM_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="STRAATNAAMID" type="xs:int"/>
+															<xs:element name="SUBKANTONCODE" type="c:subkantoncodetype"/>
+															<xs:element name="RRSTRAATCODE" type="c:rrstraatcodetype"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="rrStraatnaamStraatnaam"/>
+										</xs:complexType>
+										<xs:key name="PK_rrstraatnaam_straatnaam">
+											<xs:selector xpath="./c:RRSTRAATNAAM_STRAATNAAM_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_rrstraatnaam_straatnaam">
+											<xs:selector xpath="./c:RRSTRAATNAAM_STRAATNAAM_OBJECT"/>
+											<xs:field xpath="c:SUBKANTONCODE"/>
+											<xs:field xpath="c:RRSTRAATCODE"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="STRAATKANTEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="STRAATKANT_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="STRAATNAAMID" type="xs:int"/>
+															<xs:element name="WEGOBJECTID" type="xs:int"/>
+															<xs:element name="KANT" type="c:kantcode"/>
+															<xs:element name="PARITEIT" type="c:pariteitcode" minOccurs="0"/>
+															<xs:element name="EERSTEHUISNUMMER" type="c:huisnummertype" minOccurs="0"/>
+															<xs:element name="LAATSTEHUISNUMMER" type="c:huisnummertype" minOccurs="0"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="straatkant"/>
+										</xs:complexType>
+										<xs:key name="PK_straatkant">
+											<xs:selector xpath="./c:STRAATKANT_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_straatkant">
+											<xs:selector xpath="./c:STRAATKANT_OBJECT"/>
+											<xs:field xpath="c:STRAATNAAMID"/>
+											<xs:field xpath="c:WEGOBJECTID"/>
+											<xs:field xpath="c:KANT"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="WEGOBJECTEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="WEGOBJECT_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="IDENTIFICATORWEGOBJECT" type="c:identificatortype" />
+															<xs:element name="AARDWEGOBJECT" type="c:aardwegobjectcode"/>
+															<xs:element name="WEGVERBINDING" minOccurs="0">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="MORFOLOGISCHEWEGKLASSE" type="c:morfologischewegklassecode"/>
+																		<xs:element name="AARDVERHARDING" type="c:aardverhardingcode"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="wegobject"/>
+										</xs:complexType>								
+										<xs:key name="PK_wegobject">
+											<xs:selector xpath="./c:WEGOBJECT_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_wegobject">
+											<xs:selector xpath="./c:WEGOBJECT_OBJECT"/>
+											<xs:field xpath="c:IDENTIFICATORWEGOBJECT"/>
+											<xs:field xpath="c:AARDWEGOBJECT"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="WEGVERBINDINGSTATUSSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="WEGVERBINDINGSTATUS_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="WEGOBJECTID" type="xs:int"/>
+															<xs:element name="WEGVERBINDINGSTATUS" type="c:wegverbindingstatuscode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="wegverbindingstatus"/>
+										</xs:complexType>
+										<xs:key name="PK_wegverbindingstatus">
+											<xs:selector xpath="./c:WEGVERBINDINGSTATUS_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_wegverbindingstatus">
+											<xs:selector xpath="./c:WEGVERBINDINGSTATUS_OBJECT"/>
+											<xs:field xpath="c:WEGOBJECTID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="WEGVERBINDINGGEOMETRIEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="WEGVERBINDINGGEOMETRIE_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="WEGOBJECTID" type="xs:int"/>
+															<xs:element name="WEGVERBINDINGGEOMETRIE">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element ref="gml:LineString"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="METHODEWEGVERBINDINGGEOMETRIE" type="c:methodewegverbindinggeometriecode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="wegverbindinggeometrie"/>
+										</xs:complexType>
+										<xs:key name="PK_wegverbindinggeometrie">
+											<xs:selector xpath="./c:WEGVERBINDINGGEOMETRIE_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_wegverbindinggeometrie">
+											<xs:selector xpath="./c:WEGVERBINDINGGEOMETRIE_OBJECT"/>
+											<xs:field xpath="c:WEGOBJECTID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="TERREINOBJECT_HUISNUMMER_RELATIES">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="TERREINOBJECT_HUISNUMMER_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="TERREINOBJECTID" type="xs:int"/>
+															<xs:element name="HUISNUMMERID" type="xs:int"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="terreinobjectHuisnummer"/>
+										</xs:complexType>
+										<xs:key name="PK_terreinobject_huisnummer">
+											<xs:selector xpath="./c:TERREINOBJECT_HUISNUMMER_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_terreinobject_huisnummer">
+											<xs:selector xpath="./c:TERREINOBJECT_HUISNUMMER_OBJECT"/>
+											<xs:field xpath="c:TERREINOBJECTID"/>
+											<xs:field xpath="c:HUISNUMMERID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="TERREINOBJECTEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="TERREINOBJECT_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="IDENTIFICATORTERREINOBJECT" type="c:identificatortype"/>
+															<xs:element name="AARDTERREINOBJECT" type="c:aardterreinobjectcode"/>															
+															<xs:element name="GEBOUW" minOccurs="0">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="AARDGEBOUW" type="c:aardgebouwcode"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="terreinobject"/>
+										</xs:complexType>
+										<xs:key name="PK_terreinobject">
+											<xs:selector xpath="./c:TERREINOBJECT_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_terreinobject">
+											<xs:selector xpath="./c:TERREINOBJECT_OBJECT"/>
+											<xs:field xpath="c:IDENTIFICATORTERREINOBJECT"/>
+											<xs:field xpath="c:AARDTERREINOBJECT"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="GEBOUWSTATUSSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="GEBOUWSTATUS_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="TERREINOBJECTID" type="xs:int"/>
+															<xs:element name="GEBOUWSTATUS" type="c:gebouwstatuscode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="gebouwstatus"/>
+										</xs:complexType>
+										<xs:key name="PK_gebouwstatus">
+											<xs:selector xpath="./c:GEBOUWSTATUS_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_gebouwstatus">
+											<xs:selector xpath="./c:GEBOUWSTATUS_OBJECT"/>
+											<xs:field xpath="c:TERREINOBJECTID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="GEBOUWGEOMETRIEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="GEBOUWGEOMETRIE_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="TERREINOBJECTID" type="xs:int"/>
+															<xs:element name="GEBOUWGEOMETRIE">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element ref="gml:Polygon"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="METHODEGEBOUWGEOMETRIE" type="c:methodegebouwgeometriecode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="gebouwgeometrie"/>
+										</xs:complexType>
+										<xs:key name="PK_gebouwgeometrie">
+											<xs:selector xpath="./c:GEBOUWGEOMETRIE_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_gebouwgeometrie">
+											<xs:selector xpath="./c:GEBOUWGEOMETRIE_OBJECT"/>
+											<xs:field xpath="c:TERREINOBJECTID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="RRADRESSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="RRADRES_OBJECT"  minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="RRHUISNUMMER" type="c:rrhuisnummertype"/>
+															<xs:element name="INDEX" type="c:rrindextype" minOccurs="0"/>
+															<xs:element name="SUBKANTONCODE" type="c:subkantoncodetype"/>
+															<xs:element name="RRSTRAATCODE" type="c:rrstraatcodetype"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="rrAdres"/>
+										</xs:complexType>
+										<xs:key name="PK_rradres">
+											<xs:selector xpath="./c:RRADRES_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_rradres">
+											<xs:selector xpath="./c:RRADRES_OBJECT"/>
+											<xs:field xpath="c:RRHUISNUMMER"/>
+											<xs:field xpath="c:INDEX"/>
+											<xs:field xpath="c:SUBKANTONCODE"/>
+											<xs:field xpath="c:RRSTRAATCODE"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="ADRES_RRADRES_RELATIES">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ADRES_RRADRES_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="ADRESID" type="xs:int"/>
+															<xs:element name="AARDADRES" type="c:aardadrescode"/>
+															<xs:element name="RRADRESID" type="xs:int"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="adresRrAdres"/>
+										</xs:complexType>
+										<xs:key name="PK_adres_rijksregisteradres">
+											<xs:selector xpath="./c:ADRES_RRADRES_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_adres_rijksregisteradres">
+											<xs:selector xpath="./c:ADRES_RRADRES_OBJECT"/>
+											<xs:field xpath="c:ADRESID"/>
+											<xs:field xpath="c:AARDADRES"/>
+											<xs:field xpath="c:RRADRESID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="KADADRESSEN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="KADADRES_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="KADHUISNUMMER" type="c:kadhuisnummertype"/>
+															<xs:element name="KADSTRAATCODE" type="c:kadstraatcodetype"/>
+															<xs:element name="NISGEMEENTECODE" type="c:nisgemeentecodetype"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="kadAdres"/>
+										</xs:complexType>
+										<xs:key name="PK_kadadres">
+											<xs:selector xpath="./c:KADADRES_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_kadadres">
+											<xs:selector xpath="./c:KADADRES_OBJECT"/>
+											<xs:field xpath="c:KADHUISNUMMER"/>
+											<xs:field xpath="c:KADSTRAATCODE"/>
+											<xs:field xpath="c:NISGEMEENTECODE"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="ADRES_KADADRES_RELATIES">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ADRES_KADADRES_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="ADRESID" type="xs:int"/>
+															<xs:element name="AARDADRES" type="c:aardadrescode"/>
+															<xs:element name="KADADRESID" type="xs:int"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="adresKadAdres"/>
+										</xs:complexType>
+										<xs:key name="PK_adres_kadadres">
+											<xs:selector xpath="./c:ADRES_KADADRES_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_adres_kadadres">
+											<xs:selector xpath="./c:ADRES_KADADRES_OBJECT"/>
+											<xs:field xpath="c:ADRESID"/>
+											<xs:field xpath="c:AARDADRES"/>
+											<xs:field xpath="c:KADADRESID"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+									<xs:element name="ADRESPOSITIES">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ADRESPOSITIE_OBJECT" minOccurs="0" maxOccurs="unbounded">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="ID" type="xs:int"/>
+															<xs:element name="ADRESID" type="xs:int"/>
+															<xs:element name="AARDADRES" type="c:aardadrescode"/>
+															<xs:element name="ADRESPOSITIE">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element ref="gml:Point"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="HERKOMSTADRESPOSITIE" type="c:herkomstadrespositiecode"/>
+															<xs:group ref="c:CRABComponentMetadataGroep"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="objecttype" use="required" fixed="adrespositie"/>
+										</xs:complexType>
+										<xs:key name="PK_adrespositie">
+											<xs:selector xpath="./c:ADRESPOSITIE_OBJECT"/>
+											<xs:field xpath="c:ID"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:key>
+										<xs:unique name="UK_adrespositie">
+											<xs:selector xpath="./c:ADRESPOSITIE_OBJECT"/>
+											<xs:field xpath="c:ADRESID"/>
+											<xs:field xpath="c:AARDADRES"/>
+											<xs:field xpath="c:HERKOMSTADRESPOSITIE"/>
+											<xs:field xpath="c:BEGINDATUM"/>
+											<xs:field xpath="c:BEGINMETADATA/c:TIJD"/>
+										</xs:unique>
+									</xs:element>
+								</xs:all>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="TRANSACTIES" minOccurs="0" maxOccurs="1">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="TRANSACTIE" maxOccurs="unbounded">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ID" type="xs:int"/>
+												<xs:element name="OUDEIDENTIFICATOR" type="xs:int" minOccurs="0"/>
+												<xs:element name="NIEUWEIDENTIFICATOR" type="xs:int" minOccurs="0"/>
+												<xs:element name="OBJECTTYPE" type="c:objecttypecode"/>
+												<xs:element name="TRANSACTIETYPE" type="c:transactietypecode"/>
+												<xs:element name="TRANSACTIETIJDSTIP" type="xs:dateTime"/>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+							<xs:key name="PK_transactie">
+								<xs:selector xpath="TRANSACTIE"/>
+								<xs:field xpath="ID"/>
+							</xs:key>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="VORIG_TIJDSTIP" type="xs:dateTime" use="optional"/>
+					<xs:attribute name="HUIDIG_TIJDSTIP" type="xs:dateTime" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>		
+	<xs:group name="CRABComponentMetadataGroep">
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>
+					<p>aanbeloven default waarden voor begindatums:
+						<li>indien geen bovenliggend object aanwezig: 18300101</li>
+						<li>indien bovenliggend(e) object(en) aanwezig: de grootst voorkomende begindatum</li>
+					</p>
+				</xs:documentation>
+			</xs:annotation>
+			<xs:element name="BEGINDATUM" type="xs:date"/>
+			<xs:element name="EINDDATUM" type="xs:date" minOccurs="0"/>
+			<xs:element name="BEGINMETADATA">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TIJD" type="xs:dateTime"/>
+						<xs:element name="ORGANISATIE" type="c:organisatiecode"/>
+						<xs:element name="BEWERKING" type="c:bewerkingcode"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="EINDMETADATA" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TIJD" type="xs:dateTime"/>
+						<xs:element name="ORGANISATIE" type="c:organisatiecode"/>
+						<xs:element name="BEWERKING" type="c:bewerkingcode"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:group>
+	<!-- custom data types -->
+	<xs:simpleType name="nisgemeentecodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9][0-9]{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="crabstraatcodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{1,15}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="postkantoncodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9][0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="subkantoncodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9][0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="rrstraatcodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(T|K|[0-9])[0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="rrhuisnummertype">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="rrindextype">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="kadstraatcodetype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{5}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="kadhuisnummertype">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="huisnummertype">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"/>
+			<xs:pattern value="[1-9][0-9]*(BIS|TER|[A-Z]|_[0-9]+){0,1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="identificatortype">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="25"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- code lists -->
+	<xs:simpleType name="organisatiecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: gemeente
+				2: rijksregister
+				3: AAPD
+				4: TeleAtlas
+				5: AGIV
+				6: NGI
+				7: bPost
+				8: NavTeq
+				9: VKBO
+				99: andere
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="6"/>
+			<xs:enumeration value="7"/>
+			<xs:enumeration value="8"/>
+			<xs:enumeration value="9"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="bewerkingcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: invoer
+				2: historering
+				3: correctie
+				4: verwijdering
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="taalcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				nl: Nederlands
+				fr: Frans
+				de: Duits
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="nl"/>
+			<xs:enumeration value="fr"/>
+			<xs:enumeration value="de"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="kantcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: links
+				2: rechts
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="pariteitcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: even
+				2: oneven
+				3: gemengd
+				4: onregelmatig
+				5: geen
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardsubadrescode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: appartementnummer
+				2: busnummer
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardwegobjectcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: TeleAtlas taTEL
+				2: GRB wegverbinding
+				3: GRB wegknoop
+				4: NavTeq ntLink
+				5: wegverbinding volgens de gemeente
+				99: andere
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardterreinobjectcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: kadastraal perceel
+				2: GRB gebouw
+				3: GRB kunstwerk
+				4: GRB administratief perceel
+				5: gebouw volgens de gemeente
+				99: andere
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="99"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardadrescode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: subadres
+				2: huisnummer
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardgebouwcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: hoofdgebouw
+				2: bijgebouw
+				3: virtueel gebouw
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="morfologischewegklassecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				101: autosnelweg
+				102: weg met gescheiden rijbanen die geen autosnelweg is
+				103: weg, bestaande uit één rijbaan
+				104: rotonde
+				105: speciale verkeerssituatie
+				106: verkeersplein
+				107: op- of afrit, behorende tot een niet-gelijkgrondse verbinding
+				108: op- of afrit, behorende tot een gelijkgrondse verbinding
+				109: parallelweg
+				110: ventweg
+				111: in- of uitrit van een parking
+				112: in- of uitrit van een dienst
+				114: wandel- en/of fietsweg, niet toegankelijk voor andere voertuigen
+				116: tramweg, niet toegankelijk voor andere voertuigen
+				120: dienstweg
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="101"/>
+			<xs:enumeration value="102"/>
+			<xs:enumeration value="103"/>
+			<xs:enumeration value="104"/>
+			<xs:enumeration value="105"/>
+			<xs:enumeration value="106"/>
+			<xs:enumeration value="107"/>
+			<xs:enumeration value="108"/>
+			<xs:enumeration value="109"/>
+			<xs:enumeration value="110"/>
+			<xs:enumeration value="111"/>
+			<xs:enumeration value="112"/>
+			<xs:enumeration value="114"/>
+			<xs:enumeration value="116"/>
+			<xs:enumeration value="120"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="aardverhardingcode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: verharde weg
+				2: onverharde weg
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="subadresstatuscode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: voorgesteld
+				2: gereserveerd
+				3: in gebruik
+				4: buiten gebruik
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="huisnummerstatuscode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: voorgesteld
+				2: gereserveerd
+				3: in gebruik
+				4: buiten gebruik
+				5: niet officieel
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="straatnaamstatuscode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: voorgesteld
+				2: gereserveerd
+				3: in gebruik
+				4: buiten gebruik
+				5: niet officieel
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="herkomstadrespositiecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: manuele aanduiding van lot
+				2: manuele aanduiding van perceel
+				3: manuele aanduiding van gebouw
+				4: manuele aanduiding van brievenbus
+				5: manuele aanduiding van nutsaansluiting
+				6: manuele aanduiding van toegang tot de weg
+				7: manuele aanduiding van ingang van gebouw
+				8: manuele aanduiding van standplaats
+				9: manuele aanduiding van ligplaats
+				10: afgeleid van gebouw
+				11: afgeleid van perceel GRB
+				12: afgeleid van perceel kadaster
+				13: geïnterpoleerd op basis van nevenliggende huisnummers gebouw
+				14: geïnterpoleerd op basis van nevenliggende huisnummers perceel GRB
+				15: geïnterpoleerd op basis van nevenliggende huisnummers perceel kadaster
+				16: geïnterpoleerd op basis van wegverbinding
+				17: afgeleid van straat
+				18: afgeleid van gemeente
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="6"/>
+			<xs:enumeration value="7"/>
+			<xs:enumeration value="8"/>
+			<xs:enumeration value="9"/>
+			<xs:enumeration value="10"/>
+			<xs:enumeration value="11"/>
+			<xs:enumeration value="12"/>
+			<xs:enumeration value="13"/>
+			<xs:enumeration value="14"/>
+			<xs:enumeration value="15"/>
+			<xs:enumeration value="16"/>
+			<xs:enumeration value="17"/>
+			<xs:enumeration value="18"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="gebouwstatuscode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: vergunning aangevraagd
+				2: bouwvergunning verleend
+				3: in aanbouw
+				4: in gebruik
+				5: buiten gebruik
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="methodegebouwgeometriecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: schets
+				2: opmeting
+				3: grb
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="wegverbindingstatuscode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: vergunning aangevraagd
+				2: bouwvergunning verleend
+				3: in aanbouw
+				4: in gebruik
+				5: buiten gebruik
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="methodewegverbindinggeometriecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: schets
+				2: opmeting
+				3: grb
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="objecttypecode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="adresKadAdres"/>
+			<xs:enumeration value="adrespositie"/>
+			<xs:enumeration value="adresRrAdres"/>
+			<xs:enumeration value="gebouwgeometrie"/>
+			<xs:enumeration value="gebouwstatus"/>
+			<xs:enumeration value="huisnummer"/>
+			<xs:enumeration value="huisnummerstatus"/>
+			<xs:enumeration value="kadAdres"/>
+			<xs:enumeration value="postkantoncode"/>
+			<xs:enumeration value="rrAdres"/>
+			<xs:enumeration value="rrStraatnaamStraatnaam"/>
+			<xs:enumeration value="straatnaam"/>
+			<xs:enumeration value="straatnaamstatus"/>
+			<xs:enumeration value="straatkant"/>
+			<xs:enumeration value="subadres"/>
+			<xs:enumeration value="subadresstatus"/>			
+			<xs:enumeration value="terreinobject"/>
+			<xs:enumeration value="terreinobjectHuisnummer"/>
+			<xs:enumeration value="wegobject"/>
+			<xs:enumeration value="wegverbindinggeometrie"/>
+			<xs:enumeration value="wegverbindingstatus"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="transactietypecode">
+		<xs:annotation>
+			<xs:documentation xml:lang="nl">
+				1: invoer
+				2: historering
+				3: correctie
+				4: verwijdering
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -8,7 +8,7 @@ Many GIS-tools support reading/writing spatialite like arcgis10.2 and QGIS and y
 This allows you to combine with your local data or do large changes very quickly. </em>
 
 Dependencies
-----
+-----
 Python 2.7 is required to run the scripts.
 The tool xgrab2spatialite.py requires [https://github.com/lokkju/pyspatialite](pyspatialite). 
 The other tools use the build-in sqlite3 module.
@@ -18,7 +18,7 @@ The tool update_terrein_adrespositie requires pyspatialite and  python-gdal to r
 You can run update_terrein_adrespositie.py and xgrab2spatialite.py in the osgeo4w-shell (download from http://trac.osgeo.org/osgeo4w/).
 
 Part 1: xgrab2db, main functions
-====
+=====
 These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml.
 
 Spatialite files are filebased spatial databases. (like shapefiles but a lot better)
@@ -213,9 +213,12 @@ Summary
 > xgrab2spatialite.py xgrab.xml xgrab.sqlite
 > spatialite xgrab.sqlite < correcties.sql
 > spatialite xgrab.sqlite <  geenTerreinKoppeling.sql
-> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split -d  xgrab.sqlite -t GBKA_ADRESSEN -g SHAPE -c CP1252 -s 31370
-> spatialite geenTerreinKoppeling_join_GBKA.sql
-> ... create a spatial joined table on CRAB-buildings ... in qgis, output= GBKA_join_geenTerrein_join_crabGebouw.shp
+> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split  xgrab.sqlite 
+> spatialite_tool -i -shp SHP\WOONEENHEID2015 -t WOONEENHEID2015 -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
+> spatialite xgrab.sqlite < geenTerreinKoppeling_join_WE_GBKA.sql
+
+... create a spatial joined table on CRAB-buildings ... in qgis/arcgis, output= GBKA_join_geenTerrein_join_crabGebouw.shp
+
 > update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp
 > spatialite xgrab.sqlite <  correcties.sql
 > spatialite xgrab.sqlite <  xgrabValidate_KW.sql
