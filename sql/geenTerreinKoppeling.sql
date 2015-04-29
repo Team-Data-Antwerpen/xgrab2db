@@ -21,7 +21,7 @@ FROM  HUISNUMMERS h
             ON  ap.ADRESID = th1.HUISNUMMERID
         LEFT JOIN TERREINOBJECTEN
             ON th1.TERREINOBJECTID = TERREINOBJECTEN.ID 
-    
+
 WHERE   h.einddatum IS NULL
         AND hs.einddatum IS NULL
         AND hs.huisnummerstatus = '3'

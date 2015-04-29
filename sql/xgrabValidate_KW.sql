@@ -1114,12 +1114,15 @@ DELETE FROM "validatiefouten";
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
     WHERE eindtijd IS NULL 
     AND EXISTS (SELECT NULL FROM TERREINOBJECTEN WHERE eindtijd IS NULL AND ID = t1.terreinobjectid AND begindatum > t1.begindatum);
-    --
+    --  
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'Einddatum van de terreinobject-huisnummer relatie moet kleiner of gelijk zijn aan einddatum van het gerelateerde terreinobject.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
-    WHERE eindtijd IS NULL  AND EXISTS (SELECT NULL FROM TERREINOBJECTEN WHERE eindtijd IS NULL AND ID = t1.terreinobjectid AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
-	--beperking organisatiecode
+    WHERE eindtijd IS NULL AND EXISTS (
+        SELECT NULL FROM TERREINOBJECTEN 
+        WHERE eindtijd IS NULL AND ID = t1.terreinobjectid 
+        AND IFNULL(einddatum, '9999-01-01') < IFNULL(t1.einddatum, '9999-01-01'));
+    --beperking organisatiecode
 	INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'terreinobjectHuisnummer', ID, BEGINTIJD, 'De beginorganisatie van de terreinobject-huisnummer relatie moet ofwel 1 (gemeente) ofwel 3 (AAPD) ofwel 5 (AGIV) ofwel 99 (andere) zijn.'
     FROM TERREINOBJECT_HUISNUMMER_RELATIES t1
@@ -1721,7 +1724,10 @@ DELETE FROM "validatiefouten";
     'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 3 (manuele aanduiding van gebouw) of 7 (manuele aanduiding van ingang van gebouw) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 2 (GRB gebouw) of aard 5 (gebouw volgens de gemeente).'
     FROM ADRESPOSITIES t1
     INNER JOIN HUISNUMMERSTATUSSEN t2 ON t1.adresid = t2.huisnummerid
-    WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie IN ('3', '7') AND t2.huisnummerstatus = '3' 
+    WHERE t1.aardadres = '2' 
+    AND t1.eindtijd IS NULL 
+    AND t1.herkomstadrespositie IN ('3', '7') 
+    AND t2.huisnummerstatus = '3' 
     AND NOT EXISTS(
         SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
         INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
@@ -1748,11 +1754,13 @@ DELETE FROM "validatiefouten";
     SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 'Een huisnummer met status 3 (in gebruik) kan enkel dan een relatie hebben met een adrespositie met herkomst 2 (manuele aanduiding van perceel) indien het huisnummer eveneens een relatie heeft met een terreinobject met aard 1 (kadastraal perceel) of aard 4 (GRB administratief perceel).'
     FROM ADRESPOSITIES t1
     INNER JOIN HUISNUMMERSTATUSSEN t2 ON t1.adresid = t2.huisnummerid
-    WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL AND t1.herkomstadrespositie = '2' AND t2.huisnummerstatus = '3' 
+    WHERE t1.aardadres = '2' AND t1.eindtijd IS NULL 
+    AND t1.herkomstadrespositie = '2' AND t2.huisnummerstatus = '3' 
     AND NOT EXISTS(
-    SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
-    INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
-    WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('1','4'));
+        SELECT NULL FROM TERREINOBJECT_HUISNUMMER_RELATIES t3 
+        INNER JOIN TERREINOBJECTEN t4 ON t3.terreinobjectid = t4.ID 
+        WHERE t3.huisnummerid = t1.adresid AND t4.aardterreinobject IN ('1','4')
+    );
     --
     INSERT INTO validatiefouten (objecttype,id,BEGINTIJD,boodschap)
     SELECT 'adrespositie', t1.id, t1.BEGINTIJD, 

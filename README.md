@@ -184,6 +184,50 @@ INNER JOIN  GBKA_ADRESSEN
 
 > OUTPUT SHAPEFILE: GBKA_join_geenTerrein_join_crabGebouw.shp
 
+
+Idem for addresses with old terreinkoppeling, find where they where and join with new buildings.
+load PERCEELHISTO Into the database and create the selection:
+
+```sql
+CREATE VIEW "geenTerreinKoppeling_join_perceelhisto" AS 
+SELECT 
+ADRESID,
+HUISNUMMERID As HUISNR_ID,
+HERKOMST,
+PERCEEL_OF_GEBOUW AS PERCEEL, 
+ST_CENTROID( PERCEELHISTO.shape ) AS SHAPE
+ 
+FROM geenTerreinKoppeling
+
+INNER JOIN PERCEELHISTO
+	ON PERCEEL = PERCEELHISTO.capakey;
+
+INSERT INTO views_geometry_columns
+    (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only)
+VALUES ('geenTerreinKoppeling_join_perceelhisto', 'shape', 'rowid', 'geenTerreinKoppeling', 'shape', 0);
+```
+
+create a feature class from TERREINOBJECTEN and PERCEELHISTO:
+
+```sql
+CREATE VIEW "perceelhisto_join_tereinObj" AS 
+SELECT ID AS TERREINOBJ, 
+IDENTIFICATORTERREINOBJECT AS PERCEEL ,
+TERREINOBJECTEN.BEGINDATUM,
+PERCEELHISTO.SHAPE AS SHAPE
+FROM TERREINOBJECTEN
+
+INNER JOIN PERCEELHISTO
+	ON PERCEELHISTO.capakey = PERCEEL
+
+WHERE TERREINOBJECTEN.EINDDATUM IS NULL
+AND AARDTERREINOBJECT = 1;
+
+INSERT INTO views_geometry_columns
+    (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only)
+VALUES ('perceelhisto_join_tereinObj', 'shape', 'rowid', 'terreinobjecten', 'shape', 0);
+```
+
 Step 3: update the xgrab-db
 ----
 We have to do 2 things:
@@ -213,13 +257,16 @@ Summary
 > xgrab2spatialite.py xgrab.xml xgrab.sqlite
 > spatialite xgrab.sqlite < correcties.sql
 > spatialite xgrab.sqlite <  geenTerreinKoppeling.sql
-> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split  xgrab.sqlite 
+> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split -t GBKA_ADRESSEN -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
 > spatialite_tool -i -shp SHP\WOONEENHEID2015 -t WOONEENHEID2015 -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
+> spatialite_tool -i -shp SHP\PERCEELHISTO -t PERCEELHISTO -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
 > spatialite xgrab.sqlite < geenTerreinKoppeling_join_WE_GBKA.sql
 
 ... create a spatial joined table on CRAB-buildings ... in qgis/arcgis, output= GBKA_join_geenTerrein_join_crabGebouw.shp
+... idem for parcels
 
-> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp
+> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp 3 
+> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabPerceel.shp 2
 > spatialite xgrab.sqlite <  correcties.sql
 > spatialite xgrab.sqlite <  xgrabValidate_KW.sql
 > db2xgrab.py xgrab.sqlite xgrab_out.xml

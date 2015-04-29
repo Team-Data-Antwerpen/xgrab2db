@@ -47,7 +47,7 @@ def removeDoubleTerreinKoppeling(cur):
     cur.execute( cmd1 )
     cur.execute( cmd2 )
 
-def readShape( shapefile, xgrabDB ):
+def readShape( shapefile, xgrabDB , koppelType=3 ):
     driver = ogr.GetDriverByName("ESRI Shapefile")
     dataSource = driver.Open(shapefile, 0)
     layer = dataSource.GetLayer(0)
@@ -56,7 +56,7 @@ def readShape( shapefile, xgrabDB ):
     with con:
         cur = con.cursor()
         
-        cur.execute( "CREATE INDEX adresID_index ON ADRESPOSITIES (ID);" )
+        cur.execute( "CREATE INDEX IF NOT EXISTS adresID_index ON ADRESPOSITIES (ID);" )
         con.commit()
 
         for feature in layer:
@@ -65,7 +65,7 @@ def readShape( shapefile, xgrabDB ):
             terreinID = feature.GetFieldAsInteger("TERREINOBJ")
             huisnrID = feature.GetFieldAsInteger("HUISNR_ID")
             X, Y = ( geom.GetX() , geom.GetY() )
-            updateAdresPosistie(cur, X, Y, 3, adresID)
+            updateAdresPosistie(cur, X, Y, koppelType, adresID)
             updateTerrein(cur, terreinID , huisnrID)
 
             removeDoubleTerreinKoppeling(cur)
@@ -76,14 +76,13 @@ def readShape( shapefile, xgrabDB ):
         con.close()
 
 def main():
-    readShape(args.shapeFile, args.xgrabDB)
+    readShape(args.shapeFile, args.xgrabDB, int( args.koppelType) )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='update adresposities in a xgrab-db using a shapefile, requires spatialite and gdal-python')
-    parser.add_argument('xgrabDB', help='The input database (.sqlite)' ,
-                         default=r'C:\work\xgrab\deel2methode\xGRAB11002_20150204.sqlite')
-    parser.add_argument('shapeFile', help='The path to the shapefile, has a TERREINOBJ, HUISNR_ID and adresID',
-                         default=r'C:\work\xgrab\deel2methode\SHP\GBKA_join_geenTerrein_join_crabGebouw.shp')
+    parser.add_argument('xgrabDB', help='The input database (.sqlite)' )
+    parser.add_argument('shapeFile', help='The path to the shapefile, has a TERREINOBJ, HUISNR_ID and adresID')
+    parser.add_argument('koppelType', help='2 for parcel and 3 for building', default='3')                 
     args = parser.parse_args()
 
     main()
