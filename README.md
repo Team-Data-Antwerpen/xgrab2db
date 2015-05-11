@@ -204,7 +204,7 @@ INNER JOIN PERCEELHISTO
 
 INSERT INTO views_geometry_columns
     (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only)
-VALUES ('geenTerreinKoppeling_join_perceelhisto', 'shape', 'rowid', 'geenTerreinKoppeling', 'shape', 0);
+VALUES ('geenterreinkoppeling_join_perceelhisto', 'shape', 'rowid', 'geenterreinkoppeling', 'shape', 0);
 ```
 
 create a feature class from TERREINOBJECTEN and PERCEELHISTO:
