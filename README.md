@@ -254,19 +254,23 @@ python update_terrein_adrespositie.py xGRAB11002_20150218.sqlite GBKA_join_geenT
 Summary
 =======
 
-> xgrab2spatialite.py xgrab.xml xgrab.sqlite
-> spatialite xgrab.sqlite < correcties.sql
-> spatialite xgrab.sqlite <  geenTerreinKoppeling.sql
-> spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split -t GBKA_ADRESSEN -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
-> spatialite_tool -i -shp SHP\WOONEENHEID2015 -t WOONEENHEID2015 -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
-> spatialite_tool -i -shp SHP\PERCEELHISTO -t PERCEELHISTO -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
-> spatialite xgrab.sqlite < geenTerreinKoppeling_join_WE_GBKA.sql
+```Batchfile
+xgrab2spatialite.py xgrab.xml xgrab.sqlite
+spatialite xgrab.sqlite < correcties.sql
+spatialite xgrab.sqlite <  geenTerreinKoppeling.sql
+spatialite_tool -i -shp SHP\GBKA_ADRESSEN_Split -t GBKA_ADRESSEN -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
+spatialite_tool -i -shp SHP\WOONEENHEID2015 -t WOONEENHEID2015 -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
+spatialite_tool -i -shp SHP\PERCEELHISTO -t PERCEELHISTO -g SHAPE -c CP1252 -s 31370 -d xgrab.sqlite 
+spatialite xgrab.sqlite < geenTerreinKoppeling_join_WE_GBKA.sql
+```
 
 ... create a spatial joined table on CRAB-buildings ... in qgis/arcgis, output= GBKA_join_geenTerrein_join_crabGebouw.shp
 ... idem for parcels
 
-> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp 3 
-> update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabPerceel.shp 2
-> spatialite xgrab.sqlite <  correcties.sql
-> spatialite xgrab.sqlite <  xgrabValidate_KW.sql
-> db2xgrab.py xgrab.sqlite xgrab_out.xml
+```Batchfile
+update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabGebouw.shp 3 
+update_terrein_adrespositie.py xgrab.sqlite GBKA_join_geenTerrein_join_crabPerceel.shp 2
+spatialite xgrab.sqlite <  correcties.sql
+spatialite xgrab.sqlite <  xgrabValidate_KW.sql
+db2xgrab.py xgrab.sqlite xgrab_out.xml
+```
