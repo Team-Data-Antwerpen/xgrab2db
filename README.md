@@ -1,6 +1,6 @@
 xgrab2db
 =========
-<em>xgrab is the exchange standard for adressen in Flanders. They contain a extract of the CRAB-database.
+<em>xgrab is the exchange standard for adresses in Flanders. They contain a extract of the CRAB-database.
 This XML-file contains all the relevant entities of crab. 
 They allow the adres manager to update CRAB directly without using lara.
 These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml 

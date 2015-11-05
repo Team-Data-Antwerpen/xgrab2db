@@ -7,7 +7,7 @@ def main():
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print """Geef een input xgrab en geodatabase op:
+       print """Geef een input xgrab en geodatabase op:
             xgrab2gdb.py <xgrab> <gdb>"""
     else:
         xgrab = sys.argv[1]
