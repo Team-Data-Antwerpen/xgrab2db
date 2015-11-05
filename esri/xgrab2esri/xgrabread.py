@@ -579,10 +579,10 @@ class xgrab2geodb:
 
           if not includeEndDates and EINDDATUM == None:
             curs.insertRow((ID, ADRESID, AARDADRES, HERKOMSTADRESPOSITIE,
-                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, [double(X),double(Y)] )) 
+                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, [float(X),float(Y)] )) 
           elif includeEndDates:
             curs.insertRow((ID, ADRESID, AARDADRES, HERKOMSTADRESPOSITIE,
-                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, [double(X),double(Y)] ))
+                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, [float(X),float(Y)] ))
 
         del curs     
           
