@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import os, sys, sqlite3, argparse
-from xgrablib import *
+from xgrablib import xgrab2db, xgrabFromdb
 
-def makeIndex(com):
+def makeIndex(con):
     indices = """BEGIN TRANSACTION;
                 CREATE UNIQUE INDEX IF NOT EXISTS index_STRAATNAMEN_ID  ON STRAATNAMEN (ID);
                 CREATE  INDEX IF NOT EXISTS index_STRAATNAMEN_STRAATCODE  ON STRAATNAMEN (STRAATCODE);   

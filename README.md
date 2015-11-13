@@ -17,6 +17,24 @@ The tool update_terrein_adrespositie requires pyspatialite and  python-gdal to r
 
 You can run update_terrein_adrespositie.py and xgrab2spatialite.py in the osgeo4w-shell (download from http://trac.osgeo.org/osgeo4w/).
 
+Install / Build
+-----
+
+Add python to path on windows, edit the arcgis version number if necessary:
+
+    set PATH=%PATH%;C:\Python27\ArcGIS10.2
+
+To install the library run: 
+
+    python setup.py install
+    
+To create a windonws installer package:
+
+    python setup.py bdist_wininst
+   
+This wil only install the libraries, and the arcgis tool if arcgis is installed.
+   
+
 Part 1: xgrab2db, main functions
 =====
 These tools convert a xgrab-xmlfile to a sqlite/spatialite database and back to xml.

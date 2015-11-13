@@ -1,10 +1,10 @@
 import arcpy, os, sys
-import xgrab2esri as xg
+import xgrablib as xg
 
 class Toolbox(object):
     def __init__(self):
         self.label = "XGRAB_TOOLS"
-        self.alias = "XGRAB-TOOLS"
+        self.alias = "XGRAB_TOOLS"
 
         # List of tool classes associated with this toolbox
         self.tools = [xgrab2gdb, xgrabgdbUpdate]

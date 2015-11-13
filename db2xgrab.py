@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 import sqlite3 as db
 import os, sys, argparse
-from xgrablib import *
+from xgrablib import xgrab2db, xgrabFromdb
 
 def main():
   xgrabPath = args.xgrabPath
