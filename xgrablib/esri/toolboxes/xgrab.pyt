@@ -13,7 +13,7 @@ class xgrab2gdb(object):
     def __init__(self):
         self.label = "XGRAB naar Geodatabase"
         self.description = "Een XGRAB bestand toevoegen aan een bestaande Geodatabase, bestaande XGRAB-tabellen worden verwijderd en opnieuw gevuld met de contents van die XGRAB. Je kunt kiezen om records met einddatum (= verwijderd) mee te nemen of niet."
-        self.canRunInBackground = False
+        self.canRunInBackground = True
 
     def getParameterInfo(self):
         param0 = arcpy.Parameter(
@@ -55,7 +55,7 @@ class xgrabgdbUpdate(object):
     def __init__(self):
         self.label = "Geodatabase met XGRAB verschilbestand updaten"
         self.description = "Een database, die al de correcte tabellen heeft, updaten met een XGRAB verschil bestand. Records in database die in XGRAB voorkomen worden geupdate, de rest blijft behouden. Daarna worden alle nieuwe records uit xgrab geappend."
-        self.canRunInBackground = False
+        self.canRunInBackground = True
 
     def getParameterInfo(self):
         param0 = arcpy.Parameter(

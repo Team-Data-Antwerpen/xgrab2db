@@ -24,7 +24,7 @@ class xgrab2geodb:
         arcpy.env.overwriteOutput = True
         arcpy.env.workspace =  geoDB
 
-    def createAll(self, includeEndDates=True ):
+    def createAll(self, includeEndDates=True, includeadresPos=False ):
         self.STRAATNAMEN(includeEndDates, True, False)
         self.STRAATNAAMSTATUSSEN(includeEndDates, True, False)
         self.HUISNUMMERS(includeEndDates, True, False)
@@ -35,20 +35,20 @@ class xgrab2geodb:
         self.TERREINOBJECTEN(includeEndDates, [2,3,5,99], True, False)
         self.GEBOUWSTATUSSEN(includeEndDates, True, False)
         self.GEBOUWGEOMETRIEN(includeEndDates, True, False)
-        self.ADRESPOSITIES(includeEndDates, True, False)
+        if includeadresPos: self.ADRESPOSITIES(includeEndDates, True, False)
 
-    def updateAll(self):
-        self.STRAATNAMEN(True, False,True)
-        self.STRAATNAAMSTATUSSEN(True, False,True)
-        self.HUISNUMMERS(True, False,True)
-        self.HUISNUMMERSTATUSSEN(True, False,True)
+    def updateAll(self, includeadresPos=False ):
+        self.STRAATNAMEN(True, False, True)
+        self.STRAATNAAMSTATUSSEN(True, False, True)
+        self.HUISNUMMERS(True, False, True)
+        self.HUISNUMMERSTATUSSEN(True, False, True)
         self.POSTKANTONCODES(True, False,True)
-        self.RRSTRAATNAAM_STRAATNAAM_RELATIES(True, False,True)
-        self.TERREINOBJECT_HUISNUMMER_RELATIES(True, False,True)
-        self.TERREINOBJECTEN(True, [2,3,5,99], False,True)
-        self.GEBOUWSTATUSSEN(True, False,True)
-        self.GEBOUWGEOMETRIEN(True, False,True)   
-        self.ADRESPOSITIES(True, False,True)           
+        self.RRSTRAATNAAM_STRAATNAAM_RELATIES(True, False, True)
+        self.TERREINOBJECT_HUISNUMMER_RELATIES(True, False, True)
+        self.TERREINOBJECTEN(True, [2,3,5,99], False, True)
+        self.GEBOUWSTATUSSEN(True, False, True)
+        self.GEBOUWGEOMETRIEN(True, False, True)   
+        if includeadresPos: self.ADRESPOSITIES(True, False, True)           
         
     def STRAATNAMEN(self, includeEndDates=True, create=True, append=False):
         rows = self.components.find("{http://crab.agiv.be}STRAATNAMEN")
@@ -72,7 +72,6 @@ class xgrab2geodb:
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAMEN", ["ID"]) as cursor:
                 for row in cursor:
                     if row[0] in ids: cursor.deleteRow()
-            
             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\STRAATNAMEN",
                ("ID","STRAATCODE", "NISGEMEENTECODE", "STRAATNAAM", "TAALCODESTRAATNAAM",

@@ -44,9 +44,18 @@ def gmlPoly2esri( gmlNode , srid=31370 ):
     Polygon = arcpy.Polygon(partArray,  arcpy.SpatialReference(srid) )
     partArray.removeAll()
     return Polygon
-        
+      
+def gmlLineEsri( gmlNode , srid=31370 ):
+    posList = gmlNode.find(".//{http://www.opengis.net/gml}posList")
+
+    coords = zip(*[ [ float(m) for m in posList.text.split()][i::2] for i in range(2)])         
+    Polyline = arcpy.Polyline( arcpy.Array([arcpy.Point(*coords) for coords in feature]), 
+          arcpy.SpatialReference(srid) )
+
+    return Polyline
+      
 class field:
-    def __init__(self, name, dtype, length = 255):
+    def __init__(self, name, dtype = 'TEXT', length = 255):
         self.name = name
         self.dtype = dtype
         self.length = length
