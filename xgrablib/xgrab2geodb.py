@@ -4,8 +4,7 @@
 # Purpose:     Create a File Geo database from a xGRAB-file 
 # Author:      Kay Warrie
 #
-# Created:     28/04/2014
-# Copyright:   (c) Kay Warrie 2014
+# Created:     28/05/2017
 # Licence:     MIT
 #-------------------------------------------------------------------------------
 import os, sys, codecs, datetime
@@ -24,7 +23,7 @@ class xgrab2geodb:
         arcpy.env.overwriteOutput = True
         arcpy.env.workspace =  geoDB
 
-    def createAll(self, includeEndDates=True, includeadresPos=False ):
+    def createAll(self, includeEndDates=True, includeadresPos=True ):
         self.STRAATNAMEN(includeEndDates, True, False)
         self.STRAATNAAMSTATUSSEN(includeEndDates, True, False)
         self.HUISNUMMERS(includeEndDates, True, False)
@@ -35,9 +34,16 @@ class xgrab2geodb:
         self.TERREINOBJECTEN(includeEndDates, [2,3,5,99], True, False)
         self.GEBOUWSTATUSSEN(includeEndDates, True, False)
         self.GEBOUWGEOMETRIEN(includeEndDates, True, False)
-        if includeadresPos: self.ADRESPOSITIES(includeEndDates, True, False)
+        if includeadresPos: 
+            self.ADRESPOSITIES(includeEndDates, True, False)
+            self.ADRES_RRADRES_RELATIES(includeEndDates, True, False)
+            self.RRADRESSEN(includeEndDates, True, False)
+            self.RSTRAATNAAM_STRAATNAAM_RELATIES(includeEndDates, True, False)
+            self.STRAATKANTEN(includeEndDates, True, False)
+            self.SUBADRESSEN(includeEndDates, True, False)
+            self.WEGVERBINDINGGEOMETRIEN(includeEndDates, True, False) #geo
 
-    def updateAll(self, includeadresPos=False ):
+    def updateAll(self, includeadresPos=True ):
         self.STRAATNAMEN(True, False, True)
         self.STRAATNAAMSTATUSSEN(True, False, True)
         self.HUISNUMMERS(True, False, True)
@@ -48,7 +54,14 @@ class xgrab2geodb:
         self.TERREINOBJECTEN(True, [2,3,5,99], False, True)
         self.GEBOUWSTATUSSEN(True, False, True)
         self.GEBOUWGEOMETRIEN(True, False, True)   
-        if includeadresPos: self.ADRESPOSITIES(True, False, True)           
+        if includeadresPos: 
+            self.ADRESPOSITIES(True, False, True)  
+            self.ADRES_RRADRES_RELATIES(True, False, True)
+            self.RRADRESSEN(True, False, True)
+            self.RSTRAATNAAM_STRAATNAAM_RELATIES(True, False, True)
+            self.STRAATKANTEN(True, False, True)
+            self.SUBADRESSEN(True, False, True)
+            self.WEGVERBINDINGGEOMETRIEN(True, False, True) #geo            
         
     def STRAATNAMEN(self, includeEndDates=True, create=True, append=False):
         rows = self.components.find("{http://crab.agiv.be}STRAATNAMEN")
@@ -71,7 +84,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAMEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\STRAATNAMEN",
                ("ID","STRAATCODE", "NISGEMEENTECODE", "STRAATNAAM", "TAALCODESTRAATNAAM",
@@ -119,7 +132,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAAMSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\" + "STRAATNAAMSTATUSSEN",
                ("ID","STRAATNAAMID", "STRAATNAAMSTATUS",
@@ -165,7 +178,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\HUISNUMMERS", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "HUISNUMMERS",
                ("ID","STRAATNAAMID", "HUISNUMMER",
@@ -211,7 +224,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\HUISNUMMERSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "HUISNUMMERSTATUSSEN",
                ("ID","HUISNUMMERID", "HUISNUMMERSTATUS",
@@ -257,7 +270,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\POSTKANTONCODES", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "POSTKANTONCODES",
                ("ID", "HUISNUMMERID", "POSTKANTONCODE",
@@ -304,11 +317,10 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\RRSTRAATNAAM_STRAATNAAM_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRSTRAATNAAM_STRAATNAAM_RELATIES",
-               ("ID", "STRAATNAAMID", "SUBKANTONCODE", "RRSTRAATCODE",
-                "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+               ("ID", "STRAATNAAMID", "SUBKANTONCODE", "RRSTRAATCODE", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
 
         for row in rows.getchildren():
           ID = row.find("{http://crab.agiv.be}ID").text
@@ -351,7 +363,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\TERREINOBJECT_HUISNUMMER_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "TERREINOBJECT_HUISNUMMER_RELATIES",
                ("ID", "TERREINOBJECTID", "HUISNUMMERID",
@@ -404,7 +416,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\TERREINOBJECTEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "TERREINOBJECTEN",
            ("ID", "IDENTIFICATORTERREINOBJECT", "AARDTERREINOBJECT", "AARDGEBOUW",
@@ -456,7 +468,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\GEBOUWSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "GEBOUWSTATUSSEN",
            ("ID", "TERREINOBJECTID", "GEBOUWSTATUS",
@@ -483,6 +495,7 @@ class xgrab2geodb:
 
         del curs
 
+    #geo
     def GEBOUWGEOMETRIEN(self, includeEndDates=True, create=True, append=False):
         rows = self.components.find("{http://crab.agiv.be}GEBOUWGEOMETRIEN")
 
@@ -502,7 +515,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\GEBOUWGEOMETRIEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "GEBOUWGEOMETRIEN",
            ("ID", "TERREINOBJECTID", "METHODEGEBOUWGEOMETRIE",
@@ -512,7 +525,7 @@ class xgrab2geodb:
           ID = row.find("{http://crab.agiv.be}ID").text
           TERREINOBJECTID = row.find("{http://crab.agiv.be}TERREINOBJECTID").text
 
-          GEBOUWGEOMETRIE =  row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")[0]
+          GEBOUWGEOMETRIE =  row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")
           SHAPE = gmlPoly2esri( GEBOUWGEOMETRIE )
 
           METHODEGEBOUWGEOMETRIE = row.find("{http://crab.agiv.be}METHODEGEBOUWGEOMETRIE").text
@@ -554,7 +567,7 @@ class xgrab2geodb:
             ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\ADRESPOSITIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if row[0] in ids: cursor.deleteRow()
+                    if str(row[0]) in ids: cursor.deleteRow()
                             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "ADRESPOSITIES",
            ("ID", "ADRESID", "AARDADRES", "HERKOMSTADRESPOSITIE",
@@ -585,3 +598,297 @@ class xgrab2geodb:
 
         del curs     
           
+    def ADRES_RRADRES_RELATIES(self, includeEndDates=True, create=True, append=False):
+        rows = self.components.find("{http://crab.agiv.be}ADRES_RRADRES_RELATIES")
+
+        if create and not arcpy.Exists('ADRES_RRADRES_RELATIES'):
+           createTbl(self.geoDB, "ADRES_RRADRES_RELATIES",
+            [field("ID","LONG"), 
+             field("ADRESID","LONG"), 
+             field("AARDADRES","LONG"),
+             field("RRADRESID","LONG"), 
+             field("BEGINDATUM","DATE"), 
+             field("BEGINORGANISATIE","LONG"), field("BEGINBEWERKING","LONG"), field("EINDDATUM","DATE")
+            ])
+        elif arcpy.Exists('ADRES_RRADRES_RELATIES') and not append:
+            arcpy.management.DeleteRows('ADRES_RRADRES_RELATIES')                  
+        elif arcpy.Exists('ADRES_RRADRES_RELATIES') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\ADRES_RRADRES_RELATIES", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                    
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "ADRES_RRADRES_RELATIES",
+           ("ID", "ADRESID", "AARDADRES", "RRADRESID", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+
+        for row in rows.getchildren():
+          ID = row[0].text
+          ADRESID = row.find("{http://crab.agiv.be}ADRESID").text
+          AARDADRES = row.find("{http://crab.agiv.be}AARDADRES").text
+          RRADRESID = row.find("{http://crab.agiv.be}RRADRESID").text
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM = EINDnode.text 
+          else: EINDDATUM = None 
+
+          if not includeEndDates and EINDDATUM == None:
+             curs.insertRow((ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+          elif includeEndDates:
+             curs.insertRow((ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+
+        del curs
+
+    def RRADRESSEN(self, includeEndDates=True, create=True, append=False):
+        rows = self.components.find("{http://crab.agiv.be}RRADRESSEN")
+
+        if create and not arcpy.Exists('RRADRESSEN'):
+           createTbl(self.geoDB, "RRADRESSEN",
+            [field("ID","LONG"), 
+             field("RRHUISNUMMER","TEXT"), 
+             field("SUBKANTONCODE","TEXT"),
+             field("RRSTRAATCODE","TEXT"), 
+             field("RRINDEX","TEXT"), 
+             field("BEGINDATUM","DATE"), 
+             field("BEGINORGANISATIE","LONG"), field("BEGINBEWERKING","LONG"), field("EINDDATUM","DATE")
+            ])
+        elif arcpy.Exists('RRADRESSEN') and not append:
+            arcpy.management.DeleteRows('RRADRESSEN')                  
+        elif arcpy.Exists('RRADRESSEN') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\RRADRESSEN", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                    
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRADRESSEN",
+           ("ID", "RRHUISNUMMER", "SUBKANTONCODE", "RRSTRAATCODE", "RRINDEX", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+
+        for row in rows.getchildren():
+          ID = row[0].text
+          RRHUISNUMMER = row.find("{http://crab.agiv.be}RRHUISNUMMER").text
+          SUBKANTONCODE = row.find("{http://crab.agiv.be}SUBKANTONCODE").text
+          RRSTRAATCODE = row.find("{http://crab.agiv.be}RRSTRAATCODE").text
+
+          INDEXnode =  row.find("{http://crab.agiv.be}INDEX")
+          if INDEXnode != None: RRINDEX = INDEXnode.text
+          else: RRINDEX = None
+
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM =  EINDnode.text
+          else: EINDDATUM = None
+
+          if not includeEndDates and EINDDATUM == None:
+             curs.insertRow((ID, RRHUISNUMMER, SUBKANTONCODE, RRSTRAATCODE, RRINDEX, 
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+          elif includeEndDates:
+             curs.insertRow((ID, RRHUISNUMMER, SUBKANTONCODE, RRSTRAATCODE, RRINDEX, 
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+
+        del curs
+        
+    def RSTRAATNAAM_STRAATNAAM_RELATIES(self, includeEndDates=True, create=True, append=False):
+        rows = self.components.find("{http://crab.agiv.be}RRSTRAATNAAM_STRAATNAAM_RELATIES")
+
+        if create and not arcpy.Exists('RRSTRAATNAAM_STRAATNAAM_RELATIES'):
+           createTbl(self.geoDB, "RSTRAATNAAM_STRAATNAAM_RELATIES",
+            [field("ID","LONG"), 
+             field("STRAATNAAMID", "LONG"),
+             field("SUBKANTONCODE","TEXT"),
+             field("RRSTRAATCODE","TEXT"), 
+             field("BEGINDATUM","DATE"), 
+             field("BEGINORGANISATIE","LONG"), field("BEGINBEWERKING","LONG"), field("EINDDATUM","DATE")
+            ])
+        elif arcpy.Exists('RSTRAATNAAM_STRAATNAAM_RELATIES') and not append:
+            arcpy.management.DeleteRows('RSTRAATNAAM_STRAATNAAM_RELATIES')                  
+        elif arcpy.Exists('RSTRAATNAAM_STRAATNAAM_RELATIES') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\RSTRAATNAAM_STRAATNAAM_RELATIES", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                    
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRSTRAATNAAM_STRAATNAAM_RELATIES",
+           ("ID", "STRAATNAAMID", "SUBKANTONCODE", "RRSTRAATCODE", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+
+        for row in rows.getchildren():
+          ID = row[0].text
+          STRAATNAAMID = row.find("{http://crab.agiv.be}STRAATNAAMID").text
+          SUBKANTONCODE = row.find("{http://crab.agiv.be}SUBKANTONCODE").text
+          RRSTRAATCODE = row.find("{http://crab.agiv.be}RRSTRAATCODE").text
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM =  EINDnode.text
+          else: EINDDATUM = None
+
+          if not includeEndDates and EINDDATUM == None:
+             curs.insertRow((ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE,
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+          elif includeEndDates:
+             curs.insertRow((ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE,
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+
+        del curs
+        
+    def STRAATKANTEN(self, includeEndDates=True, create=True, append=False):
+        rows = self.components.find("{http://crab.agiv.be}STRAATKANTEN")
+
+        if create and not arcpy.Exists('STRAATKANTEN'):
+           createTbl(self.geoDB, "STRAATKANTEN",
+            [field("ID","LONG"), 
+             field("STRAATNAAMID", "LONG"),
+             field("WEGOBJECTID", "LONG"),
+             field("KANT", "LONG"),
+             field("PARITEIT", "LONG"),
+             field("EERSTEHUISNUMMER","TEXT"),
+             field("LAATSTEHUISNUMMER","TEXT"), 
+             field("BEGINDATUM","DATE"), 
+             field("BEGINORGANISATIE","LONG"), field("BEGINBEWERKING","LONG"), field("EINDDATUM","DATE")
+            ])
+        elif arcpy.Exists('STRAATKANTEN') and not append:
+            arcpy.management.DeleteRows('STRAATKANTEN')                  
+        elif arcpy.Exists('STRAATKANTEN') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATKANTEN", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                    
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "STRAATKANTEN",
+           ("ID", "STRAATNAAMID", "WEGOBJECTID", "KANT", "PARITEIT", "EERSTEHUISNUMMER", "LAATSTEHUISNUMMER",
+            "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+
+        for row in rows.getchildren():
+          ID = row[0].text
+          STRAATNAAMID = row.find("{http://crab.agiv.be}STRAATNAAMID").text
+          WEGOBJECTID =  row.find("{http://crab.agiv.be}WEGOBJECTID").text
+          KANT =  row.find("{http://crab.agiv.be}KANT").text
+
+          PARITEITnode = row.find("{http://crab.agiv.be}PARITEIT")
+          if PARITEITnode != None: PARITEIT = PARITEITnode.text
+          else: PARITEIT = None
+
+          EERSTEHUISNUMMERnode = row.find("{http://crab.agiv.be}EERSTEHUISNUMMER")
+          if EERSTEHUISNUMMERnode != None: EERSTEHUISNUMMER = EERSTEHUISNUMMERnode.text
+          else: EERSTEHUISNUMMER = ""
+
+          LAATSTEHUISNUMMERnode = row.find("{http://crab.agiv.be}LAATSTEHUISNUMMER")
+          if LAATSTEHUISNUMMERnode != None: LAATSTEHUISNUMMER = LAATSTEHUISNUMMERnode.text
+          else: LAATSTEHUISNUMMER = ""
+
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM =  EINDnode.text
+          else: EINDDATUM = None
+
+          if not includeEndDates and EINDDATUM == None:
+             curs.insertRow((ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER,
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+          elif includeEndDates:
+             curs.insertRow((ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER,
+                            BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+        del curs
+        
+    def SUBADRESSEN(self, includeEndDates=True, create=True, append=False):
+        rows = self.components.find("{http://crab.agiv.be}SUBADRESSEN")
+
+        if create and not arcpy.Exists('SUBADRESSEN'):
+           createTbl(self.geoDB, "SUBADRESSEN",
+            [field("ID","LONG"), 
+             field("HUISNUMMERID", "LONG"),
+             field("SUBADRES","TEXT"),
+             field("AARDSUBADRES","LONG"), 
+             field("BEGINDATUM","DATE"), 
+             field("BEGINORGANISATIE","LONG"), field("BEGINBEWERKING","LONG"), field("EINDDATUM","DATE")
+            ])
+        elif arcpy.Exists('SUBADRESSEN') and not append:
+            arcpy.management.DeleteRows('SUBADRESSEN')                  
+        elif arcpy.Exists('SUBADRESSEN') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\SUBADRESSEN", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                    
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "SUBADRESSEN",
+           ("ID", "HUISNUMMERID", "SUBADRES", "AARDSUBADRES", 
+            "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
+
+        for row in rows.getchildren():
+          ID = row[0].text
+          HUISNUMMERID = row.find("{http://crab.agiv.be}HUISNUMMERID").text
+          SUBADRES = row.find("{http://crab.agiv.be}SUBADRES").text
+          AARDSUBADRES  = row.find("{http://crab.agiv.be}AARDSUBADRES").text
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+          
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM =  EINDnode.text
+          else: EINDDATUM = None
+
+          if not includeEndDates and EINDDATUM == None:
+             curs.insertRow((ID, HUISNUMMERID, SUBADRES, AARDSUBADRES,
+                             BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+          elif includeEndDates:
+             curs.insertRow((ID, HUISNUMMERID, SUBADRES, AARDSUBADRES,
+                             BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM ))
+        del curs
+     
+    #geo     
+    def WEGVERBINDINGGEOMETRIEN(self, includeEndDates=True, create=True, append=False):  
+        rows = self.rootgrab[0].find("{http://crab.agiv.be}WEGVERBINDINGGEOMETRIEN")
+
+        if create and not arcpy.Exists('WEGVERBINDINGGEOMETRIEN'):
+           createTbl(self.geoDB, "WEGVERBINDINGGEOMETRIEN",
+            [field("ID","LONG"),
+             field("WEGOBJECTID","LONG"),
+             field("METHODEWEGVERBINDINGGEOMETRIE","LONG"),
+             field("BEGINDATUM","DATE"),
+             field("BEGINORGANISATIE","LONG"),
+             field("BEGINBEWERKING","LONG"),
+             field("EINDDATUM","DATE")
+            ], "POLYLINE")
+        elif arcpy.Exists('WEGVERBINDINGGEOMETRIEN') and not append:
+            arcpy.management.DeleteFeatures('WEGVERBINDINGGEOMETRIEN')
+        elif arcpy.Exists('WEGVERBINDINGGEOMETRIEN') and append:
+            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            with arcpy.da.UpdateCursor(self.geoDB + "\\WEGVERBINDINGGEOMETRIEN", ["ID"]) as cursor:
+                for row in cursor:
+                    if str(row[0]) in ids: cursor.deleteRow()
+                            
+        curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "WEGVERBINDINGGEOMETRIEN",
+           ("ID", "WEGOBJECTID", "METHODEWEGVERBINDINGGEOMETRIE", 
+            "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM", "SHAPE@") ) 
+               
+        for row in rows.getchildren():
+          ID = row.find("{http://crab.agiv.be}ID").text
+          WEGVERBINDINGGEOMETRIE = row.find("{http://crab.agiv.be}WEGVERBINDINGGEOMETRIE")[0] 
+          SHAPE = gmlLineEsri( WEGVERBINDINGGEOMETRIE )
+
+          WEGOBJECTID = row.find("{http://crab.agiv.be}WEGOBJECTID").text
+          METHODEWEGVERBINDINGGEOMETRIE = row.find("{http://crab.agiv.be}METHODEWEGVERBINDINGGEOMETRIE").text
+          BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
+          BEGINORGANISATIE = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}ORGANISATIE").text
+          BEGINBEWERKING = row.find("{http://crab.agiv.be}BEGINMETADATA/{http://crab.agiv.be}BEWERKING").text
+
+          EINDnode = row.find("{http://crab.agiv.be}EINDDATUM")
+          if EINDnode != None: EINDDATUM =  EINDnode.text
+          else: EINDDATUM = None
+
+          if not includeEndDates and EINDDATUM == None:
+            curs.insertRow((ID, WEGOBJECTID, METHODEWEGVERBINDINGGEOMETRIE, 
+                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, SHAPE )) 
+          elif includeEndDates:
+            curs.insertRow((ID, WEGOBJECTID, METHODEWEGVERBINDINGGEOMETRIE,
+                BEGINDATUM, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, SHAPE ))
+
+        del curs 

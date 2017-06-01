@@ -1,2 +1,2 @@
-from xgrabread import * 
+from xgrab2geodb import * 
 from _xgrablib import *

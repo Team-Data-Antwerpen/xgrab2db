@@ -47,10 +47,14 @@ def gmlPoly2esri( gmlNode , srid=31370 ):
       
 def gmlLineEsri( gmlNode , srid=31370 ):
     posList = gmlNode.find(".//{http://www.opengis.net/gml}posList")
+    pntArray =  arcpy.Array()
 
-    coords = zip(*[ [ float(m) for m in posList.text.split()][i::2] for i in range(2)])         
-    Polyline = arcpy.Polyline( arcpy.Array([arcpy.Point(*coords) for coords in feature]), 
-          arcpy.SpatialReference(srid) )
+    coords = zip(*[ [ float(m) for m in posList.text.split()][i::2] for i in range(2)])  
+    for xy in coords:
+        point = arcpy.Point(*xy)
+        pntArray.add(point)
+           
+    Polyline = arcpy.Polyline( pntArray, arcpy.SpatialReference(srid) )
 
     return Polyline
       
