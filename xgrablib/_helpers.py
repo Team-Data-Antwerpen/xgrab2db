@@ -9,7 +9,11 @@
 # Copyright:   (c) Kay Warrie 2014
 # Licence:     MIT
 #-------------------------------------------------------------------------------
-import arcpy, sys, os
+import sys, os
+try:
+    import arcpy
+except ImportError:
+    print "arcpy is not detected, xgrab2geodb will not work"
 
 def createTbl(dir,out_name, fields, geom=None):
     if not geom: 

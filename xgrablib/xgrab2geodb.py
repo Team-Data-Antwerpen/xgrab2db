@@ -9,7 +9,10 @@
 #-------------------------------------------------------------------------------
 import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
-import arcpy
+try:
+    import arcpy
+except ImportError:
+    pass
 from _helpers import *
 etree.register_namespace("gml","http://www.opengis.net/gml")
 etree.register_namespace("","http://crab.agiv.be")

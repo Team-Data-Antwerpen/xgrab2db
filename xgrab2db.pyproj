@@ -5,14 +5,18 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{762a1326-d013-49e2-ae9c-dfd724f3b938}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>db2xgrab.py</StartupFile>
+    <StartupFile>xgrab2gdb.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterId />
-    <InterpreterVersion />
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <CommandLineArguments>E:\work\xgrab\xGRAB11002.gml E:\crab\xgrab.gdb</CommandLineArguments>
+    <InterpreterArguments> </InterpreterArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
@@ -41,6 +45,9 @@
     <Folder Include="xgrablib" />
     <Folder Include="xgrablib\esri\" />
     <Folder Include="xgrablib\esri\toolboxes" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\2.7" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
