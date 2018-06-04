@@ -49,6 +49,11 @@ More info: https://www.agiv.be/producten/crab/x-grab-toepassingen
 Convert xgrab to a spatialite database
 ----
 The xgrab file can be converted to a spatialite database directly with xgrab2spatialite.py.
+This tool requires  [pyspatialite](https://github.com/lokkju/pyspatialite). If you don't have this library on your path:
+
+    pip install pyspatialite
+
+If you have it, you can run this commandline tool: 
 
     xgrab2spatialite.py  xgrab.xml database.sqlite
 
@@ -58,7 +63,7 @@ If can't install the pyspatialite python module, you create a regular sqlite dat
 
     xgrab2db.py xgrab.xml database.sqlite
     
-You can use the [https://www.gaia-gis.it/fossil/spatialite-tools/index](spatialite commandline executable) convert this database to a spatial database.
+You can use the (spatialite commandline executable)[https://www.gaia-gis.it/fossil/spatialite-tools/index] convert this database to a spatial database.
      
     spatialite.exe database.sqlite < makeSpatial.sql
  
@@ -67,6 +72,12 @@ Convert back to xgrab xml
 If you want send your changes back to AGIV, you need convert it back to XGRAB.
 
     db2xgrab.py database.sqlite xgrab.xml
+
+Convert to ESRI geodatabase
+---
+This tool wil only work if the version of python installed with arcgis is used. 
+
+    xgrab2gdb.py xgrab.xml database.gdb
 
 Part 2: Validate and correct the db
 ====
