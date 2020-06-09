@@ -84,10 +84,10 @@ class xgrab2geodb:
         elif arcpy.Exists('STRAATNAMEN') and not append:
             arcpy.management.DeleteRows('STRAATNAMEN')
         elif arcpy.Exists('STRAATNAMEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [ int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if unicode(r, 'utf-8').isnumeric() ]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAMEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\STRAATNAMEN",
                ("ID","STRAATCODE", "NISGEMEENTECODE", "STRAATNAAM", "TAALCODESTRAATNAAM",
@@ -132,10 +132,10 @@ class xgrab2geodb:
         elif arcpy.Exists('STRAATNAAMSTATUSSEN') and not append:
             arcpy.management.DeleteRows('STRAATNAAMSTATUSSEN')    
         elif arcpy.Exists('STRAATNAAMSTATUSSEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if unicode(r, 'utf-8').isnumeric() ]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAAMSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\" + "STRAATNAAMSTATUSSEN",
                ("ID","STRAATNAAMID", "STRAATNAAMSTATUS",
@@ -178,10 +178,10 @@ class xgrab2geodb:
         elif arcpy.Exists('HUISNUMMERS') and not append:
             arcpy.management.DeleteRows('HUISNUMMERS')
         elif arcpy.Exists('HUISNUMMERS') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\HUISNUMMERS", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "HUISNUMMERS",
                ("ID","STRAATNAAMID", "HUISNUMMER",
@@ -224,10 +224,10 @@ class xgrab2geodb:
         elif arcpy.Exists('HUISNUMMERSTATUSSEN') and not append:
             arcpy.management.DeleteRows('HUISNUMMERSTATUSSEN')
         elif arcpy.Exists('HUISNUMMERSTATUSSEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\HUISNUMMERSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "HUISNUMMERSTATUSSEN",
                ("ID","HUISNUMMERID", "HUISNUMMERSTATUS",
@@ -270,10 +270,10 @@ class xgrab2geodb:
         elif arcpy.Exists('POSTKANTONCODES') and not append:
             arcpy.management.DeleteRows('POSTKANTONCODES')
         elif arcpy.Exists('POSTKANTONCODES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\POSTKANTONCODES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "POSTKANTONCODES",
                ("ID", "HUISNUMMERID", "POSTKANTONCODE",
@@ -317,10 +317,10 @@ class xgrab2geodb:
         elif arcpy.Exists('RRSTRAATNAAM_STRAATNAAM_RELATIES') and not append:
             arcpy.management.DeleteRows('RRSTRAATNAAM_STRAATNAAM_RELATIES')
         elif arcpy.Exists('RRSTRAATNAAM_STRAATNAAM_RELATIES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\RRSTRAATNAAM_STRAATNAAM_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRSTRAATNAAM_STRAATNAAM_RELATIES",
                ("ID", "STRAATNAAMID", "SUBKANTONCODE", "RRSTRAATCODE", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
@@ -363,10 +363,10 @@ class xgrab2geodb:
         elif arcpy.Exists('TERREINOBJECT_HUISNUMMER_RELATIES') and not append:
             arcpy.management.DeleteRows('TERREINOBJECT_HUISNUMMER_RELATIES')          
         elif arcpy.Exists('TERREINOBJECT_HUISNUMMER_RELATIES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\TERREINOBJECT_HUISNUMMER_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "TERREINOBJECT_HUISNUMMER_RELATIES",
                ("ID", "TERREINOBJECTID", "HUISNUMMERID",
@@ -416,10 +416,10 @@ class xgrab2geodb:
         elif arcpy.Exists('TERREINOBJECTEN') and not append:
             arcpy.management.DeleteRows('TERREINOBJECTEN')        
         elif arcpy.Exists('TERREINOBJECTEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\TERREINOBJECTEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "TERREINOBJECTEN",
            ("ID", "IDENTIFICATORTERREINOBJECT", "AARDTERREINOBJECT", "AARDGEBOUW",
@@ -468,10 +468,10 @@ class xgrab2geodb:
         elif arcpy.Exists('GEBOUWSTATUSSEN') and not append:
             arcpy.management.DeleteRows('GEBOUWSTATUSSEN')                  
         elif arcpy.Exists('GEBOUWSTATUSSEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\GEBOUWSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "GEBOUWSTATUSSEN",
            ("ID", "TERREINOBJECTID", "GEBOUWSTATUS",
@@ -515,10 +515,10 @@ class xgrab2geodb:
         elif arcpy.Exists('GEBOUWGEOMETRIEN') and not append:
             arcpy.management.DeleteFeatures('GEBOUWGEOMETRIEN')
         elif arcpy.Exists('GEBOUWGEOMETRIEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\GEBOUWGEOMETRIEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "GEBOUWGEOMETRIEN",
            ("ID", "TERREINOBJECTID", "METHODEGEBOUWGEOMETRIE",
@@ -567,10 +567,10 @@ class xgrab2geodb:
         elif arcpy.Exists('ADRESPOSITIES') and not append:
             arcpy.management.DeleteFeatures('ADRESPOSITIES')
         elif arcpy.Exists('ADRESPOSITIES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\ADRESPOSITIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "ADRESPOSITIES",
            ("ID", "ADRESID", "AARDADRES", "HERKOMSTADRESPOSITIE",
@@ -616,10 +616,10 @@ class xgrab2geodb:
         elif arcpy.Exists('ADRES_RRADRES_RELATIES') and not append:
             arcpy.management.DeleteRows('ADRES_RRADRES_RELATIES')                  
         elif arcpy.Exists('ADRES_RRADRES_RELATIES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\ADRES_RRADRES_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "ADRES_RRADRES_RELATIES",
            ("ID", "ADRESID", "AARDADRES", "RRADRESID", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
@@ -660,10 +660,10 @@ class xgrab2geodb:
         elif arcpy.Exists('RRADRESSEN') and not append:
             arcpy.management.DeleteRows('RRADRESSEN')                  
         elif arcpy.Exists('RRADRESSEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\RRADRESSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRADRESSEN",
            ("ID", "RRHUISNUMMER", "SUBKANTONCODE", "RRSTRAATCODE", "RRINDEX", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
@@ -710,10 +710,10 @@ class xgrab2geodb:
         elif arcpy.Exists('RSTRAATNAAM_STRAATNAAM_RELATIES') and not append:
             arcpy.management.DeleteRows('RSTRAATNAAM_STRAATNAAM_RELATIES')                  
         elif arcpy.Exists('RSTRAATNAAM_STRAATNAAM_RELATIES') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\RSTRAATNAAM_STRAATNAAM_RELATIES", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "RRSTRAATNAAM_STRAATNAAM_RELATIES",
            ("ID", "STRAATNAAMID", "SUBKANTONCODE", "RRSTRAATCODE", "BEGINDATUM", "BEGINORGANISATIE", "BEGINBEWERKING", "EINDDATUM" ) )
@@ -758,10 +758,10 @@ class xgrab2geodb:
         elif arcpy.Exists('STRAATKANTEN') and not append:
             arcpy.management.DeleteRows('STRAATKANTEN')                  
         elif arcpy.Exists('STRAATKANTEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATKANTEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "STRAATKANTEN",
            ("ID", "STRAATNAAMID", "WEGOBJECTID", "KANT", "PARITEIT", "EERSTEHUISNUMMER", "LAATSTEHUISNUMMER",
@@ -816,10 +816,10 @@ class xgrab2geodb:
         elif arcpy.Exists('SUBADRESSEN') and not append:
             arcpy.management.DeleteRows('SUBADRESSEN')                  
         elif arcpy.Exists('SUBADRESSEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\SUBADRESSEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                     
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "SUBADRESSEN",
            ("ID", "HUISNUMMERID", "SUBADRES", "AARDSUBADRES", 
@@ -863,10 +863,10 @@ class xgrab2geodb:
         elif arcpy.Exists('WEGVERBINDINGGEOMETRIEN') and not append:
             arcpy.management.DeleteFeatures('WEGVERBINDINGGEOMETRIEN')
         elif arcpy.Exists('WEGVERBINDINGGEOMETRIEN') and append:
-            ids = [r.find("{http://crab.agiv.be}ID").text for r in rows.getchildren()]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren()]
             with arcpy.da.UpdateCursor(self.geoDB + "\\WEGVERBINDINGGEOMETRIEN", ["ID"]) as cursor:
                 for row in cursor:
-                    if str(row[0]) in ids: cursor.deleteRow()
+                    if row[0] in ids: cursor.deleteRow()
                             
         curs = arcpy.da.InsertCursor( self.geoDB + "\\"+ "WEGVERBINDINGGEOMETRIEN",
            ("ID", "WEGOBJECTID", "METHODEWEGVERBINDINGGEOMETRIE", 
