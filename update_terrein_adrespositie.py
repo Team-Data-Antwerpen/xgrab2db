@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 # Update the location of a adrespositie and and add a terrein koppeling using a shapeFile
 
-import os, sys, codecs, datetime, argparse
+import argparse
 import osgeo.ogr as ogr
 from pyspatialite import dbapi2 as sqlite3 #import sqlite3
 

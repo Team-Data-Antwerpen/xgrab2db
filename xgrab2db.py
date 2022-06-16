@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-import os, sys, sqlite3, argparse
-from xgrablib import xgrab2db, xgrabFromdb
+import os, sqlite3, argparse
+from xgrablib import xgrab2db
 
 def makeIndex(con):
     indices = """BEGIN TRANSACTION;

@@ -1,15 +1,4 @@
-# -*- coding: UTF-8 -*-
-#-------------------------------------------------------------------------------
-# Name:        xgrablib.py
-# Purpose:     Create a sqlite database from a xGRAB-file and the other way
-#              around.
-# Author:      Kay Warrie
-#
-# Created:     28/04/2014
-# Copyright:   (c) K-GIS 2014
-# Licence:     MIT
-#-------------------------------------------------------------------------------
-import os, sys, codecs, datetime
+import datetime
 import xml.etree.cElementTree as etree
 
 etree.register_namespace("","http://crab.agiv.be")
@@ -90,7 +79,7 @@ class xgrab2db:
         "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
         " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           STRAATCODE =  row.find("{http://crab.agiv.be}STRAATCODE").text
           NISGEMEENTECODE = row.find("{http://crab.agiv.be}NISGEMEENTECODE").text
@@ -143,7 +132,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           STRAATNAAMID =  row.find("{http://crab.agiv.be}STRAATNAAMID").text
           STRAATNAAMSTATUS = row.find("{http://crab.agiv.be}STRAATNAAMSTATUS").text
@@ -190,7 +179,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           STRAATNAAMID = row.find("{http://crab.agiv.be}STRAATNAAMID").text
           HUISNUMMER =  row.find("{http://crab.agiv.be}HUISNUMMER").text
@@ -237,7 +226,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           HUISNUMMERID =  row.find("{http://crab.agiv.be}HUISNUMMERID").text
           HUISNUMMERSTATUS = row.find("{http://crab.agiv.be}HUISNUMMERSTATUS").text
@@ -284,7 +273,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           HUISNUMMERID = row.find("{http://crab.agiv.be}HUISNUMMERID").text
           SUBADRES = row.find("{http://crab.agiv.be}SUBADRES").text
@@ -333,7 +322,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           SUBADRESID = row.find("{http://crab.agiv.be}SUBADRESID").text
           SUBADRESSTATUS = row.find("{http://crab.agiv.be}SUBADRESSTATUS").text
@@ -379,7 +368,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           "EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT, EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           HUISNUMMERID = row.find("{http://crab.agiv.be}HUISNUMMERID").text
           POSTKANTONCODE = row.find("{http://crab.agiv.be}POSTKANTONCODE").text
@@ -425,7 +414,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           STRAATNAAMID = row.find("{http://crab.agiv.be}STRAATNAAMID").text
           SUBKANTONCODE = row.find("{http://crab.agiv.be}SUBKANTONCODE").text
@@ -474,7 +463,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           STRAATNAAMID = row.find("{http://crab.agiv.be}STRAATNAAMID").text
           WEGOBJECTID =  row.find("{http://crab.agiv.be}WEGOBJECTID").text
@@ -540,7 +529,7 @@ class xgrab2db:
             " MORFOLOGISCHEWEGKLASSE INT, AARDVERHARDING INT, BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
             " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           IDENTIFICATORWEGOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORWEGOBJECT").text
           AARDWEGOBJECT =  row.find("{http://crab.agiv.be}AARDWEGOBJECT").text
@@ -598,7 +587,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-            for row in rows.getchildren():
+            for row in list(rows):
               id = row[0].text
               WEGOBJECTID = row.find("{http://crab.agiv.be}WEGOBJECTID").text
               WEGVERBINDINGSTATUS = row.find("{http://crab.agiv.be}WEGVERBINDINGSTATUS").text
@@ -646,14 +635,13 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-            for row in rows.getchildren():
+            for row in list(rows):
               id = row[0].text
               WEGOBJECTID = row.find("{http://crab.agiv.be}WEGOBJECTID").text
 
               #python inserts wrong namespace for some reason
               ##TODO#WEGVERBINDINGGEOMETRIE = "<LineString><posList> %s </posList></LineString>"%  row.find("{http://crab.agiv.be}WEGVERBINDINGGEOMETRIE")[0][0].text
-              WEGVERBINDINGGEOMETRIE = etree.tostring( row.find("{http://crab.agiv.be}WEGVERBINDINGGEOMETRIE")[0] )
-
+              WEGVERBINDINGGEOMETRIE = etree.tostring( row.find("{http://crab.agiv.be}WEGVERBINDINGGEOMETRIE")[0] ).decode() 
               METHODEWEGVERBINDINGGEOMETRIE = row.find("{http://crab.agiv.be}METHODEWEGVERBINDINGGEOMETRIE").text
               BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
 
@@ -671,6 +659,7 @@ class xgrab2db:
               if len(data) == 0:
                   sql= "INSERT INTO WEGVERBINDINGGEOMETRIEN VALUES(%s,%s,'%s',%s,'%s','%s',%s,%s,%s,Null,Null,Null);" % (
                   id,WEGOBJECTID,WEGVERBINDINGGEOMETRIE,METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM,BEGINTIJD,BEGINORGANISATIE,BEGINBEWERKING, EINDDATUM)
+
                   cur.execute(sql)
               else:
                   sql = "UPDATE WEGVERBINDINGGEOMETRIEN "
@@ -699,7 +688,7 @@ class xgrab2db:
         " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT,"+
         " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           TERREINOBJECTID = row.find("{http://crab.agiv.be}TERREINOBJECTID").text
           HUISNUMMERID =  row.find("{http://crab.agiv.be}HUISNUMMERID").text
@@ -745,7 +734,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           IDENTIFICATORTERREINOBJECT = row.find("{http://crab.agiv.be}IDENTIFICATORTERREINOBJECT").text
           AARDTERREINOBJECT = row.find("{http://crab.agiv.be}AARDTERREINOBJECT").text
@@ -800,7 +789,7 @@ class xgrab2db:
                           " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           TERREINOBJECTID = row.find("{http://crab.agiv.be}TERREINOBJECTID").text
           GEBOUWSTATUS = row.find("{http://crab.agiv.be}GEBOUWSTATUS").text
@@ -848,12 +837,12 @@ class xgrab2db:
                           " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-            for row in rows.getchildren():
+            for row in list(rows):
               id = row[0].text
               TERREINOBJECTID = row.find("{http://crab.agiv.be}TERREINOBJECTID").text
 
               #REMARK: python inserts wrong namespace if you set it manualy, see line 15
-              GEBOUWGEOMETRIE = etree.tostring( row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")[0] )
+              GEBOUWGEOMETRIE = etree.tostring( row.find("{http://crab.agiv.be}GEBOUWGEOMETRIE")[0] ).decode()
 
               METHODEGEBOUWGEOMETRIE = row.find("{http://crab.agiv.be}METHODEGEBOUWGEOMETRIE").text
               BEGINDATUM = row.find("{http://crab.agiv.be}BEGINDATUM").text
@@ -900,7 +889,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           RRHUISNUMMER = row.find("{http://crab.agiv.be}RRHUISNUMMER").text
           SUBKANTONCODE = row.find("{http://crab.agiv.be}SUBKANTONCODE").text
@@ -955,7 +944,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           ADRESID = row.find("{http://crab.agiv.be}ADRESID").text
           AARDADRES = row.find("{http://crab.agiv.be}AARDADRES").text
@@ -1004,7 +993,7 @@ class xgrab2db:
                           " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           KADHUISNUMMER = row.find("{http://crab.agiv.be}KADHUISNUMMER").text
           KADSTRAATCODE = row.find("{http://crab.agiv.be}KADSTRAATCODE").text
@@ -1053,7 +1042,7 @@ class xgrab2db:
                           "BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           ADRESID = row.find("{http://crab.agiv.be}ADRESID").text
           AARDADRES = row.find("{http://crab.agiv.be}AARDADRES").text
@@ -1102,7 +1091,7 @@ class xgrab2db:
                           " BEGINDATUM DATE, BEGINTIJD DATETIME, BEGINORGANISATIE INT, BEGINBEWERKING INT ,"+
                           " EINDDATUM DATE,  EINDTIJD DATETIME,  EINDORGANISATIE INT,  EINDBEWERKING INT );")
 
-        for row in rows.getchildren():
+        for row in list(rows):
           id = row[0].text
           ADRESID = row.find("{http://crab.agiv.be}ADRESID").text
           AARDADRES = row.find("{http://crab.agiv.be}AARDADRES").text
@@ -1200,8 +1189,7 @@ class xgrabFromdb:
     def __init__(self, DBconnection, xgrabPath ):
         self.con = DBconnection
         self.xgrabPath = xgrabPath
-        self.xgrabFile = codecs.open( xgrabPath, mode="wb", encoding="utf-8",
-                                buffering=True )
+        self.xgrabFile = open( xgrabPath, mode="wb", encoding="utf-8",  buffering=True )
         self.time =  datetime.datetime.now().isoformat()
 
         self.ZNcounter = 0
@@ -1222,7 +1210,7 @@ class xgrabFromdb:
         BEGINMETADATA = etree.Element('BEGINMETADATA')
         if isinstance( beginTime , datetime.datetime):
             etree.SubElement(BEGINMETADATA , "TIJD").text = beginTime.isoformat()
-        elif (isinstance(beginTime , str ) or isinstance(beginTime , unicode )) and beginTime.isdigit():
+        elif isinstance(beginTime , str ) and beginTime.isdigit():
             beginTime = datetime.datetime.fromtimestamp( int( beginTime ))
             etree.SubElement(BEGINMETADATA , "TIJD").text = beginTime.isoformat()
         elif isinstance( beginTime , int ):
@@ -1234,27 +1222,6 @@ class xgrabFromdb:
         etree.SubElement(BEGINMETADATA , "ORGANISATIE").text = str( organisatie )
         etree.SubElement(BEGINMETADATA , "BEWERKING").text = str( bewerking )
         return BEGINMETADATA
-
-##    def _end_metaTag(self, endTime=None,  organisatie=1 , bewerking=3 ):
-##        if organisatie == None: organisatie=1
-##        if bewerking == None: bewerking=3
-##        if endTime == None: endTime= datetime.datetime.now()
-##
-##        EINDMETADATA = etree.Element('EINDMETADATA')
-##        if isinstance( endTime , datetime.datetime):
-##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
-##        elif (isinstance(endTime , str ) or isinstance(endTime , unicode )) and endTime.isdigit():
-##            endTime = datetime.datetime.fromtimestamp( int( endTime ))
-##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
-##        elif isinstance( endTime , int ):
-##            endTime = datetime.datetime.fromtimestamp( endTime )
-##            etree.SubElement(EINDMETADATA , "TIJD").text = endTime.isoformat()
-##        else :
-##            etree.SubElement(EINDMETADATA , "TIJD").text = str( endTime )
-##
-##        etree.SubElement(EINDMETADATA , "ORGANISATIE").text = str( organisatie )
-##        etree.SubElement(EINDMETADATA , "BEWERKING").text = str( bewerking )
-##        return EINDMETADATA
 
     def createAll(self):
         self.STRAATNAMEN()
@@ -1288,9 +1255,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM STRAATNAMEN;"):
                 ID, STRAATCODE, NISGEMEENTECODE, STRAATNAAM, TAALCODESTRAATNAAM, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING  = row
                 STRAATNAAM_OBJECT = etree.Element('STRAATNAAM_OBJECT')
-                etree.SubElement(STRAATNAAM_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(STRAATNAAM_OBJECT , "STRAATCODE").text = unicode( STRAATCODE )
-                etree.SubElement(STRAATNAAM_OBJECT , "NISGEMEENTECODE").text = unicode( NISGEMEENTECODE )
+                etree.SubElement(STRAATNAAM_OBJECT , "ID").text = str( ID )
+                etree.SubElement(STRAATNAAM_OBJECT , "STRAATCODE").text = str( STRAATCODE )
+                etree.SubElement(STRAATNAAM_OBJECT , "NISGEMEENTECODE").text = str( NISGEMEENTECODE )
                 etree.SubElement(STRAATNAAM_OBJECT , "STRAATNAAM").text = STRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "TAALCODESTRAATNAAM").text = TAALCODESTRAATNAAM
                 etree.SubElement(STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
@@ -1311,9 +1278,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING  FROM  STRAATNAAMSTATUSSEN;"):
                 ID, STRAATNAAMID, STRAATNAAMSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 STRAATNAAMSTATUS_OBJECT = etree.Element('STRAATNAAMSTATUS_OBJECT')
-                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
-                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = unicode( STRAATNAAMSTATUS )
+                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "ID").text = str( ID )
+                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMID").text = str( STRAATNAAMID )
+                etree.SubElement(STRAATNAAMSTATUS_OBJECT , "STRAATNAAMSTATUS").text = str( STRAATNAAMSTATUS )
                 etree.SubElement(STRAATNAAMSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(STRAATNAAMSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 STRAATNAAMSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1332,9 +1299,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  HUISNUMMERS;"):
                 ID, STRAATNAAMID, HUISNUMMER, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 HUISNUMMER_OBJECT = etree.Element('HUISNUMMER_OBJECT')
-                etree.SubElement(HUISNUMMER_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(HUISNUMMER_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
-                etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = unicode( HUISNUMMER )
+                etree.SubElement(HUISNUMMER_OBJECT , "ID").text = str( ID )
+                etree.SubElement(HUISNUMMER_OBJECT , "STRAATNAAMID").text = str( STRAATNAAMID )
+                etree.SubElement(HUISNUMMER_OBJECT , "HUISNUMMER").text = str( HUISNUMMER )
                 etree.SubElement(HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(HUISNUMMER_OBJECT , "EINDDATUM").text =  EINDDATUM
                 HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1353,9 +1320,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  HUISNUMMERSTATUSSEN;"):
                 ID, HUISNUMMERID, HUISNUMMERSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 HUISNUMMERSTATUS_OBJECT = etree.Element('HUISNUMMERSTATUS_OBJECT')
-                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
-                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = unicode( HUISNUMMERSTATUS )
+                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "ID").text = str( ID )
+                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERID").text = str( HUISNUMMERID )
+                etree.SubElement(HUISNUMMERSTATUS_OBJECT , "HUISNUMMERSTATUS").text = str( HUISNUMMERSTATUS )
                 etree.SubElement(HUISNUMMERSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(HUISNUMMERSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 HUISNUMMERSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1374,10 +1341,10 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  SUBADRESSEN;"):
                 ID, HUISNUMMERID, SUBADRES, AARDSUBADRES, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 SUBADRES_OBJECT = etree.Element('SUBADRES_OBJECT')
-                etree.SubElement(SUBADRES_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(SUBADRES_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
-                etree.SubElement(SUBADRES_OBJECT , "SUBADRES").text = unicode( SUBADRES )
-                etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = unicode( AARDSUBADRES )
+                etree.SubElement(SUBADRES_OBJECT , "ID").text = str( ID )
+                etree.SubElement(SUBADRES_OBJECT , "HUISNUMMERID").text = str( HUISNUMMERID )
+                etree.SubElement(SUBADRES_OBJECT , "SUBADRES").text = str( SUBADRES )
+                etree.SubElement(SUBADRES_OBJECT , "AARDSUBADRES").text = str( AARDSUBADRES )
                 etree.SubElement(SUBADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(SUBADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 SUBADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1396,9 +1363,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  SUBADRESSTATUSSEN;"):
                 ID, SUBADRESID, SUBADRESSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 SUBADRESSTATUS_OBJECT = etree.Element('SUBADRESSTATUS_OBJECT')
-                etree.SubElement(SUBADRESSTATUS_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESID").text = unicode( SUBADRESID )
-                etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = unicode( SUBADRESSTATUS )
+                etree.SubElement(SUBADRESSTATUS_OBJECT , "ID").text = str( ID )
+                etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESID").text = str( SUBADRESID )
+                etree.SubElement(SUBADRESSTATUS_OBJECT , "SUBADRESSTATUS").text = str( SUBADRESSTATUS )
                 etree.SubElement(SUBADRESSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(SUBADRESSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 SUBADRESSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1417,9 +1384,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM POSTKANTONCODES;"):
                 ID, HUISNUMMERID, POSTKANTONCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 POSTKANTONCODE_OBJECT = etree.Element('POSTKANTONCODE_OBJECT')
-                etree.SubElement(POSTKANTONCODE_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(POSTKANTONCODE_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
-                etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = unicode( POSTKANTONCODE )
+                etree.SubElement(POSTKANTONCODE_OBJECT , "ID").text = str( ID )
+                etree.SubElement(POSTKANTONCODE_OBJECT , "HUISNUMMERID").text = str( HUISNUMMERID )
+                etree.SubElement(POSTKANTONCODE_OBJECT , "POSTKANTONCODE").text = str( POSTKANTONCODE )
                 etree.SubElement(POSTKANTONCODE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(POSTKANTONCODE_OBJECT , "EINDDATUM").text =  EINDDATUM
                 POSTKANTONCODE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1438,10 +1405,10 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  RRSTRAATNAAM_STRAATNAAM_RELATIES;"):
                 ID, STRAATNAAMID, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 RRSTRAATNAAM_STRAATNAAM_OBJECT = etree.Element('RRSTRAATNAAM_STRAATNAAM_OBJECT')
-                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
-                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
-                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
+                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "ID").text = str( ID )
+                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "STRAATNAAMID").text = str( STRAATNAAMID )
+                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "SUBKANTONCODE").text = str( SUBKANTONCODE )
+                etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "RRSTRAATCODE").text = str( RRSTRAATCODE )
                 etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(RRSTRAATNAAM_STRAATNAAM_OBJECT , "EINDDATUM").text =  EINDDATUM
                 RRSTRAATNAAM_STRAATNAAM_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1460,12 +1427,12 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING , EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  STRAATKANTEN;"):
                 ID, STRAATNAAMID, WEGOBJECTID, KANT, PARITEIT, EERSTEHUISNUMMER, LAATSTEHUISNUMMER, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 STRAATKANT_OBJECT = etree.Element('STRAATKANT_OBJECT')
-                etree.SubElement(STRAATKANT_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(STRAATKANT_OBJECT , "STRAATNAAMID").text = unicode( STRAATNAAMID )
-                etree.SubElement(STRAATKANT_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
-                etree.SubElement(STRAATKANT_OBJECT , "KANT").text = unicode( KANT )
+                etree.SubElement(STRAATKANT_OBJECT , "ID").text = str( ID )
+                etree.SubElement(STRAATKANT_OBJECT , "STRAATNAAMID").text = str( STRAATNAAMID )
+                etree.SubElement(STRAATKANT_OBJECT , "WEGOBJECTID").text = str( WEGOBJECTID )
+                etree.SubElement(STRAATKANT_OBJECT , "KANT").text = str( KANT )
 
-                if PARITEIT: etree.SubElement(STRAATKANT_OBJECT , "PARITEIT").text = unicode( PARITEIT )
+                if PARITEIT: etree.SubElement(STRAATKANT_OBJECT , "PARITEIT").text = str( PARITEIT )
                 if EERSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "EERSTEHUISNUMMER").text = EERSTEHUISNUMMER
                 if LAATSTEHUISNUMMER.strip(): etree.SubElement(STRAATKANT_OBJECT , "LAATSTEHUISNUMMER").text =  LAATSTEHUISNUMMER
 
@@ -1487,14 +1454,14 @@ class xgrabFromdb:
                              " BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  WEGOBJECTEN;"):
                 ID, IDENTIFICATORWEGOBJECT, AARDWEGOBJECT, MORFOLOGISCHEWEGKLASSE, AARDVERHARDING, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 WEGOBJECT_OBJECT = etree.Element('WEGOBJECT_OBJECT')
-                etree.SubElement(WEGOBJECT_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(WEGOBJECT_OBJECT , "IDENTIFICATORWEGOBJECT").text = unicode( IDENTIFICATORWEGOBJECT )
-                etree.SubElement(WEGOBJECT_OBJECT , "AARDWEGOBJECT").text = unicode( AARDWEGOBJECT )
+                etree.SubElement(WEGOBJECT_OBJECT , "ID").text = str( ID )
+                etree.SubElement(WEGOBJECT_OBJECT , "IDENTIFICATORWEGOBJECT").text = str( IDENTIFICATORWEGOBJECT )
+                etree.SubElement(WEGOBJECT_OBJECT , "AARDWEGOBJECT").text = str( AARDWEGOBJECT )
 
                 if MORFOLOGISCHEWEGKLASSE != None and AARDVERHARDING != None:
                     WEGVERBINDING = etree.Element('WEGVERBINDING')
-                    etree.SubElement(WEGVERBINDING , "MORFOLOGISCHEWEGKLASSE").text = unicode( MORFOLOGISCHEWEGKLASSE )
-                    etree.SubElement(WEGVERBINDING , "AARDVERHARDING").text = unicode( AARDVERHARDING )
+                    etree.SubElement(WEGVERBINDING , "MORFOLOGISCHEWEGKLASSE").text = str( MORFOLOGISCHEWEGKLASSE )
+                    etree.SubElement(WEGVERBINDING , "AARDVERHARDING").text = str( AARDVERHARDING )
                     WEGOBJECT_OBJECT.append( WEGVERBINDING )
 
                 etree.SubElement(WEGOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
@@ -1515,9 +1482,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM  WEGVERBINDINGSTATUSSEN;"):
                 ID, WEGOBJECTID, WEGVERBINDINGSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 WEGVERBINDINGSTATUS_OBJECT = etree.Element('WEGVERBINDINGSTATUS_OBJECT')
-                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
-                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGVERBINDINGSTATUS").text = unicode( WEGVERBINDINGSTATUS )
+                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "ID").text = str( ID )
+                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGOBJECTID").text = str( WEGOBJECTID )
+                etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "WEGVERBINDINGSTATUS").text = str( WEGVERBINDINGSTATUS )
                 etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGVERBINDINGSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 WEGVERBINDINGSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1536,8 +1503,8 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM WEGVERBINDINGGEOMETRIEN;"):
                 ID, WEGOBJECTID, WEGVERBINDINGGEOMETRIE, METHODEWEGVERBINDINGGEOMETRIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 WEGVERBINDINGGEOMETRIE_OBJECT = etree.Element('WEGVERBINDINGGEOMETRIE_OBJECT')
-                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGOBJECTID").text = unicode( WEGOBJECTID )
+                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "ID").text = str( ID )
+                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "WEGOBJECTID").text = str( WEGOBJECTID )
                 geomGML = etree.XML(WEGVERBINDINGGEOMETRIE)
 
                 geomS = '<LineString >' + ''.join(
@@ -1554,7 +1521,7 @@ class xgrabFromdb:
 ##                geomGML.set("xmlns:gml", "http://www.opengis.net/gml")
 ##                WEGVERBINDINGGEOMETRIE.append( geomGML )
 
-                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = unicode( METHODEWEGVERBINDINGGEOMETRIE )
+                etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "METHODEWEGVERBINDINGGEOMETRIE").text = str( METHODEWEGVERBINDINGGEOMETRIE )
                 etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(WEGVERBINDINGGEOMETRIE_OBJECT , "EINDDATUM").text =  EINDDATUM
                 WEGVERBINDINGGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1573,9 +1540,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM TERREINOBJECT_HUISNUMMER_RELATIES;"):
                 ID, TERREINOBJECTID, HUISNUMMERID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 TERREINOBJECT_HUISNUMMER_OBJECT = etree.Element('TERREINOBJECT_HUISNUMMER_OBJECT')
-                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
-                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "HUISNUMMERID").text = unicode( HUISNUMMERID )
+                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "ID").text = str( ID )
+                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "TERREINOBJECTID").text = str( TERREINOBJECTID )
+                etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "HUISNUMMERID").text = str( HUISNUMMERID )
                 etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(TERREINOBJECT_HUISNUMMER_OBJECT , "EINDDATUM").text =  EINDDATUM
                 TERREINOBJECT_HUISNUMMER_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1594,13 +1561,13 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM TERREINOBJECTEN;"):
                 ID, IDENTIFICATORTERREINOBJECT, AARDTERREINOBJECT, AARDGEBOUW, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 TERREINOBJECT_OBJECT = etree.Element('TERREINOBJECT_OBJECT')
-                etree.SubElement(TERREINOBJECT_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(TERREINOBJECT_OBJECT , "IDENTIFICATORTERREINOBJECT").text = unicode( IDENTIFICATORTERREINOBJECT )
-                etree.SubElement(TERREINOBJECT_OBJECT , "AARDTERREINOBJECT").text = unicode( AARDTERREINOBJECT )
+                etree.SubElement(TERREINOBJECT_OBJECT , "ID").text = str( ID )
+                etree.SubElement(TERREINOBJECT_OBJECT , "IDENTIFICATORTERREINOBJECT").text = str( IDENTIFICATORTERREINOBJECT )
+                etree.SubElement(TERREINOBJECT_OBJECT , "AARDTERREINOBJECT").text = str( AARDTERREINOBJECT )
 
                 if AARDGEBOUW:
                     GEBOUWnode = etree.Element("GEBOUW")
-                    etree.SubElement(GEBOUWnode , "AARDGEBOUW").text = unicode( AARDGEBOUW )
+                    etree.SubElement(GEBOUWnode , "AARDGEBOUW").text = str( AARDGEBOUW )
                     TERREINOBJECT_OBJECT.append(GEBOUWnode)
 
                 etree.SubElement(TERREINOBJECT_OBJECT , "BEGINDATUM").text =  BEGINDATUM
@@ -1621,9 +1588,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM GEBOUWSTATUSSEN;"):
                 ID, TERREINOBJECTID, GEBOUWSTATUS, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 GEBOUWSTATUS_OBJECT = etree.Element('GEBOUWSTATUS_OBJECT')
-                etree.SubElement(GEBOUWSTATUS_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(GEBOUWSTATUS_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
-                etree.SubElement(GEBOUWSTATUS_OBJECT , "GEBOUWSTATUS").text = unicode( GEBOUWSTATUS )
+                etree.SubElement(GEBOUWSTATUS_OBJECT , "ID").text = str( ID )
+                etree.SubElement(GEBOUWSTATUS_OBJECT , "TERREINOBJECTID").text = str( TERREINOBJECTID )
+                etree.SubElement(GEBOUWSTATUS_OBJECT , "GEBOUWSTATUS").text = str( GEBOUWSTATUS )
                 etree.SubElement(GEBOUWSTATUS_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(GEBOUWSTATUS_OBJECT , "EINDDATUM").text =  EINDDATUM
                 GEBOUWSTATUS_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1642,8 +1609,8 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM GEBOUWGEOMETRIEN;"):
                 ID, TERREINOBJECTID, GEBOUWGEOMETRIE, METHODEGEBOUWGEOMETRIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 GEBOUWGEOMETRIE_OBJECT = etree.Element('GEBOUWGEOMETRIE_OBJECT')
-                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "TERREINOBJECTID").text = unicode( TERREINOBJECTID )
+                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "ID").text = str( ID )
+                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "TERREINOBJECTID").text = str( TERREINOBJECTID )
                 #TODO
                 geomGML = etree.XML(GEBOUWGEOMETRIE)
 
@@ -1666,7 +1633,7 @@ class xgrabFromdb:
                 geomXML.append(geomC)
                 GEBOUWGEOMETRIE_OBJECT.append( geomXML )
 
-                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = unicode( METHODEGEBOUWGEOMETRIE )
+                etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "METHODEGEBOUWGEOMETRIE").text = str( METHODEGEBOUWGEOMETRIE )
                 etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(GEBOUWGEOMETRIE_OBJECT , "EINDDATUM").text = EINDDATUM
                 GEBOUWGEOMETRIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1685,7 +1652,7 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM RRADRESSEN;"):
                 ID, RRHUISNUMMER, RRINDEX, SUBKANTONCODE, RRSTRAATCODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 RRADRES_OBJECT = etree.Element('RRADRES_OBJECT')
-                etree.SubElement(RRADRES_OBJECT , "ID").text = unicode( ID )
+                etree.SubElement(RRADRES_OBJECT , "ID").text = str( ID )
 
                 if 0 < len(RRHUISNUMMER.strip()) < 11: #ISSUE: no huisnrString > 11 Allowed, means is incorrect, set as ZN
                     etree.SubElement(RRADRES_OBJECT , "RRHUISNUMMER").text =  RRHUISNUMMER
@@ -1695,8 +1662,8 @@ class xgrabFromdb:
 
                 if RRINDEX.strip(): etree.SubElement(RRADRES_OBJECT , "INDEX").text = RRINDEX
 
-                etree.SubElement(RRADRES_OBJECT , "SUBKANTONCODE").text = unicode( SUBKANTONCODE )
-                etree.SubElement(RRADRES_OBJECT , "RRSTRAATCODE").text = unicode( RRSTRAATCODE )
+                etree.SubElement(RRADRES_OBJECT , "SUBKANTONCODE").text = str( SUBKANTONCODE )
+                etree.SubElement(RRADRES_OBJECT , "RRSTRAATCODE").text = str( RRSTRAATCODE )
                 etree.SubElement(RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(RRADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1715,10 +1682,10 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM ADRES_RRADRES_RELATIES;"):
                 ID, ADRESID, AARDADRES, RRADRESID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 ADRES_RRADRES_OBJECT = etree.Element('ADRES_RRADRES_OBJECT')
-                etree.SubElement(ADRES_RRADRES_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(ADRES_RRADRES_OBJECT , "ADRESID").text = unicode( ADRESID )
-                etree.SubElement(ADRES_RRADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
-                etree.SubElement(ADRES_RRADRES_OBJECT , "RRADRESID").text = unicode( RRADRESID )
+                etree.SubElement(ADRES_RRADRES_OBJECT , "ID").text = str( ID )
+                etree.SubElement(ADRES_RRADRES_OBJECT , "ADRESID").text = str( ADRESID )
+                etree.SubElement(ADRES_RRADRES_OBJECT , "AARDADRES").text = str( AARDADRES )
+                etree.SubElement(ADRES_RRADRES_OBJECT , "RRADRESID").text = str( RRADRESID )
                 etree.SubElement(ADRES_RRADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(ADRES_RRADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 ADRES_RRADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1737,10 +1704,10 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM KADADRESSEN;"):
                 ID, KADHUISNUMMER, KADSTRAATCODE, NISGEMEENTECODE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 KADADRES_OBJECT = etree.Element('KADADRES_OBJECT')
-                etree.SubElement(KADADRES_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(KADADRES_OBJECT , "KADHUISNUMMER").text = unicode( KADHUISNUMMER )
-                etree.SubElement(KADADRES_OBJECT , "KADSTRAATCODE").text = unicode( KADSTRAATCODE )
-                etree.SubElement(KADADRES_OBJECT , "NISGEMEENTECODE").text = unicode( NISGEMEENTECODE )
+                etree.SubElement(KADADRES_OBJECT , "ID").text = str( ID )
+                etree.SubElement(KADADRES_OBJECT , "KADHUISNUMMER").text = str( KADHUISNUMMER )
+                etree.SubElement(KADADRES_OBJECT , "KADSTRAATCODE").text = str( KADSTRAATCODE )
+                etree.SubElement(KADADRES_OBJECT , "NISGEMEENTECODE").text = str( NISGEMEENTECODE )
                 etree.SubElement(KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(KADADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1759,10 +1726,10 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM ADRES_KADADRES_RELATIES;"):
                 ID, ADRESID, AARDADRES, KADADRESID, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 ADRES_KADADRES_OBJECT = etree.Element('ADRES_KADADRES_OBJECT')
-                etree.SubElement(ADRES_KADADRES_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(ADRES_KADADRES_OBJECT , "ADRESID").text = unicode( ADRESID )
-                etree.SubElement(ADRES_KADADRES_OBJECT , "AARDADRES").text = unicode( AARDADRES )
-                etree.SubElement(ADRES_KADADRES_OBJECT , "KADADRESID").text = unicode( KADADRESID )
+                etree.SubElement(ADRES_KADADRES_OBJECT , "ID").text = str( ID )
+                etree.SubElement(ADRES_KADADRES_OBJECT , "ADRESID").text = str( ADRESID )
+                etree.SubElement(ADRES_KADADRES_OBJECT , "AARDADRES").text = str( AARDADRES )
+                etree.SubElement(ADRES_KADADRES_OBJECT , "KADADRESID").text = str( KADADRESID )
                 etree.SubElement(ADRES_KADADRES_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(ADRES_KADADRES_OBJECT , "EINDDATUM").text =  EINDDATUM
                 ADRES_KADADRES_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
@@ -1781,9 +1748,9 @@ class xgrabFromdb:
                 "BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING FROM ADRESPOSITIES;"):
                 ID, ADRESID, AARDADRES,  X, Y, HERKOMSTADRESPOSITIE, BEGINDATUM, BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING, EINDDATUM, EINDTIJD, EINDORGANISATIE, EINDBEWERKING = row
                 ADRESPOSITIE_OBJECT = etree.Element('ADRESPOSITIE_OBJECT')
-                etree.SubElement(ADRESPOSITIE_OBJECT , "ID").text = unicode( ID )
-                etree.SubElement(ADRESPOSITIE_OBJECT , "ADRESID").text = unicode( ADRESID )
-                etree.SubElement(ADRESPOSITIE_OBJECT , "AARDADRES").text = unicode( AARDADRES )
+                etree.SubElement(ADRESPOSITIE_OBJECT , "ID").text = str( ID )
+                etree.SubElement(ADRESPOSITIE_OBJECT , "ADRESID").text = str( ADRESID )
+                etree.SubElement(ADRESPOSITIE_OBJECT , "AARDADRES").text = str( AARDADRES )
 
                 ADRESPOSITIE = '<Point ><pos>%s %s</pos></Point>' % (X, Y)
                 geom = etree.XML(ADRESPOSITIE)
@@ -1793,7 +1760,7 @@ class xgrabFromdb:
                 geomXML.append(geom)
                 ADRESPOSITIE_OBJECT.append( geomXML )
 
-                etree.SubElement(ADRESPOSITIE_OBJECT , "HERKOMSTADRESPOSITIE").text = unicode( HERKOMSTADRESPOSITIE )
+                etree.SubElement(ADRESPOSITIE_OBJECT , "HERKOMSTADRESPOSITIE").text = str( HERKOMSTADRESPOSITIE )
                 etree.SubElement(ADRESPOSITIE_OBJECT , "BEGINDATUM").text =  BEGINDATUM
                 if EINDDATUM != None: etree.SubElement(ADRESPOSITIE_OBJECT , "EINDDATUM").text =  EINDDATUM
                 ADRESPOSITIE_OBJECT.append( self._begin_metaTag(BEGINTIJD, BEGINORGANISATIE, BEGINBEWERKING ) )
