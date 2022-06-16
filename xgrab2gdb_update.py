@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 import xgrablib as xg
 
 xgrab = r"E:\crab\test\xGRABdif11002_20200604000002539.gml"

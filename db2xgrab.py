@@ -1,8 +1,6 @@
-#!/usr/bin/env python 
-# -*- coding: UTF-8 -*-
 import sqlite3 as db
-import os, sys, argparse
-from xgrablib import xgrab2db, xgrabFromdb
+import  argparse
+from xgrablib import  xgrabFromdb
 
 def main():
   xgrabPath = args.xgrabPath

@@ -28,7 +28,6 @@ def main():
 
 def makeSpatialite(Connection):
     with Connection as con:
-      print "started making spatial"
       shapes ="""BEGIN TRANSACTION;
                   SELECT InitSpatialMetaData();
                   SELECT AddGeometryColumn('WEGVERBINDINGGEOMETRIEN','SHAPE',31370, 'LINESTRING' );

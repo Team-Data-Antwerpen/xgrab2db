@@ -1,19 +1,9 @@
-# -*- coding: UTF-8 -*-
-#-------------------------------------------------------------------------------
-# Name:        xgrablib.py
-# Purpose:     Create a File Geo database from a xGRAB-file 
-# Author:      Kay Warrie
-#
-# Created:     28/05/2017
-# Licence:     MIT
-#-------------------------------------------------------------------------------
-import os, sys, codecs, datetime
 import xml.etree.cElementTree as etree
 try:
     import arcpy
 except ImportError:
     pass
-from _helpers import *
+from ._helpers import *
 etree.register_namespace("gml","http://www.opengis.net/gml")
 etree.register_namespace("","http://crab.agiv.be")
 
@@ -84,7 +74,7 @@ class xgrab2geodb:
         elif arcpy.Exists('STRAATNAMEN') and not append:
             arcpy.management.DeleteRows('STRAATNAMEN')
         elif arcpy.Exists('STRAATNAMEN') and append:
-            ids = [ int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if unicode(r, 'utf-8').isnumeric() ]
+            ids = [ int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if r.isnumeric() ]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAMEN", ["ID"]) as cursor:
                 for row in cursor:
                     if row[0] in ids: cursor.deleteRow()
@@ -132,7 +122,7 @@ class xgrab2geodb:
         elif arcpy.Exists('STRAATNAAMSTATUSSEN') and not append:
             arcpy.management.DeleteRows('STRAATNAAMSTATUSSEN')    
         elif arcpy.Exists('STRAATNAAMSTATUSSEN') and append:
-            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if unicode(r, 'utf-8').isnumeric() ]
+            ids = [int(r.find("{http://crab.agiv.be}ID").text) for r in rows.getchildren() if r.isnumeric() ]
             with arcpy.da.UpdateCursor(self.geoDB + "\\STRAATNAAMSTATUSSEN", ["ID"]) as cursor:
                 for row in cursor:
                     if row[0] in ids: cursor.deleteRow()

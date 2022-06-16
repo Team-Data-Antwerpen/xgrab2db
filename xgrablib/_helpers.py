@@ -1,19 +1,7 @@
-# -*- coding: UTF-8 -*-
-#-------------------------------------------------------------------------------
-# Name:        xgrablib.py
-# Purpose:     Create a sqlite database from a xGRAB-file and the other way
-#              around.
-# Author:      Kay Warrie
-#
-# Created:     28/04/2014
-# Copyright:   (c) Kay Warrie 2014
-# Licence:     MIT
-#-------------------------------------------------------------------------------
-import sys, os
 try:
     import arcpy
 except ImportError:
-    print "arcpy is not detected, xgrab2geodb will not work"
+    print ("arcpy is not detected, xgrab2geodb will not work")
 
 def createTbl(dir,out_name, fields, geom=None):
     if not geom: 
